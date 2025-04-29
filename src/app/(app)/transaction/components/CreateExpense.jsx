@@ -4,13 +4,13 @@ import axios from "@/libs/axios";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 
-const CreateExpense = ({ isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
+const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
     const [expense, setExpense] = useState([]);
     const [formData, setFormData] = useState({
         debt_code: "",
-        cred_code: user.role.warehouse.chart_of_account_id,
-        amount: 0,
-        fee_amount: "",
+        cred_code: "",
+        amount: "",
+        fee_amount: 0,
         trx_type: "Pengeluaran",
         description: "Biaya Operasional Toko",
     });
@@ -39,9 +39,9 @@ const CreateExpense = ({ isModalOpen, notification, fetchJournalsByWarehouse, us
             fetchJournalsByWarehouse();
             setFormData({
                 debt_code: "",
-                cred_code: user.role.warehouse.chart_of_account_id,
-                amount: 0,
-                fee_amount: "",
+                cred_code: "",
+                amount: "",
+                fee_amount: 0,
                 trx_type: "Pengeluaran",
                 description: "Biaya Operasional Toko",
             });
@@ -60,11 +60,30 @@ const CreateExpense = ({ isModalOpen, notification, fetchJournalsByWarehouse, us
                 <Label>Dari Rekening</Label>
                 <div className="col-span-1 sm:col-span-2">
                     <select
-                        onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
-                        value={formData.debt_code}
+                        onChange={(e) => setFormData({ ...formData, cred_code: e.target.value })}
+                        value={formData.cred_code}
                         className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
                         <option value="">--Pilih Rekening--</option>
+                        {filteredCashBankByWarehouse.map((expense) => (
+                            <option key={expense.id} value={expense.id}>
+                                {expense.acc_name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.cred_code && <span className="text-red-500 text-xs">{errors.cred_code}</span>}
+                </div>
+            </div>
+            <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                <Label>Tujuan</Label>
+                <div className="col-span-1 sm:col-span-2">
+                    <select
+                        onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
+                        value={formData.debt_code}
+                        disabled={!formData.cred_code}
+                        className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 disabled:bg-slate-200 disabled:cursor-not-allowed disabled:text-slate-400"
+                    >
+                        <option value="">--Pilih Tujuan--</option>
                         {expense.map((expense) => (
                             <option key={expense.id} value={expense.id}>
                                 {expense.acc_name}
@@ -77,13 +96,8 @@ const CreateExpense = ({ isModalOpen, notification, fetchJournalsByWarehouse, us
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                 <Label>Jumlah</Label>
                 <div className="col-span-1 sm:col-span-2">
-                    <Input
-                        type="number"
-                        placeholder="Rp."
-                        value={formData.fee_amount * -1}
-                        onChange={(e) => setFormData({ ...formData, fee_amount: -e.target.value })}
-                    />
-                    {errors.fee_amount && <span className="text-red-500 text-xs">{errors.fee_amount}</span>}
+                    <Input type="number" placeholder="Rp." value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} />
+                    {errors.amount && <span className="text-red-500 text-xs">{errors.amount}</span>}
                 </div>
             </div>
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">

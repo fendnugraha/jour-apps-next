@@ -7,13 +7,14 @@ import { set } from "date-fns";
 
 const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notification, fetchJournalsByWarehouse, user }) => {
     const [formData, setFormData] = useState({
-        debt_code: user?.role?.warehouse?.chart_of_account_id,
+        debt_code: 49,
         cred_code: "",
         amount: "",
-        fee_amount: "",
+        fee_amount: 0,
         trx_type: "Pengeluaran",
         description: "Biaya Administrasi Bank",
     });
+
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -24,7 +25,7 @@ const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notifica
             const response = await axios.post("/api/create-mutation", formData);
             notification("success", "Pengeluaran biaya administrasi bank berhasil");
             setFormData({
-                debt_code: user?.role?.warehouse?.chart_of_account_id,
+                debt_code: 49,
                 cred_code: "",
                 amount: "",
                 fee_amount: "",
@@ -65,12 +66,7 @@ const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notifica
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                     <Label>Jumlah</Label>
                     <div className="col-span-1 sm:col-span-2">
-                        <Input
-                            type="number"
-                            placeholder="Rp."
-                            value={formData.amount}
-                            onChange={(e) => setFormData({ ...formData, amount: e.target.value, fee_amount: -e.target.value })}
-                        />
+                        <Input type="number" placeholder="Rp." value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} />
                         {errors.amount && <span className="text-red-500 text-xs">{errors.amount}</span>}
                     </div>
                 </div>

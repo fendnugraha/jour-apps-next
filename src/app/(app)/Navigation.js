@@ -1,6 +1,16 @@
 import NavLink from "@/components/NavLink";
 import { useAuth } from "@/libs/auth";
-import { ArrowRightLeftIcon, ChartAreaIcon, CircleDollarSignIcon, CirclePowerIcon, CogIcon, LayoutDashboardIcon, MenuIcon, StoreIcon } from "lucide-react";
+import {
+    ArrowRightLeftIcon,
+    ChartAreaIcon,
+    ChartNoAxesCombinedIcon,
+    CircleDollarSignIcon,
+    CirclePowerIcon,
+    CogIcon,
+    LayoutDashboardIcon,
+    MenuIcon,
+    StoreIcon,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -63,7 +73,7 @@ const Navigation = ({ user }) => {
                                 Transaction
                             </span>
                         </NavLink>
-                        <NavLink href="/store" isOpen={isOpen} active={pathname === "/store"}>
+                        {/* <NavLink href="/store" isOpen={isOpen} active={pathname === "/store"}>
                             <div>
                                 <StoreIcon className="w-5 h-5" />
                             </div>
@@ -75,7 +85,7 @@ const Navigation = ({ user }) => {
                             >
                                 Store
                             </span>
-                        </NavLink>
+                        </NavLink> */}
                         {userRole === "Administrator" && (
                             <>
                                 <NavLink href="/finance" isOpen={isOpen} active={pathname === "/finance"}>
@@ -102,6 +112,19 @@ const Navigation = ({ user }) => {
                                         style={{ display: isOpen ? "inline" : "none" }}
                                     >
                                         Summary
+                                    </span>
+                                </NavLink>
+                                <NavLink href="/report" isOpen={isOpen} active={pathname === "/report"}>
+                                    <div>
+                                        <ChartNoAxesCombinedIcon className="w-5 h-5" />
+                                    </div>
+                                    <span
+                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
+                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        }`}
+                                        style={{ display: isOpen ? "inline" : "none" }}
+                                    >
+                                        Report
                                     </span>
                                 </NavLink>
                                 {/* <NavLink href="/report" isOpen={isOpen} active={pathname === "/report"}>

@@ -2,12 +2,11 @@
 import Notification from "@/components/notification";
 import Header from "../Header";
 import { useState, useEffect } from "react";
-import WarehouseBalance from "./components/WarehouseBalance";
-import RevenueReport from "./components/RevenueReport";
 import MutationHistory from "./components/MutationHistory";
 import axios from "@/libs/axios";
 import { useAuth } from "@/libs/auth";
 import LogActivity from "./components/LogActivity";
+import DailyProfit from "./components/DailyProfit";
 
 const SummaryPage = () => {
     const { user } = useAuth({ middleware: "auth" });
@@ -36,8 +35,7 @@ const SummaryPage = () => {
                 <Header title={"Summary Report"} />
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <WarehouseBalance />
-                        <RevenueReport />
+                        <DailyProfit />
                         <MutationHistory account={account} notification={(message) => setNotification(message)} user={user} />
                         <LogActivity />
                     </div>

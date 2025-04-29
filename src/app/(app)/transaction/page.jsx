@@ -121,8 +121,6 @@ const TransactionPage = () => {
         setIsModalCreateJournalOpen(false);
         setIsModalCreateSalesByValueOpen(false);
         setIsModalCreateDepositOpen(false);
-        setIsModalCreateVoucherOpen(false);
-        setIsModalCreateMutationToHqOpen(false);
         setIsModalCreateBankAdminFeeOpen(false);
         setIsModalCreateExpenseOpen(false);
     };
@@ -294,6 +292,38 @@ const TransactionPage = () => {
                                     </Menu.Item>
                                 </Menu.Items>
                             </Dropdown>
+                            <Dropdown
+                                trigger={
+                                    <button className="bg-red-600 text-sm hover:bg-red-500 text-white py-2 px-6 rounded-lg group">
+                                        Biaya (Pengeluaran)
+                                        <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
+                                    </button>
+                                }
+                                align="right"
+                            >
+                                <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <button
+                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                onClick={() => setIsModalCreateExpenseOpen(true)}
+                                            >
+                                                Biaya Operasional
+                                            </button>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <button
+                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
+                                            >
+                                                Biaya Administrasi Bank
+                                            </button>
+                                        )}
+                                    </Menu.Item>
+                                </Menu.Items>
+                            </Dropdown>
                         </div>
                         <Modal isOpen={isModalCreateJournalOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Jurnal Umum">
                             <CreateJournal
@@ -335,6 +365,7 @@ const TransactionPage = () => {
                         </Modal>
                         <Modal isOpen={isModalCreateExpenseOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Biaya Operasional">
                             <CreateExpense
+                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
                                 isModalOpen={setIsModalCreateExpenseOpen}
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
