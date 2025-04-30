@@ -52,13 +52,6 @@ const DailyProfit = () => {
         fetchDailyReport();
     }, []);
 
-    const sumByTrxType = (trxType) => {
-        return revenue.revenue?.reduce((total, item) => {
-            return total + Number(item[trxType]);
-        }, 0);
-        // console.log(revenue.revenue?.[0][trxType]);
-    };
-
     //export to excel
     const headersRevenue = [
         { key: "warehouse", label: "Cabang" },
@@ -71,8 +64,6 @@ const DailyProfit = () => {
         { key: "expense", label: "Pengeluaran" },
         { key: "fee", label: "Profit" },
     ];
-
-    console.log(dailyProfit);
 
     return (
         <div className="bg-white rounded-lg mb-3 relative">
@@ -112,22 +103,42 @@ const DailyProfit = () => {
                     </button>
                     <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
                         <div className="mb-4">
-                            <Label className="font-bold">Tanggal</Label>
-                            <Input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                            <Label className="font-bold">Bulan</Label>
+                            <select
+                                onChange={(e) => setMonth(e.target.value)}
+                                value={month}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            />
+                            >
+                                <option>-Pilih Bulan-</option>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
                         </div>
                         <div className="mb-4">
-                            <Label className="font-bold">s/d</Label>
-                            <Input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                            <Label className="font-bold">Tahun</Label>
+                            <select
+                                onChange={(e) => setYear(e.target.value)}
+                                value={year}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            />
+                            >
+                                <option>-Pilih Tahun-</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
                         </div>
                         <button onClick={fetchDailyReport} className="btn-primary">
                             Submit
@@ -157,6 +168,15 @@ const DailyProfit = () => {
                             </tr>
                         ))}
                     </tbody>
+                    <tfoot className="font-semibold text-gray-800 bg-gray-100">
+                        <tr>
+                            <td>Total</td>
+                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.revenue, 0))}</td>
+                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.cost, 0))}</td>
+                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.expense, 0))}</td>
+                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0))}</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

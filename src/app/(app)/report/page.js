@@ -4,7 +4,7 @@ import Header from "../Header";
 import { useState } from "react";
 import { useAuth } from "@/libs/auth";
 import Link from "next/link";
-import { ArrowRight, HandCoinsIcon, ScaleIcon } from "lucide-react";
+import { ArrowRight, HandCoinsIcon, ReceiptCentIcon, ScaleIcon } from "lucide-react";
 
 const Report = () => {
     const { user } = useAuth({ middleware: "auth" });
@@ -39,6 +39,16 @@ const Report = () => {
                                         className="sm:sm:absolute hover:underline group-hover:font-bold bottom-4 right-5 text-sm rounded-full transition-all duration-300"
                                     >
                                         Laba rugi (Profit Loss)
+                                        <ArrowRight className="w-4 h-4 inline ml-2 group-hover:scale-125 transition-transform duration-300 " />
+                                    </Link>
+                                </div>
+                                <div className="group sm:relative bg-white p-3 sm:p-6 dark:bg-gray-800 overflow-hidden shadow-md rounded-xl h-32 sm:h-60 flex sm:justify-center justify-evenly items-center flex-col gap-1">
+                                    <ReceiptCentIcon className="w-16 h-16 sm:w-24 sm:h-24 group-hover:scale-125 transition-transform duration-300" />
+                                    <Link
+                                        href="/report/cashflow"
+                                        className="sm:sm:absolute hover:underline group-hover:font-bold bottom-4 right-5 text-sm rounded-full transition-all duration-300"
+                                    >
+                                        Arus Kas (Cashflow)
                                         <ArrowRight className="w-4 h-4 inline ml-2 group-hover:scale-125 transition-transform duration-300 " />
                                     </Link>
                                 </div>

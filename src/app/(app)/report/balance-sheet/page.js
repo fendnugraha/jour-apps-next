@@ -92,8 +92,8 @@ const BalanceSheet = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
@@ -118,8 +118,8 @@ const BalanceSheet = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
@@ -144,15 +144,15 @@ const BalanceSheet = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance + balanceSheet?.profitloss)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
                                                     ))}
                                                 </React.Fragment>
                                             ))}
-                                            <tr className="text-sm">
+                                            <tr className="text-xs">
                                                 <td className="text-start">-</td>
                                                 <td className="py-1 text-start">Laba Rugi Berjalan</td>
                                                 <td className="py-1 text-end">{formatNumber(balanceSheet?.profitloss)}</td>

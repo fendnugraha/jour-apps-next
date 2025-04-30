@@ -34,6 +34,8 @@ import Input from "@/components/Input";
 import { Menu } from "@headlessui/react";
 import CreateJournal from "./components/CreateJournal";
 import CreateSalesByValue from "./components/CreateSalesByValue";
+import Pagination from "@/components/PaginateList";
+import CreatePrive from "./components/CreatePrive";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -58,6 +60,7 @@ const TransactionPage = () => {
     const [isModalCreateSalesByValueOpen, setIsModalCreateSalesByValueOpen] = useState(false);
     const [isModalCreateDepositOpen, setIsModalCreateDepositOpen] = useState(false);
     const [isModalCreateExpenseOpen, setIsModalCreateExpenseOpen] = useState(false);
+    const [isModalCreatePriveOpen, setIsModalCreatePriveOpen] = useState(false);
     const [isModalCreateBankAdminFeeOpen, setIsModalCreateBankAdminFeeOpen] = useState(false);
     const [notification, setNotification] = useState({
         type: "",
@@ -123,6 +126,7 @@ const TransactionPage = () => {
         setIsModalCreateDepositOpen(false);
         setIsModalCreateBankAdminFeeOpen(false);
         setIsModalCreateExpenseOpen(false);
+        setIsModalCreatePriveOpen(false);
     };
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(warehouse);
     const { accountBalance, error: accountBalanceError, loading: isValidating } = useCashBankBalance(selectedWarehouseId, endDate);
@@ -163,6 +167,25 @@ const TransactionPage = () => {
 
     const filteredCashBankByWarehouse = cashBank.filter((cashBank) => cashBank.warehouse_id === warehouse);
     const hqCashBank = cashBank.filter((cashBank) => cashBank.warehouse_id === 1);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // Number of items per page
+
+    // Calculate the total number of pages
+    const totalItems = accountBalance?.data?.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Get the items for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentItems = accountBalance?.data?.slice(startIndex, startIndex + itemsPerPage);
+
+    // Handle page change from the Pagination component
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const summarizeBalance = accountBalance?.data?.reduce((total, account) => total + account.balance, 0);
+
     return (
         <>
             <Header title="Transaction" />
@@ -322,6 +345,16 @@ const TransactionPage = () => {
                                             </button>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <button
+                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                onClick={() => setIsModalCreatePriveOpen(true)}
+                                            >
+                                                Penarikan Modal (Prive)
+                                            </button>
+                                        )}
+                                    </Menu.Item>
                                 </Menu.Items>
                             </Dropdown>
                         </div>
@@ -372,6 +405,15 @@ const TransactionPage = () => {
                                 user={user}
                             />
                         </Modal>
+                        <Modal isOpen={isModalCreatePriveOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penarikan Modal (Prive)">
+                            <CreatePrive
+                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                                isModalOpen={setIsModalCreatePriveOpen}
+                                notification={(type, message) => setNotification({ type, message })}
+                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                                user={user}
+                            />
+                        </Modal>
                         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-20 sm:mb-0">
                             <div className="relative col-span-1 sm:col-span-3 bg-white py-6 rounded-2xl order-2 sm:order-1">
                                 {journalLoading && <LoaderCircleIcon size={20} className="absolute top-1 left-1 animate-spin text-slate-300" />}
@@ -388,16 +430,16 @@ const TransactionPage = () => {
                                     hqCashBank={hqCashBank}
                                 />
                             </div>
-                            <div className="order-1 sm:order-2 px-2 sm:px-0">
+                            {/* <div className="order-1 sm:order-2 px-2 sm:px-0">
                                 <CashBankBalance warehouse={warehouse} accountBalance={accountBalance} isValidating={isValidating} />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
             </div>
             {/* Daily report */}
             <div
-                className={`fixed top-[72px] right-0 h-full z-[100] shadow-lg w-full sm:w-1/4 ${
+                className={`fixed top-[72px] right-0 h-full z-[100] shadow-lg w-full sm:w-[450px] ${
                     isDailyReportOpen ? "translate-x-0" : "translate-x-full"
                 } transition-transform duration-300 ease-in-out bg-white`}
                 ref={drawerRef}
@@ -416,7 +458,7 @@ const TransactionPage = () => {
                 </button>
                 <div className="px-4 py-2">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-lg font-bold">Daily Report</h1>
+                        <h1 className="text-lg font-bold">Saldo Kas & Bank</h1>
                         <button
                             className="text-slate-400 hover:scale-110 transition-transform duration-75"
                             onClick={() => mutate(`/api/daily-dashboard/${warehouse}/${startDate}/${endDate}`)}
@@ -425,81 +467,31 @@ const TransactionPage = () => {
                         </button>
                     </div>
                     <span className="block text-xs mb-4 text-slate-400">{getCurrentDate()}</span>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Uang Tunai</h1>
-                        <h1 className="text-xs font-bold text-end">{formatNumber(dailyDashboard?.data?.totalCash)}</h1>
+                    <div className="max-h-full overflow-y-auto">
+                        <table className="w-full">
+                            <tbody>
+                                {currentItems?.map((account) => (
+                                    <tr className="text-sm border-b border-slate-300 border-dashed hover:bg-slate-200" key={account.id}>
+                                        <td className="text-start text-xs py-2">{account.acc_name}</td>
+                                        <td className="text-end font-bold text-slate-600">{formatNumber(account.balance)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {totalPages > 1 && (
+                            <Pagination
+                                className={"w-full px-3 pb-3"}
+                                totalItems={totalItems}
+                                itemsPerPage={itemsPerPage}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
+                        )}
                     </div>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Voucher</h1>
-                        <h1 className="text-xs font-bold text-end">{formatNumber(dailyDashboard?.data?.totalVoucher)}</h1>
+                    <div>
+                        <span className="text-xs text-slate-300">Total Saldo</span>
+                        <h1 className="text-3xl font-bold">{formatNumber(summarizeBalance ?? 0)}</h1>
                     </div>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Accessories</h1>
-                        <h1 className="text-xs font-bold text-end">{formatNumber(dailyDashboard?.data?.totalAccessories)}</h1>
-                    </div>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Deposit</h1>
-                        <h1 className="text-xs font-bold text-end">{formatNumber(dailyDashboard?.data?.totalCashDeposit)}</h1>
-                    </div>
-                    <hr className="border border-dashed" />
-                    <div className="flex justify-between mt-1 mb-4">
-                        <h1 className="text-xs font-bold text-slate-700">Pendapatan</h1>
-                        <h1 className="text-xs font-bold text-end text-green-500">
-                            {formatNumber(
-                                dailyDashboard?.data?.totalCash +
-                                    dailyDashboard?.data?.totalCashDeposit +
-                                    dailyDashboard?.data?.totalAccessories +
-                                    dailyDashboard?.data?.totalVoucher
-                            )}
-                        </h1>
-                    </div>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Fee Admin</h1>
-                        <h1 className="text-xs font-bold text-end">{formatNumber(dailyDashboard?.data?.totalFee ?? 0)}</h1>
-                    </div>
-                    <div className="flex justify-between mb-1">
-                        <h1 className="text-xs text-slate-600">Biaya</h1>
-                        <h1 className="text-xs font-bold text-red-500 text-end">{formatNumber(dailyDashboard?.data?.totalExpense ?? 0)}</h1>
-                    </div>
-                    <hr className="border border-dashed" />
-                    <div className="flex justify-between mt-1 mb-4">
-                        <h1 className="text-xs font-bold text-slate-700">Profit (Laba)</h1>
-                        <h1 className="text-xs font-bold text-end text-green-500">{formatNumber(dailyDashboard?.data?.profit)}</h1>
-                    </div>
-                    <div className="flex justify-between mt-1 mb-4">
-                        <h1 className="text-xs font-bold text-slate-700">Total Pendapatan</h1>
-                        <h1 className="text-xs font-bold text-end text-green-500">
-                            {formatNumber(
-                                dailyDashboard?.data?.totalFee +
-                                    dailyDashboard?.data?.totalCash +
-                                    dailyDashboard?.data?.totalCashDeposit +
-                                    dailyDashboard?.data?.totalAccessories +
-                                    dailyDashboard?.data?.totalVoucher +
-                                    dailyDashboard?.data?.totalExpense
-                            )}
-                        </h1>
-                    </div>
-                    <div className="mb-4">
-                        <Label>Set Uang Awal</Label>
-                        <Input
-                            type="number"
-                            className={"w-full text-end text-sm"}
-                            value={openingCash}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                setOpeningCash(value);
-                                localStorage.setItem("openingCash", value);
-                            }}
-                            placeholder="Contoh: 9.000.000"
-                        />
-                    </div>
-
-                    <div className="mb-4 p-2 border rounded-xl">
-                        <h1 className="text-xs font-bold text-slate-700">Total Uang Disetor</h1>
-                        <h1 className="text-xs text-end text-red-400">{formatNumber(openingCash > 0 ? -openingCash : 0)}</h1>
-                        <h1 className="text-lg font-bold text-end text-green-500">{formatNumber(totalSetoran - openingCash)}</h1>
-                    </div>
-
                     <button type="button" className="w-full sm:hidden bg-blue-500 text-white py-2 px-4 rounded-md" onClick={() => setIsDailyReportOpen(false)}>
                         Tutup
                     </button>

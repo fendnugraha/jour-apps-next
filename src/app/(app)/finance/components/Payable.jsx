@@ -11,6 +11,7 @@ import formatDateTime from "@/libs/formatDateTime";
 import PaymentForm from "./PaymentForm";
 import Paginator from "@/components/Paginator";
 import CreateReceivable from "./CreateReceivable";
+import Pagination from "@/components/PaginateList";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -48,6 +49,21 @@ const Payable = ({ notification }) => {
     };
 
     const filterFinanceByContactIdAndType = finance.financeGroupByContactId?.filter((fnc) => fnc.finance_type === financeType) || [];
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // Number of items per page
+
+    // Calculate the total number of pages
+    const totalItems = filterFinanceByContactIdAndType.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Get the items for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentItems = filterFinanceByContactIdAndType.slice(startIndex, startIndex + itemsPerPage);
+
+    // Handle page change from the Pagination component
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     const handleDeleteFinance = async (id) => {
         try {
@@ -127,12 +143,10 @@ const Payable = ({ notification }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filterFinanceByContactIdAndType.map((item, index) => (
-                                    <tr key={index} className="hover:bg-slate-700 hover:text-white">
+                                {currentItems.map((item, index) => (
+                                    <tr key={index} className="hover:bg-slate-700 hover:text-white" onClick={() => setSelectedContactId(item.contact_id)}>
                                         <td>
-                                            <button onClick={() => setSelectedContactId(item.contact_id)} className="hover:underline">
-                                                {item.contact.name}
-                                            </button>
+                                            <button className="hover:underline">{item.contact.name}</button>
                                         </td>
                                         <td className="text-end">{formatNumber(item.tagihan)}</td>
                                         <td className="text-end">{formatNumber(item.terbayar)}</td>
@@ -166,6 +180,15 @@ const Payable = ({ notification }) => {
                             </tfoot>
                         </table>
                     </div>
+                    {totalPages > 1 && (
+                        <Pagination
+                            className={"w-full px-3 pb-3"}
+                            totalItems={totalItems}
+                            itemsPerPage={itemsPerPage}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
+                    )}
                 </div>
                 <div className="bg-white shadow-sm sm:rounded-2xl">
                     <div className="p-4 flex justify-between">
@@ -180,7 +203,6 @@ const Payable = ({ notification }) => {
                                     <th>Payment Method</th>
                                     <th>Description</th>
                                     <th>Contact</th>
-                                    <th>Date Created</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -198,12 +220,13 @@ const Payable = ({ notification }) => {
                                             {formatNumber(item.bill_amount > 0 ? item.bill_amount : item.payment_amount)}
                                         </td>
                                         <td className="">{item.account.acc_name}</td>
-                                        <td className="">
-                                            <span className="font-bold text-xs text-slate-400 block">{item.invoice}</span>
+                                        <td className="whitespace-normal break-words max-w-xs">
+                                            <span className="font-bold text-xs text-slate-400 block">
+                                                {formatDateTime(item.created_at)} | {item.invoice}
+                                            </span>
                                             Note: {item.description}
                                         </td>
                                         <td className="">{item.contact.name}</td>
-                                        <td className="text-end">{formatDateTime(item.created_at)}</td>
                                         <td className="text-center">
                                             <button
                                                 onClick={() => {

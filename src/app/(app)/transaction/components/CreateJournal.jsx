@@ -19,17 +19,20 @@ const CreateJournal = ({ isModalOpen, notification, fetchJournalsByWarehouse }) 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState([]);
 
-    const fetchAccounts = async (url = "/api/get-all-accounts") => {
+    const fetchAccounts = async ({ account_ids }) => {
+        setLoading(true);
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
             setAccounts(response.data.data);
         } catch (error) {
-            setErrors(error.response?.data?.errors || ["Something went wrong."]);
+            notification(error.response?.data?.message || "Something went wrong.");
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchAccounts();
+        fetchAccounts({ account_ids: [1, 2, 6, 7] });
     }, []);
 
     const destAccount = accounts.filter((accounts) => accounts.id !== Number(formData.cred_code));

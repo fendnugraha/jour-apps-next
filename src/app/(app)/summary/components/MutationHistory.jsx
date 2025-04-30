@@ -160,7 +160,7 @@ const MutationHistory = ({ account, notification, user }) => {
                                     <tr key={index}>
                                         <td>
                                             <span className="text-xs text-slate-500 block">
-                                                #{item.id} {item.invoice} | {formatDateTime(item.created_at)}
+                                                #{item.id} {item.invoice} | {formatDateTime(item.date_issued)}
                                             </span>
                                             Note: {item.description}
                                             <span className="block font-bold text-xs">

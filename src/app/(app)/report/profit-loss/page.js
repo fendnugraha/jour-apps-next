@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Header from "../../Header";
 import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
@@ -27,7 +27,7 @@ const ProfitLoss = () => {
         setIsModalFilterDataOpen(false);
     };
 
-    const fetchProfitLoss = async () => {
+    const fetchProfitLoss = useCallback(async () => {
         setLoading(true);
         try {
             const response = await axios.get(`/api/profit-loss-report/${startDate}/${endDate}`);
@@ -38,11 +38,11 @@ const ProfitLoss = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [startDate, endDate]);
 
     useEffect(() => {
         fetchProfitLoss();
-    }, []);
+    }, [fetchProfitLoss]);
 
     return (
         <>
@@ -69,7 +69,7 @@ const ProfitLoss = () => {
                                         <Label className="font-bold">Dari</Label>
                                         <Input
                                             type="date"
-                                            value={endDate}
+                                            value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                             className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                         />
@@ -83,7 +83,7 @@ const ProfitLoss = () => {
                                             className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                         />
                                     </div>
-                                    <button onClick={fetchProfitLoss} className="btn-primary">
+                                    <button onClick={() => fetchProfitLoss()} disabled={loading} className="btn-primary">
                                         Submit
                                     </button>
                                 </Modal>
@@ -104,8 +104,8 @@ const ProfitLoss = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
@@ -128,8 +128,8 @@ const ProfitLoss = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
@@ -138,6 +138,11 @@ const ProfitLoss = () => {
                                             ))}
                                         </tbody>
                                     </table>
+
+                                    <h1 className="mt-5 text-sm font-bold">Laba (Net Profit)</h1>
+                                    <span className="block text-slate-500 text-5xl font-bold mb-2">
+                                        {formatNumber(profitLoss?.revenue?.total - profitLoss?.cost?.total - profitLoss?.expense?.total)}
+                                    </span>
                                 </div>
                                 <div>
                                     <h1 className="text-xl font-bold">Biaya (Expense)</h1>
@@ -153,8 +158,8 @@ const ProfitLoss = () => {
                                                         <td className="py-1 font-bold text-end">{formatNumber(account.balance)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
-                                                        <tr key={index} className="text-sm" hidden={coa.balance === 0}>
-                                                            <td className="text-start">-</td>
+                                                        <tr key={index} className="text-xs" hidden={coa.balance === 0}>
+                                                            <td className="text-start w-5">-</td>
                                                             <td className="py-1 text-start">{coa.acc_name}</td>
                                                             <td className="py-1 text-end">{formatNumber(coa.balance)}</td>
                                                         </tr>
