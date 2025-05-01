@@ -25,8 +25,6 @@ const DailyProfit = () => {
     const [dailyProfit, setDailyProfit] = useState([]);
     const [notification, setNotification] = useState("");
     const [loading, setLoading] = useState(false);
-    const [startDate, setStartDate] = useState(getCurrentDate());
-    const [endDate, setEndDate] = useState(getCurrentDate());
 
     const [month, setMonth] = useState(thisMonth);
     const [year, setYear] = useState(thisYear);
@@ -71,7 +69,7 @@ const DailyProfit = () => {
                 <h4 className=" text-blue-950 text-lg font-bold">
                     Laporan Laba Harian (Daily Profit)
                     <span className="text-xs block text-slate-500 font-normal">
-                        Periode: {startDate} - {endDate}
+                        Periode: {month}/{year}
                     </span>
                 </h4>
                 <div className="flex gap-1">

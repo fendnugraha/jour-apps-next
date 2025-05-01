@@ -2,12 +2,8 @@
 import Header from "@/app/(app)/Header";
 import { useEffect, useState } from "react";
 import Notification from "@/components/notification";
-import axios from "@/libs/axios";
 import DailyDashboard from "./components/DailyDashboard";
 import { useAuth } from "@/libs/auth";
-import VoucherSalesTable from "./components/VoucherSalesTable";
-import ExpenseTable from "./components/ExpenseTable";
-import { mutate } from "swr";
 import useGetWarehouses from "@/libs/getAllWarehouse";
 
 const Dashboard = () => {
@@ -46,8 +42,6 @@ const Dashboard = () => {
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <DailyDashboard warehouse={warehouse} warehouses={warehouses} userRole={userRole} />
-                        <VoucherSalesTable warehouse={warehouse} warehouses={warehouses} userRole={userRole} />
-                        <ExpenseTable warehouse={warehouse} warehouses={warehouses} userRole={userRole} />
                     </div>
                 </div>
             </div>

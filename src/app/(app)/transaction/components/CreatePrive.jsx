@@ -10,7 +10,7 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
         cred_code: "",
         amount: "",
         fee_amount: 0,
-        trx_type: "Mutasi Kas",
+        trx_type: "Modal Diambil (Prive)",
         description: "Penarikan Modal (Prive)",
     });
     const [errors, setErrors] = useState([]);

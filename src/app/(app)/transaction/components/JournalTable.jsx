@@ -276,7 +276,7 @@ const JournalTable = ({
                                         <div className="flex justify-center gap-3">
                                             <button
                                                 className=" hover:scale-125 transtition-all duration-200"
-                                                hidden={!["Transfer Uang", "Tarik Tunai"].includes(journal.trx_type)}
+                                                hidden={!["Jurnal Umum"].includes(journal.trx_type)}
                                                 onClick={() => {
                                                     setSelectedJournalId(journal.id);
                                                     setIsModalEditJournalOpen(true);

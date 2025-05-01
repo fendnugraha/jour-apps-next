@@ -50,6 +50,7 @@ const LogActivity = () => {
         fetchLogActivity(url);
     };
 
+    console.log(logActivity.last_page);
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4 flex justify-between">
@@ -109,8 +110,8 @@ const LogActivity = () => {
                     </thead> */}
                     <tbody>
                         {logActivity?.data?.map((item, index) => (
-                            <tr key={index}>
-                                <td className="border-y px-2 py-1 whitespace-normal break-words max-w-xs">
+                            <tr key={index} className="border-b border-slate-300 last:border-none">
+                                <td className=" px-2 py-1 whitespace-normal break-words max-w-xs">
                                     <span className="text-xs block text-slate-500 font-bold">
                                         {item.user.name} {item.activity} at {item.warehouse.name}. Log ID: {item.id}
                                     </span>
@@ -124,7 +125,11 @@ const LogActivity = () => {
                     </tbody>
                 </table>
             </div>
-            <div className="px-4">{logActivity?.links && <Paginator links={logActivity} handleChangePage={handleChangePage} />}</div>
+            {logActivity.last_page > 1 && (
+                <div className="px-4">
+                    <Paginator links={logActivity} handleChangePage={handleChangePage} />
+                </div>
+            )}
         </div>
     );
 };

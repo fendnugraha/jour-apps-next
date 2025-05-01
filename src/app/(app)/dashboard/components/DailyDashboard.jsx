@@ -3,10 +3,11 @@ import formatNumber from "@/libs/formatNumber";
 import axios from "@/libs/axios";
 import useSWR, { mutate } from "swr";
 import { useState, useEffect } from "react";
-import { FilterIcon, LoaderIcon, RefreshCcwIcon } from "lucide-react";
+import { BriefcaseIcon, FilterIcon, LoaderIcon, PercentCircleIcon, ReceiptTextIcon, RefreshCcwIcon, WalletCardsIcon } from "lucide-react";
 import Modal from "@/components/Modal";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
+import { formatNumberToK } from "@/libs/formatNumberToK";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -72,6 +73,10 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
         mutate(`/api/daily-dashboard/${selectedWarehouse}/${startDate}/${endDate}`);
     }, [selectedWarehouse, startDate, endDate]);
 
+    const netProfit = dailyDashboard?.data?.revenue - dailyDashboard?.data?.cost - dailyDashboard?.data?.expense;
+    const netProfitPercentage = ((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2);
+
+    const cashBank = dailyDashboard?.data?.cash + dailyDashboard?.data?.bank;
     return (
         <div className="relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -135,162 +140,132 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                     </h1>
                 </div>
             </div>
-            <button
-                className="absolute bottom-3 left-3 text-white hover:scale-110 transition-transform duration-75"
-                onClick={() => mutate(`/api/daily-dashboard/${selectedWarehouse}/${startDate}/${endDate}`)}
-            >
-                <RefreshCcwIcon className="w-5 h-5" />
-            </button>
-            <div className="min-h-[28rem] grid grid-cols-1 sm:grid-cols-5 sm:grid-rows-4 gap-1 sm:gap-3 px-1 sm:px-0">
-                <div
-                    className={`bg-gray-600 w-full h-full p-3 rounded-2xl sm:rounded-3xl flex flex-col gap-2 sm:gap-4 items-center justify-center col-span-2 row-span-2 ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <div className={`flex gap-2 flex-col justify-center items-center`}>
-                        <h4 className="text-md sm:text-xl font-bold text-white">Saldo Kas Tunai</h4>
-                        <h1 className="text-2xl sm:text-4xl font-black text-yellow-300">
-                            {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(Number(dailyDashboard?.data?.totalCash))}
-                        </h1>
-                    </div>
-                    <div className="flex gap-2 w-full justify-evenly">
-                        <div>
-                            <h4 className="text-xs text-white">Saldo Bank</h4>
-                            <h1 className="text-sm font-bold text-white">
-                                {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalBank)}
-                            </h1>
+
+            <div className="grid grid-cols-4 grid-rows-4 gap-4 h-[550px]">
+                <div className="bg-violet-500 text-white px-3 py-4 rounded-2xl">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Assets</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline" />
                         </div>
-                        <div>
-                            <h4 className="text-xs text-yellow-400">Total Kas & Bank</h4>
-                            <h1 className="text-sm font-bold text-white">
-                                {isLoading ? (
-                                    <LoaderIcon className="animate-pulse" />
-                                ) : (
-                                    formatNumber(dailyDashboard?.data?.totalCash + dailyDashboard?.data?.totalBank)
-                                )}
-                            </h1>
-                        </div>
+                        <h1 className="text-3xl">{formatNumberToK(dailyDashboard?.data?.assets)}</h1>
                     </div>
                 </div>
-                <div
-                    className={`bg-gray-600 w-full h-full p-3 rounded-2xl sm:rounded-3xl flex flex-col gap-2 items-center justify-center col-span-2 row-span-2 ${
-                        isLoading ? "animate-pulse" : ""
-                    } `}
-                >
-                    <div className="flex gap-5 justify-between flex-col items-center">
-                        <div className="flex gap-2 flex-col justify-center items-center">
-                            <h4 className="text-md sm:text-lg font-bold text-white">Voucher & SP</h4>
-                            <h1 className="text-2xl sm:text-3xl font-black text-yellow-300">
-                                {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalVoucher)}
-                            </h1>
+                <div className="bg-violet-500 text-white px-3 py-4 rounded-2xl">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Liabilities</h1>
+                            <ReceiptTextIcon className="w-8 h-8 inline" />
                         </div>
-                        {dailyDashboard?.data?.totalAccessories > 0 && (
-                            <div className="flex gap-2 flex-col justify-center items-center">
-                                <h4 className="text-md sm:text-lg font-bold text-white">Accessories</h4>
-                                <h1 className="text-2xl sm:text-3xl font-black text-yellow-300">
-                                    {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalAccessories)}
-                                </h1>
-                            </div>
-                        )}
+                        <h1 className="text-3xl">{formatNumberToK(dailyDashboard?.data?.liabilities)}</h1>
                     </div>
                 </div>
-                <div
-                    className={`bg-violet-500 rounded-2xl sm:rounded-3xl w-full h-full p-3 flex flex-col gap-1 items-center justify-center ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <h4 className="text-md sm:text-xl text-white">Total Setoran</h4>
-                    <h1 className="text-2xl font-extrabold text-white">
-                        {isLoading ? (
-                            <LoaderIcon className="animate-pulse" />
-                        ) : (
-                            formatNumber(
-                                dailyDashboard?.data?.totalCashDeposit +
-                                    dailyDashboard?.data?.profit +
-                                    dailyDashboard?.data?.totalCash +
-                                    dailyDashboard?.data?.totalVoucher +
-                                    dailyDashboard?.data?.totalAccessories
-                            )
-                        )}
-                    </h1>
-                </div>
-                <div
-                    className={`bg-orange-500 rounded-2xl sm:rounded-3xl w-full h-full p-3 flex flex-col gap-1 items-center justify-center ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <h4 className="text-md sm:text-xl text-white">Fee (Admin)</h4>
-                    <h1 className="text-2xl font-extrabold text-white">
-                        {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalFee)}
-                    </h1>
-                </div>
-                <div
-                    className={`bg-gray-600 w-full h-full p-3 rounded-2xl sm:rounded-3xl flex flex-col gap-2 sm:gap-6 items-center justify-center col-span-2 row-span-2 ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <div className="flex gap-2 flex-col justify-center items-center">
-                        <h4 className="text-md sm:text-xl font-bold text-white">Laba (Profit)</h4>
-                        <h1 className="text-2xl sm:text-4xl font-black text-yellow-300">
-                            {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.profit)}
-                        </h1>
-                    </div>
-                    <div className="flex gap-2 w-full justify-evenly">
-                        <div>
-                            <h4 className="text-xs text-white">Transfer Uang</h4>
-                            <h1 className="text-sm font-bold text-white">
-                                {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalTransfer)}
-                            </h1>
+                <div className="bg-violet-500 text-white px-3 py-4 rounded-2xl">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Equity</h1>
+                            <BriefcaseIcon className="w-8 h-8 inline" />
                         </div>
-                        <div>
-                            <h4 className="text-xs text-white">Tarik Tunai</h4>
-                            <h1 className="text-sm font-bold text-white">
-                                {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalCashWithdrawal)}
-                            </h1>
+                        <h1 className="text-3xl">{formatNumberToK(dailyDashboard?.data?.equity + netProfit)}</h1>
+                    </div>
+                </div>
+                <div className="row-span-3 bg-white px-3 py-4 rounded-2xl flex h-full justify-start gap-4 flex-col">
+                    <div className="flex gap-2 justify-between items-center">
+                        <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
+                        <div className="flex flex-col items-end">
+                            <h1 className="text-sm font-bold text-slate-400">Debt Ratio</h1>
+                            <span className="text-xl font-bold ">{((dailyDashboard?.data?.liabilities / dailyDashboard?.data?.assets) * 100).toFixed(2)}%</span>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 justify-between items-center">
+                        <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
+                        <div className="flex flex-col items-end">
+                            <h1 className="text-sm font-bold text-slate-400">Current Ratio</h1>
+                            <span className="text-xl font-bold ">{((dailyDashboard?.data?.assets / dailyDashboard?.data?.liabilities) * 100).toFixed(2)}%</span>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 justify-between items-center">
+                        <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
+                        <div className="flex flex-col items-end">
+                            <h1 className="text-sm font-bold text-slate-400">Debt to Equity Ratio</h1>
+                            <span className="text-xl font-bold ">
+                                {((dailyDashboard?.data?.liabilities / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 justify-between items-center">
+                        <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
+                        <div className="flex flex-col items-end">
+                            <h1 className="text-sm font-bold text-slate-400">Return to Equity Ratio</h1>
+                            <span className="text-xl font-bold ">{((netProfit / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%</span>
                         </div>
                     </div>
                 </div>
-                <div
-                    className={`bg-gray-600 w-full h-full p-3 rounded-2xl sm:rounded-3xl flex flex-col gap-2 items-center justify-center col-span-2 row-span-2 ${
-                        isLoading ? "animate-pulse" : ""
-                    } `}
-                >
-                    <h4 className="text-md sm:text-xl font-bold text-white">Deposit</h4>
-                    <h1 className="text-2xl sm:text-4xl font-black text-yellow-300">
-                        {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.totalCashDeposit)}
-                    </h1>
+                <div className="bg-white px-3 py-4 rounded-2xl col-span-2 row-span-2">
+                    {" "}
+                    <div className="flex flex-col gap-2 justify-start h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Saldo Kas & Bank</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumber(dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)}</h1>
+                    </div>
                 </div>
-                <div
-                    className={`bg-red-500 rounded-2xl sm:rounded-3xl w-full h-full p-3 flex flex-col gap-1 items-center justify-center ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <h4 className="text-md sm:text-xl text-white">Biaya</h4>
-                    <h1 className="text-2xl font-extrabold text-white">
-                        {loading ? (
-                            <LoaderIcon className="animate-pulse" />
-                        ) : (
-                            formatNumber(dailyDashboard?.data?.totalExpense < 0 ? dailyDashboard?.data?.totalExpense * -1 : 0)
-                        )}
-                    </h1>
+                <div className="bg-white px-3 py-4 rounded-2xl col-start-3">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Piutang</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.receivable)}</h1>
+                    </div>
                 </div>
-                <div
-                    className={`bg-blue-500 rounded-2xl sm:rounded-3xl w-full h-full p-3 flex flex-col gap-1 items-center justify-center ${
-                        isLoading ? "animate-pulse" : ""
-                    }`}
-                >
-                    <h4 className="text-md sm:text-xl text-white">Transaksi</h4>
-                    <h1 className="text-2xl font-extrabold text-white">
-                        {isLoading ? <LoaderIcon className="animate-pulse" /> : formatNumber(dailyDashboard?.data?.salesCount)}
-                    </h1>
+                <div className="bg-white px-3 py-4 rounded-2xl col-start-3 row-start-3">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Hutang</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.payable)}</h1>
+                    </div>
+                </div>
+                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Pendapatan</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.revenue)}</h1>
+                    </div>
+                </div>
+                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">HPP</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.cost)}</h1>
+                    </div>
+                </div>
+                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Biaya</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.expense)}</h1>
+                    </div>
+                </div>
+                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                    <div className="flex flex-col gap-2 justify-between h-full">
+                        <div className="flex items-start gap-2 justify-between">
+                            <h1 className="text-xl font-bold">Net Profit</h1>
+                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                        </div>
+                        <h1 className="text-3xl  text-slate-500">{formatNumberToK(netProfit)}</h1>
+                    </div>
                 </div>
             </div>
-            {/* <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white/20 backdrop-blur-sm h-full w-full flex items-center justify-center gap-2">
-                    <i className="fa-solid fa-spinner animate-spin text-white text-3xl"></i>
-                    <p className="text-white text-sm font-bold">Loading data, please wait...</p>
-                </div>
-            </div> */}
         </div>
     );
 };
