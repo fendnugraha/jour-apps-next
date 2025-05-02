@@ -59,7 +59,7 @@ const JournalTable = ({
     const handleDeleteJournal = async (id) => {
         try {
             const response = await axios.delete(`/api/journals/${id}`);
-            notification(response.data.message);
+            notification("success", response.data.message);
             fetchJournalsByWarehouse();
         } catch (error) {
             notification(error.response?.data?.message || "Something went wrong.");
@@ -257,7 +257,7 @@ const JournalTable = ({
                                             )}
                                         </span>
                                         <span className="text-xs block text-slate-500 group-hover:text-white">
-                                            Last update at <TimeAgo timestamp={journal.updated_at} />
+                                            Last update at <TimeAgo timestamp={journal.updated_at} /> by {journal.user.name}
                                         </span>
                                     </td>
                                     <td className="font-bold text-end text-slate-700 ">
@@ -276,7 +276,7 @@ const JournalTable = ({
                                         <div className="flex justify-center gap-3">
                                             <button
                                                 className=" hover:scale-125 transtition-all duration-200"
-                                                hidden={!["Jurnal Umum"].includes(journal.trx_type)}
+                                                hidden={!["Jurnal Umum", "Deposit Customer"].includes(journal.trx_type)}
                                                 onClick={() => {
                                                     setSelectedJournalId(journal.id);
                                                     setIsModalEditJournalOpen(true);

@@ -52,15 +52,10 @@ const DailyProfit = () => {
 
     //export to excel
     const headersRevenue = [
-        { key: "warehouse", label: "Cabang" },
-        { key: "transfer", label: "Transfer" },
-        { key: "tarikTunai", label: "Tarik Tunai" },
-        { key: "voucher", label: "Voucher" },
-        { key: "accessories", label: "Accessories" },
-        { key: "deposit", label: "Deposit" },
-        { key: "trx", label: "Transaksi" },
-        { key: "expense", label: "Pengeluaran" },
-        { key: "fee", label: "Profit" },
+        { key: "day", label: "Tanggal" },
+        { key: "revenue", label: "Pendapatan" },
+        { key: "cost", label: "HPP" },
+        { key: "expense", label: "Biaya" },
     ];
 
     return (
@@ -80,14 +75,7 @@ const DailyProfit = () => {
                         <RefreshCcwIcon className="size-4" />
                     </button>
                     <button
-                        onClick={() =>
-                            exportToExcel(
-                                revenue?.revenue,
-                                headersRevenue,
-                                `Summary Report by Warehouse ${startDate} s/d ${endDate}.xlsx`,
-                                `Summary Report by Warehouse ${startDate} s/d ${endDate}`
-                            )
-                        }
+                        onClick={() => exportToExcel(dailyProfit, headersRevenue, `Daily profit ${month}/${year}.xlsx`, `Daily profit ${month}/${year}`)}
                         className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         // disabled={revenue?.revenue?.length === 0}
                     >

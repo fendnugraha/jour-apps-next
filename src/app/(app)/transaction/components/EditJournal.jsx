@@ -10,11 +10,12 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
         debt_code: "",
         cred_code: "",
         amount: "",
-        fee_amount: "",
+        fee_amount: 0,
         description: "",
     });
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState([]);
+    const [accounts, setAccounts] = useState([]);
 
     // Update formData when journalById changes
     useEffect(() => {
@@ -23,11 +24,27 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
                 debt_code: journal.debt_code || "",
                 cred_code: journal.cred_code || "",
                 amount: journal.amount || "",
-                fee_amount: journal.fee_amount || "",
+                fee_amount: journal.fee_amount || 0,
                 description: journal.description || "",
             });
         }
     }, [journal]);
+
+    const fetchAccounts = async ({ account_ids }) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
+            setAccounts(response.data.data);
+        } catch (error) {
+            notification(error.response?.data?.message || "Something went wrong.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAccounts({ account_ids: [1, 2, 6, 7] });
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,28 +67,43 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
                 {journal.trx_type} ({journal.invoice})
             </h1>
             <form onSubmit={handleSubmit}>
-                <div className="mb-2 grid-cols-1 grid sm:grid-cols-3 sm:gap-4 items-center">
-                    <Label>Rekening</Label>
+                <div className="mb-2 grid-cols-1 grid sm:grid-cols-3 sm:gap-4 items-center" hidden={journal.trx_type === "Deposit Customer"}>
+                    <Label>Dari</Label>
                     <div className="col-span-1 sm:col-span-2">
                         <select
                             onChange={(e) => {
-                                if (journal.trx_type === "Tarik Tunai") {
-                                    setFormData({ ...formData, debt_code: e.target.value });
-                                } else {
-                                    setFormData({ ...formData, cred_code: e.target.value });
-                                }
+                                setFormData({ ...formData, cred_code: e.target.value });
                             }}
-                            value={journal.trx_type === "Tarik Tunai" ? formData.debt_code : formData.cred_code}
+                            value={formData.cred_code}
                             className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         >
                             <option value="">--Pilih rekening--</option>
-                            {branchAccount.map((br) => (
+                            {accounts.map((br) => (
                                 <option key={br.id} value={br.id}>
                                     {br.acc_name}
                                 </option>
                             ))}
                         </select>
                         {errors.cred_code && <span className="text-red-500 text-xs">{errors.cred_code}</span>}
+                    </div>
+                </div>
+                <div className="mb-2 grid-cols-1 grid sm:grid-cols-3 sm:gap-4 items-center">
+                    <Label>Ke</Label>
+                    <div className="col-span-1 sm:col-span-2">
+                        <select
+                            onChange={(e) => {
+                                setFormData({ ...formData, debt_code: e.target.value });
+                            }}
+                            value={formData.debt_code}
+                            className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        >
+                            <option value="">--Pilih rekening--</option>
+                            {accounts.map((br) => (
+                                <option key={br.id} value={br.id}>
+                                    {br.acc_name}
+                                </option>
+                            ))}
+                        </select>
                         {errors.debt_code && <span className="text-red-500 text-xs">{errors.debt_code}</span>}
                     </div>
                 </div>
@@ -88,20 +120,6 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
                         {errors.amount && <span className="text-red-500 text-xs">{errors.amount}</span>}
                     </div>
                     <h1 className="text-lg font-bold">{formatNumber(formData.amount)}</h1>
-                </div>
-                <div className="mb-2 grid-cols-1 grid sm:grid-cols-3 sm:gap-4 items-center">
-                    <Label>Fee</Label>
-                    <div className="col-span-1">
-                        <Input
-                            type="number"
-                            className={"w-1/2"}
-                            placeholder="Rp."
-                            value={formData.fee_amount}
-                            onChange={(e) => setFormData({ ...formData, fee_amount: e.target.value })}
-                        />
-                        {errors.fee_amount && <span className="text-red-500 text-xs">{errors.fee_amount}</span>}
-                    </div>
-                    <h1 className="text-lg font-bold">{formatNumber(formData.fee_amount)}</h1>
                 </div>
                 <div className="mb-2 grid-cols-1 grid sm:grid-cols-3 gap-4">
                     <Label>Keterangan</Label>

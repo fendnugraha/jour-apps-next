@@ -52,14 +52,14 @@ const CashFlow = () => {
 
     return (
         <>
-            <Header title="Laba Rugi (Profit Loss Statement)" />
+            <Header title="Arus Kas (Cashflow Statement)" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <div className="mb-5 flex justify-between items-start">
                                 <div>
-                                    <h1 className="text-2xl font-bold">Arus Kas (Cashflow Statement)</h1>
+                                    <h1 className="text-2xl font-bold text-blue-600">Arus Kas (Cashflow Statement)</h1>
                                     <span className="block text-sm text-slate-400">
                                         Periode : {startDate} s/d {endDate}
                                     </span>
@@ -98,7 +98,7 @@ const CashFlow = () => {
                                 <div>
                                     {cashflow?.revenue?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl font-bold">Pendapatan (Revenue)</h1>
+                                            <h1 className="text-lg font-bold">Pendapatan (Revenue)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.revenue?.total)}</span>
                                         </>
                                     )}
@@ -106,7 +106,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.revenue?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -125,7 +128,7 @@ const CashFlow = () => {
                                     </table>
                                     {cashflow?.inventory?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl mt-5 font-bold">Persediaan (Inventory)</h1>
+                                            <h1 className="text-lg mt-5 font-bold">Persediaan (Inventory)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.inventory?.total)}</span>
                                         </>
                                     )}
@@ -133,7 +136,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.inventory?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -152,7 +158,7 @@ const CashFlow = () => {
                                     </table>
                                     {cashflow?.receivable?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl mt-5 font-bold">Piutang (Receivable)</h1>
+                                            <h1 className="text-lg mt-5 font-bold">Piutang (Receivable)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.receivable?.total)}</span>
                                         </>
                                     )}
@@ -160,7 +166,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.receivable?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -179,7 +188,7 @@ const CashFlow = () => {
                                     </table>
                                     {cashflow?.payable?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl mt-5 font-bold">Hutang (Payable)</h1>
+                                            <h1 className="text-lg mt-5 font-bold">Hutang (Payable)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.payable?.total)}</span>
                                         </>
                                     )}
@@ -187,7 +196,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.payable?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -206,7 +218,7 @@ const CashFlow = () => {
                                     </table>
                                     {cashflow?.assets?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl mt-5 font-bold">Aset Lancar (Assets)</h1>
+                                            <h1 className="text-lg mt-5 font-bold">Aset Lancar (Assets)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.assets?.total)}</span>
                                         </>
                                     )}
@@ -215,7 +227,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.assets?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -236,7 +251,7 @@ const CashFlow = () => {
                                 <div>
                                     {cashflow?.equity?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl font-bold">Modal (Equity)</h1>
+                                            <h1 className="text-lg font-bold">Modal (Equity)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.equity?.total)}</span>
                                         </>
                                     )}
@@ -244,7 +259,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.equity?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -263,7 +281,7 @@ const CashFlow = () => {
                                     </table>
                                     {cashflow?.expense?.total !== 0 && (
                                         <>
-                                            <h1 className="text-xl mt-5 font-bold">Biaya - Biaya (Expense)</h1>
+                                            <h1 className="text-lg mt-5 font-bold">Biaya - Biaya (Expense)</h1>
                                             <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.expense?.total)}</span>
                                         </>
                                     )}
@@ -271,7 +289,10 @@ const CashFlow = () => {
                                         <tbody>
                                             {cashflow?.expense?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -292,24 +313,26 @@ const CashFlow = () => {
                             </div>
                             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <h1 className="text-xl font-bold">Jumlah Kas Awal (Start Balance)</h1>
-                                    <span className="block text-slate-500 text-lg">{formatNumber(cashflow?.start_balance)}</span>
+                                    <h1 className="text-lg font-bold">Total Kas Awal (Start Balance)</h1>
+                                    <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.start_balance)}</span>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold">Jumlah Kas Akhir (End Balance)</h1>
+                                    <h1 className="text-lg font-bold">Total Kas Akhir (End Balance)</h1>
                                     <div className="flex items-center gap-2">
-                                        <span className="block text-slate-500 text-lg">{formatNumber(cashflow?.end_balance)}</span>
-                                        {cashflow?.end_balance - cashflow?.start_balance > 0 ? (
-                                            <>
-                                                <ArrowBigUp size={24} className="inline text-green-300" />
-                                                <span className="text-green-600 text-sm">{calculatePercentageCashChange()}</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ArrowBigDown size={24} className="inline text-red-300" />
-                                                <span className="text-red-600 text-sm">{calculatePercentageCashChange()}</span>
-                                            </>
-                                        )}
+                                        <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.end_balance)}</span>
+                                        <div>
+                                            {cashflow?.end_balance - cashflow?.start_balance > 0 ? (
+                                                <>
+                                                    <ArrowBigUp size={26} className="inline text-green-500" />
+                                                    <span className="text-green-500 text-sm font-bold">{calculatePercentageCashChange()}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ArrowBigDown size={26} className="inline text-red-500" />
+                                                    <span className="text-red-500 text-sm font-bold">{calculatePercentageCashChange()}</span>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,5 @@
 "use client";
 import Modal from "@/components/Modal";
-import CreateTransfer from "./components/CreateTransfer";
 import Header from "../Header";
 import { useState, useEffect, useRef } from "react";
 import axios from "@/libs/axios";
@@ -11,7 +10,6 @@ import Dropdown from "@/components/Dropdown";
 import CreateDeposit from "./components/CreateDeposit";
 import CreateBankAdminFee from "./components/CreateBankAdminFee";
 import CreateExpense from "./components/CreateExpense";
-import CashBankBalance from "./components/CashBankBalance";
 import Loading from "../loading";
 import {
     ArrowDownCircleIcon,
@@ -27,10 +25,7 @@ import {
 import useCashBankBalance from "@/libs/cashBankBalance";
 import { mutate } from "swr";
 import useGetWarehouses from "@/libs/getAllWarehouse";
-import { useGetDailyDashboard } from "@/libs/getDailyDashboard";
 import formatNumber from "@/libs/formatNumber";
-import Label from "@/components/Label";
-import Input from "@/components/Input";
 import { Menu } from "@headlessui/react";
 import CreateJournal from "./components/CreateJournal";
 import CreateSalesByValue from "./components/CreateSalesByValue";
@@ -52,6 +47,11 @@ const TransactionPage = () => {
     }
     const warehouse = user.role?.warehouse_id;
 
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
     const [journalsByWarehouse, setJournalsByWarehouse] = useState([]);
     const [loading, setLoading] = useState(false);
     const [journalLoading, setJournalLoading] = useState(false);
@@ -66,17 +66,13 @@ const TransactionPage = () => {
         type: "",
         message: "",
     });
-    const [startDate, setStartDate] = useState(getCurrentDate());
     const [endDate, setEndDate] = useState(getCurrentDate());
 
     const [isVoucherMenuOpen, setIsVoucherMenuOpen] = useState(false);
     const [isExpenseMenuOpen, setIsExpenseMenuOpen] = useState(false);
     const [isDailyReportOpen, setIsDailyReportOpen] = useState(false);
-    const initCashValue = localStorage.getItem("openingCash") || 0;
-    const [openingCash, setOpeningCash] = useState(initCashValue);
 
     const menuRef = useRef(null);
-    const { dailyDashboard, loading: isLoading, error: dailyDashboardError } = useGetDailyDashboard(warehouse, getCurrentDate(), getCurrentDate());
 
     const drawerRef = useRef();
     useEffect(() => {
@@ -96,14 +92,6 @@ const TransactionPage = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isDailyReportOpen]);
-
-    const totalSetoran =
-        dailyDashboard?.data?.totalFee +
-        dailyDashboard?.data?.totalCash +
-        dailyDashboard?.data?.totalCashDeposit +
-        dailyDashboard?.data?.totalAccessories +
-        dailyDashboard?.data?.totalVoucher +
-        dailyDashboard?.data?.totalExpense;
 
     // Event listener untuk klik di luar menu
     useEffect(() => {
@@ -360,6 +348,7 @@ const TransactionPage = () => {
                         </div>
                         <Modal isOpen={isModalCreateJournalOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Jurnal Umum">
                             <CreateJournal
+                                today={today}
                                 filteredCashBankByWarehouse={filteredCashBankByWarehouse}
                                 isModalOpen={setIsModalCreateJournalOpen}
                                 notification={(type, message) => setNotification({ type, message })}
@@ -461,9 +450,9 @@ const TransactionPage = () => {
                         <h1 className="text-lg font-bold">Saldo Kas & Bank</h1>
                         <button
                             className="text-slate-400 hover:scale-110 transition-transform duration-75"
-                            onClick={() => mutate(`/api/daily-dashboard/${warehouse}/${startDate}/${endDate}`)}
+                            onClick={() => mutate(`/api/get-cash-bank-balance/${warehouse}/${endDate}`)}
                         >
-                            <RefreshCcwIcon className={`w-5 h-5 ${isLoading ? "animate-spin" : ""}`} />
+                            <RefreshCcwIcon className={`w-5 h-5 ${isValidating ? "animate-spin" : ""}`} />
                         </button>
                     </div>
                     <span className="block text-xs mb-4 text-slate-400">{getCurrentDate()}</span>

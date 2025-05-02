@@ -7,7 +7,7 @@ import formatNumber from "@/libs/formatNumber";
 const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification, fetchJournalsByWarehouse, user }) => {
     const [formData, setFormData] = useState({
         debt_code: "",
-        cred_code: 12,
+        cred_code: 8,
         amount: "",
         trx_type: "Deposit Customer",
         fee_amount: 0,
@@ -25,10 +25,10 @@ const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification,
             notification("success", response.data.message);
             setFormData({
                 debt_code: formData.debt_code,
-                cred_code: user.role.warehouse.chart_of_account_id,
+                cred_code: 8,
                 amount: "",
-                trx_type: "Tarik Tunai",
-                fee_amount: "",
+                trx_type: "Deposit Customer",
+                fee_amount: 0,
                 description: "",
                 custName: "General",
             });
@@ -77,6 +77,19 @@ const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification,
                         {errors.amount && <span className="text-red-500 text-xs">{errors.amount}</span>}
                     </div>
                     <h1 className="textsm sm:text-lg font-bold">{formatNumber(formData.amount)}</h1>
+                </div>
+                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                    <Label>Nama Rek. Customer</Label>
+                    <div className="col-span-1 sm:col-span-2">
+                        <Input
+                            className={"w-full text-sm"}
+                            type="text"
+                            placeholder="Atasnama"
+                            value={formData.custName}
+                            onChange={(e) => setFormData({ ...formData, custName: e.target.value })}
+                        />
+                        {errors.custName && <span className="text-red-500 text-xs">{errors.custName}</span>}
+                    </div>
                 </div>
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                     <Label>Keterangan</Label>

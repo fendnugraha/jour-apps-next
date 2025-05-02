@@ -50,7 +50,6 @@ const LogActivity = () => {
         fetchLogActivity(url);
     };
 
-    console.log(logActivity.last_page);
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4 flex justify-between">

@@ -79,13 +79,16 @@ const BalanceSheet = () => {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <h1 className="text-xl font-bold">Assets</h1>
+                                    <h1 className="text-lg font-bold">Assets</h1>
                                     <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(balanceSheet?.assets?.total)}</span>
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {balanceSheet?.assets?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -104,14 +107,17 @@ const BalanceSheet = () => {
                                     </table>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold">Liabilities</h1>
+                                    <h1 className="text-lg font-bold">Liabilities</h1>
                                     <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(balanceSheet?.liabilities?.total)}</span>
 
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {balanceSheet?.liabilities?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -128,7 +134,7 @@ const BalanceSheet = () => {
                                             ))}
                                         </tbody>
                                     </table>
-                                    <h1 className="mt-5 text-xl font-bold">Equity (Modal)</h1>
+                                    <h1 className="mt-5 text-lg font-bold">Equity (Modal)</h1>
                                     <span className="block text-slate-500 text-sm mb-2">
                                         Total : {formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}
                                     </span>
@@ -137,7 +143,10 @@ const BalanceSheet = () => {
                                         <tbody>
                                             {balanceSheet?.equity?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>

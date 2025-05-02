@@ -6,7 +6,7 @@ import Input from "@/components/Input";
 
 const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
     const [formData, setFormData] = useState({
-        debt_code: 17,
+        debt_code: 12,
         cred_code: "",
         amount: "",
         fee_amount: 0,
@@ -24,11 +24,11 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
             notification("success", "Pengeluaran biaya operasional berhasil");
             fetchJournalsByWarehouse();
             setFormData({
-                debt_code: 17,
+                debt_code: 12,
                 cred_code: "",
                 amount: "",
                 fee_amount: 0,
-                trx_type: "Mutasi Kas",
+                trx_type: "Modal Diambil (Prive)",
                 description: "Penarikan Modal (Prive)",
             });
             isModalOpen(false);

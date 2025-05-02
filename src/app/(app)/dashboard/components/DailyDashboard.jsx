@@ -32,12 +32,12 @@ export async function getServerSideProps(context) {
 
     return { props: { initialData: res.data, initialWarehouse: warehouse || "all" } };
 }
-const useGetdailyDashboard = (warehouse, startDate, endDate, initialData) => {
+const useGetdailyDashboard = (warehouse, endDate, initialData) => {
     const {
         data: dailyDashboard,
         error,
         isValidating,
-    } = useSWR(`/api/daily-dashboard/${warehouse}/${startDate}/${endDate}`, fetcher, {
+    } = useSWR(`/api/daily-dashboard/${warehouse}/${endDate}`, fetcher, {
         fallbackData: initialData,
         revalidateOnFocus: true,
         dedupingInterval: 60000,
@@ -53,14 +53,12 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
     });
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [startDate, setStartDate] = useState(getCurrentDate());
     const [endDate, setEndDate] = useState(getCurrentDate());
     const [selectedWarehouse, setSelectedWarehouse] = useState(warehouse);
     const [isModalFilterDataOpen, setIsModalFilterDataOpen] = useState(false);
-    const { dailyDashboard, loading: isLoading, error } = useGetdailyDashboard(selectedWarehouse, startDate, endDate);
+    const { dailyDashboard, loading: isLoading, error } = useGetdailyDashboard(selectedWarehouse, endDate);
 
     const handleFilterData = () => {
-        setStartDate(filterData.startDate);
         setEndDate(filterData.endDate);
         setIsModalFilterDataOpen(false);
     };
@@ -70,8 +68,8 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
     };
 
     useEffect(() => {
-        mutate(`/api/daily-dashboard/${selectedWarehouse}/${startDate}/${endDate}`);
-    }, [selectedWarehouse, startDate, endDate]);
+        mutate(`/api/daily-dashboard/${selectedWarehouse}/${endDate}`);
+    }, [selectedWarehouse, endDate]);
 
     const netProfit = dailyDashboard?.data?.revenue - dailyDashboard?.data?.cost - dailyDashboard?.data?.expense;
     const netProfitPercentage = ((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2);
@@ -108,15 +106,6 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <Label className="font-bold">Tanggal</Label>
                         <Input
                             type="date"
-                            value={filterData.startDate}
-                            onChange={(e) => setFilterData({ ...filterData, startDate: e.target.value })}
-                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <Label className="font-bold">s/d</Label>
-                        <Input
-                            type="date"
                             value={filterData.endDate}
                             onChange={(e) => setFilterData({ ...filterData, endDate: e.target.value })}
                             className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -136,7 +125,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                 <div className="flex flex-end items-center px-2">
                     <h1 className="text-sm font-bold text-center sm:text-end text-slate-500 w-full">
                         {selectedWarehouse === "all" ? "Semua Cabang" : warehouses?.data?.find((warehouse) => warehouse.id === selectedWarehouse)?.name},
-                        Periode: {startDate} s/d {endDate}
+                        Periode: {endDate}
                     </h1>
                 </div>
             </div>
@@ -169,22 +158,22 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <h1 className="text-3xl">{formatNumberToK(dailyDashboard?.data?.equity + netProfit)}</h1>
                     </div>
                 </div>
-                <div className="row-span-3 bg-white px-3 py-4 rounded-2xl flex h-full justify-start gap-4 flex-col">
-                    <div className="flex gap-2 justify-between items-center">
+                <div className="row-span-3 flex h-full justify-between gap-4 flex-col">
+                    <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-400">Debt Ratio</h1>
                             <span className="text-xl font-bold ">{((dailyDashboard?.data?.liabilities / dailyDashboard?.data?.assets) * 100).toFixed(2)}%</span>
                         </div>
                     </div>
-                    <div className="flex gap-2 justify-between items-center">
+                    <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-400">Current Ratio</h1>
                             <span className="text-xl font-bold ">{((dailyDashboard?.data?.assets / dailyDashboard?.data?.liabilities) * 100).toFixed(2)}%</span>
                         </div>
                     </div>
-                    <div className="flex gap-2 justify-between items-center">
+                    <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-400">Debt to Equity Ratio</h1>
@@ -193,11 +182,13 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             </span>
                         </div>
                     </div>
-                    <div className="flex gap-2 justify-between items-center">
+                    <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-600" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-400">Return to Equity Ratio</h1>
-                            <span className="text-xl font-bold ">{((netProfit / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%</span>
+                            <span className="text-xl font-bold ">
+                                {((dailyDashboard?.data?.netProfitCurrentMonth / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -250,7 +241,12 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
-                            <h1 className="text-xl font-bold">Biaya</h1>
+                            <div>
+                                <h1 className="text-xl font-bold">Biaya</h1>
+                                <span className="text-sm font-bold text-slate-500">
+                                    {((dailyDashboard?.data?.expense / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%
+                                </span>
+                            </div>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
                         <h1 className="text-3xl  text-slate-500">{formatNumberToK(dailyDashboard?.data?.expense)}</h1>
@@ -259,9 +255,13 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
-                            <h1 className="text-xl font-bold">Net Profit</h1>
+                            <div>
+                                <h1 className="text-xl font-bold">Net Profit</h1>
+                                <span className="text-sm font-bold text-slate-500">{((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%</span>
+                            </div>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
+
                         <h1 className="text-3xl  text-slate-500">{formatNumberToK(netProfit)}</h1>
                     </div>
                 </div>

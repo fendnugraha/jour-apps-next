@@ -53,7 +53,7 @@ const ProfitLoss = () => {
                         <div className="p-6 bg-white border-b border-gray-200">
                             <div className="mb-5 flex justify-between items-start">
                                 <div>
-                                    <h1 className="text-2xl font-bold">Laba Rugi (Profit Loss Statement)</h1>
+                                    <h1 className="text-2xl font-bold text-blue-600">Laba Rugi (Profit Loss Statement)</h1>
                                     <span className="block text-sm text-slate-400">
                                         Periode : {startDate} s/d {endDate}
                                     </span>
@@ -90,14 +90,17 @@ const ProfitLoss = () => {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
-                                    <h1 className="text-xl font-bold">Pendapatan (Revenue)</h1>
+                                    <h1 className="text-lg font-bold">Pendapatan (Revenue)</h1>
                                     <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(profitLoss?.revenue?.total)}</span>
 
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {profitLoss?.revenue?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -121,7 +124,10 @@ const ProfitLoss = () => {
                                         <tbody>
                                             {profitLoss?.cost?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
@@ -145,13 +151,16 @@ const ProfitLoss = () => {
                                     </span>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold">Biaya (Expense)</h1>
+                                    <h1 className="text-lg font-bold">Biaya (Expense)</h1>
                                     <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(profitLoss?.expense?.total)}</span>
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {profitLoss?.expense?.accounts?.map((account, index) => (
                                                 <React.Fragment key={index}>
-                                                    <tr className="text-sm border-b border-slate-300 border-dashed" hidden={account.balance === 0}>
+                                                    <tr
+                                                        className="text-sm border-b border-slate-300 border-dashed text-slate-600"
+                                                        hidden={account.balance === 0}
+                                                    >
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
