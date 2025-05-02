@@ -12,6 +12,7 @@ import PaymentForm from "./PaymentForm";
 import Paginator from "@/components/Paginator";
 import CreateReceivable from "./CreateReceivable";
 import Pagination from "@/components/PaginateList";
+import Input from "@/components/Input";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -23,6 +24,7 @@ const Payable = ({ notification }) => {
     const [selectedFinanceId, setSelectedFinanceId] = useState(null);
     const [selectedContactId, setSelectedContactId] = useState("All");
     const [selectedContactIdPayment, setSelectedContactIdPayment] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const [loading, setLoading] = useState(true);
     const fetchFinance = async (url = `/api/finance-by-type/${selectedContactId}/${financeType}`) => {
@@ -48,7 +50,15 @@ const Payable = ({ notification }) => {
         setIsModalPaymentOpen(false);
     };
 
-    const filterFinanceByContactIdAndType = finance.financeGroupByContactId?.filter((fnc) => fnc.finance_type === financeType) || [];
+    const filteredFinance = finance.financeGroupByContactId?.filter((fnc) => {
+        if (searchTerm === "") {
+            return fnc;
+        } else if (fnc.contact.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return fnc;
+        }
+    });
+
+    const filterFinanceByContactIdAndType = filteredFinance?.filter((fnc) => fnc.finance_type === financeType) || [];
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10; // Number of items per page
 
@@ -130,6 +140,15 @@ const Payable = ({ notification }) => {
                                 <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(message) => notification(message)} />
                             </Modal>
                         </div>
+                    </div>
+                    <div className="p-4 w-1/2">
+                        <Input
+                            type="search"
+                            className="w-full border rounded-lg p-2"
+                            value={searchTerm}
+                            placeholder="Search"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                     <div className="overflow-x-auto">
                         <table className="table w-full text-xs">
