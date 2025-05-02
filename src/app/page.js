@@ -15,10 +15,10 @@ export default function Home() {
         >
             <div className="absolute top-4 left-4 flex justify-center items-center gap-2">
                 <Image src="/jour-logo.svg" alt="Logo" width={50} height={50} className="drop-shadow-lg" />{" "}
-                <h1 className="text-lg text-white drop-shadow-lg">Jour Apps x BRIlink</h1>
+                <h1 className="text-lg text-white drop-shadow-lg">Jour Apps V.4</h1>
             </div>
             <h1 className="text-6xl sm:text-7xl text-slate-400 drop-shadow-lg font-bold mb-4">
-                THREE <span className="font-normal">KOMUNIKA</span>
+                JOUR <span className="font-normal">Accounting</span>
             </h1>
             <LoginLinks />
         </div>
