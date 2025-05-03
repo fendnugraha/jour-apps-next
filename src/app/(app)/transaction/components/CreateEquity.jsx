@@ -4,14 +4,14 @@ import axios from "@/libs/axios";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 
-const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
+const CreateEquity = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
     const [formData, setFormData] = useState({
-        debt_code: 12,
-        cred_code: "",
+        debt_code: "",
+        cred_code: 10,
         amount: "",
         fee_amount: 0,
         trx_type: "Ekuitas",
-        description: "Penarikan Modal (Prive)",
+        description: "Penambahan Modal",
     });
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -24,12 +24,12 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
             notification("success", "Pengeluaran biaya operasional berhasil");
             fetchJournalsByWarehouse();
             setFormData({
-                debt_code: 12,
-                cred_code: "",
+                debt_code: "",
+                cred_code: 10,
                 amount: "",
                 fee_amount: 0,
                 trx_type: "Ekuitas",
-                description: "Penarikan Modal (Prive)",
+                description: "Penambahan Modal",
             });
             isModalOpen(false);
             setErrors([]);
@@ -43,11 +43,11 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
     return (
         <form onSubmit={handleSubmit}>
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
-                <Label>Dari Rekening</Label>
+                <Label>Ke Rekening</Label>
                 <div className="col-span-1 sm:col-span-2">
                     <select
-                        onChange={(e) => setFormData({ ...formData, cred_code: e.target.value })}
-                        value={formData.cred_code}
+                        onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
+                        value={formData.debt_code}
                         className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
                         <option value="">--Pilih Rekening--</option>
@@ -57,7 +57,7 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
                             </option>
                         ))}
                     </select>
-                    {errors.cred_code && <span className="text-red-500 text-xs">{errors.cred_code}</span>}
+                    {errors.debt_code && <span className="text-red-500 text-xs">{errors.debt_code}</span>}
                 </div>
             </div>
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
@@ -100,4 +100,4 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
     );
 };
 
-export default CreatePrive;
+export default CreateEquity;

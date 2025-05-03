@@ -99,7 +99,9 @@ const CashFlow = () => {
                                     {cashflow?.revenue?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg font-bold">Pendapatan (Revenue)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.revenue?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.revenue?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">
@@ -129,7 +131,9 @@ const CashFlow = () => {
                                     {cashflow?.inventory?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg mt-5 font-bold">Persediaan (Inventory)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.inventory?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.inventory?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">
@@ -159,7 +163,9 @@ const CashFlow = () => {
                                     {cashflow?.receivable?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg mt-5 font-bold">Piutang (Receivable)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.receivable?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.receivable?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">
@@ -189,7 +195,9 @@ const CashFlow = () => {
                                     {cashflow?.payable?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg mt-5 font-bold">Hutang (Payable)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.payable?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.payable?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">
@@ -219,7 +227,9 @@ const CashFlow = () => {
                                     {cashflow?.assets?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg mt-5 font-bold">Aset Lancar (Assets)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.assets?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.assets?.total)}
+                                            </span>
                                         </>
                                     )}
 
@@ -252,7 +262,9 @@ const CashFlow = () => {
                                     {cashflow?.equity?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg font-bold">Modal (Equity)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.equity?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.equity?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">
@@ -282,7 +294,9 @@ const CashFlow = () => {
                                     {cashflow?.expense?.total !== 0 && (
                                         <>
                                             <h1 className="text-lg mt-5 font-bold">Biaya - Biaya (Expense)</h1>
-                                            <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(cashflow?.expense?.total)}</span>
+                                            <span className="block text-slate-500 text-sm mb-2">
+                                                Total : {loading ? "Loading..." : formatNumber(cashflow?.expense?.total)}
+                                            </span>
                                         </>
                                     )}
                                     <table className="table-auto w-full">

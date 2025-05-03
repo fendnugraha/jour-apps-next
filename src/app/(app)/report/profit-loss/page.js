@@ -91,7 +91,9 @@ const ProfitLoss = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <h1 className="text-lg font-bold">Pendapatan (Revenue)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(profitLoss?.revenue?.total)}</span>
+                                    <span className="block text-slate-500 text-sm mb-2">
+                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.revenue?.total)}
+                                    </span>
 
                                     <table className="table-auto w-full">
                                         <tbody>
@@ -118,7 +120,9 @@ const ProfitLoss = () => {
                                         </tbody>
                                     </table>
                                     <h1 className="mt-5 text-xl font-bold">HPP (Harga Pokok Penjualan)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(profitLoss?.cost?.total)}</span>
+                                    <span className="block text-slate-500 text-sm mb-2">
+                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.cost?.total)}
+                                    </span>
 
                                     <table className="table-auto w-full">
                                         <tbody>
@@ -152,7 +156,9 @@ const ProfitLoss = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold">Biaya (Expense)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(profitLoss?.expense?.total)}</span>
+                                    <span className="block text-slate-500 text-sm mb-2">
+                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.expense?.total)}
+                                    </span>
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {profitLoss?.expense?.accounts?.map((account, index) => (

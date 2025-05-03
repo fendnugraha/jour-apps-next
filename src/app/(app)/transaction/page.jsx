@@ -31,6 +31,7 @@ import CreateJournal from "./components/CreateJournal";
 import CreateSalesByValue from "./components/CreateSalesByValue";
 import Pagination from "@/components/PaginateList";
 import CreatePrive from "./components/CreatePrive";
+import CreateEquity from "./components/CreateEquity";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -61,6 +62,7 @@ const TransactionPage = () => {
     const [isModalCreateDepositOpen, setIsModalCreateDepositOpen] = useState(false);
     const [isModalCreateExpenseOpen, setIsModalCreateExpenseOpen] = useState(false);
     const [isModalCreatePriveOpen, setIsModalCreatePriveOpen] = useState(false);
+    const [isModalCreateEquityOpen, setIsModalCreateEquityOpen] = useState(false);
     const [isModalCreateBankAdminFeeOpen, setIsModalCreateBankAdminFeeOpen] = useState(false);
     const [notification, setNotification] = useState({
         type: "",
@@ -71,6 +73,7 @@ const TransactionPage = () => {
     const [isVoucherMenuOpen, setIsVoucherMenuOpen] = useState(false);
     const [isExpenseMenuOpen, setIsExpenseMenuOpen] = useState(false);
     const [isDailyReportOpen, setIsDailyReportOpen] = useState(false);
+    const [cashBankType, setCashBankType] = useState("");
 
     const menuRef = useRef(null);
 
@@ -115,6 +118,7 @@ const TransactionPage = () => {
         setIsModalCreateBankAdminFeeOpen(false);
         setIsModalCreateExpenseOpen(false);
         setIsModalCreatePriveOpen(false);
+        setIsModalCreateEquityOpen(false);
     };
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(warehouse);
     const { accountBalance, error: accountBalanceError, loading: isValidating } = useCashBankBalance(selectedWarehouseId, endDate);
@@ -154,18 +158,18 @@ const TransactionPage = () => {
     }, []);
 
     const filteredCashBankByWarehouse = cashBank.filter((cashBank) => cashBank.warehouse_id === warehouse);
-    const hqCashBank = cashBank.filter((cashBank) => cashBank.warehouse_id === 1);
+    const filteredCashBankType = cashBankType === "" ? accountBalance?.data || [] : accountBalance?.data?.filter((ac) => ac.account_id === cashBankType) || [];
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10; // Number of items per page
 
     // Calculate the total number of pages
-    const totalItems = accountBalance?.data?.length;
+    const totalItems = filteredCashBankType.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     // Get the items for the current page
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentItems = accountBalance?.data?.slice(startIndex, startIndex + itemsPerPage);
+    const currentItems = filteredCashBankType.slice(startIndex, startIndex + itemsPerPage);
 
     // Handle page change from the Pagination component
     const handlePageChange = (page) => {
@@ -259,7 +263,7 @@ const TransactionPage = () => {
                     {notification.message && (
                         <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
                     )}
-                    <div className="overflow-hidden sm:rounded-lg">
+                    <div className=" sm:rounded-lg">
                         <div className="mb-2 hidden sm:flex justify-start gap-2">
                             <Dropdown
                                 trigger={
@@ -268,7 +272,7 @@ const TransactionPage = () => {
                                         <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
                                     </button>
                                 }
-                                align="right"
+                                align="left"
                             >
                                 <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
                                     <Menu.Item>
@@ -301,6 +305,16 @@ const TransactionPage = () => {
                                             </button>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <button
+                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                onClick={() => setIsModalCreateEquityOpen(true)}
+                                            >
+                                                Penambahan Modal (Equity)
+                                            </button>
+                                        )}
+                                    </Menu.Item>
                                 </Menu.Items>
                             </Dropdown>
                             <Dropdown
@@ -310,7 +324,7 @@ const TransactionPage = () => {
                                         <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
                                     </button>
                                 }
-                                align="right"
+                                align="left"
                             >
                                 <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
                                     <Menu.Item>
@@ -363,6 +377,7 @@ const TransactionPage = () => {
                                 isModalOpen={setIsModalCreateSalesByValueOpen}
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                                today={today}
                                 user={user}
                             />
                         </Modal>
@@ -403,6 +418,15 @@ const TransactionPage = () => {
                                 user={user}
                             />
                         </Modal>
+                        <Modal isOpen={isModalCreateEquityOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penambahan Modal (Equity)">
+                            <CreateEquity
+                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                                isModalOpen={setIsModalCreateEquityOpen}
+                                notification={(type, message) => setNotification({ type, message })}
+                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                                user={user}
+                            />
+                        </Modal>
                         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-20 sm:mb-0">
                             <div className="relative col-span-1 sm:col-span-3 bg-white py-6 rounded-2xl order-2 sm:order-1">
                                 {journalLoading && <LoaderCircleIcon size={20} className="absolute top-1 left-1 animate-spin text-slate-300" />}
@@ -416,7 +440,6 @@ const TransactionPage = () => {
                                     warehouseId={(warehouseId) => setSelectedWarehouseId(warehouseId)}
                                     user={user}
                                     loading={journalLoading}
-                                    hqCashBank={hqCashBank}
                                 />
                             </div>
                             {/* <div className="order-1 sm:order-2 px-2 sm:px-0">
@@ -456,12 +479,33 @@ const TransactionPage = () => {
                         </button>
                     </div>
                     <span className="block text-xs mb-4 text-slate-400">{getCurrentDate()}</span>
+
+                    <div className="flex gap-2 mb-4 w-full bg-slate-300 p-1 text-xs rounded-3xl">
+                        <button
+                            className={`w-full ${cashBankType === "" ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            onClick={() => setCashBankType("")}
+                        >
+                            Semua
+                        </button>
+                        <button
+                            className={`w-full ${cashBankType === 2 ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            onClick={() => setCashBankType(2)}
+                        >
+                            Bank
+                        </button>
+                        <button
+                            className={`w-full ${cashBankType === 1 ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            onClick={() => setCashBankType(1)}
+                        >
+                            Kas
+                        </button>
+                    </div>
                     <div className="max-h-full overflow-y-auto">
                         <table className="w-full">
                             <tbody>
                                 {currentItems?.map((account) => (
                                     <tr className="text-sm border-b border-slate-300 border-dashed hover:bg-slate-200" key={account.id}>
-                                        <td className="text-start text-xs py-2">{account.acc_name}</td>
+                                        <td className="text-start text-xs py-2.5">{account.acc_name}</td>
                                         <td className="text-end font-bold text-slate-600">{formatNumber(account.balance)}</td>
                                     </tr>
                                 ))}
@@ -478,7 +522,7 @@ const TransactionPage = () => {
                         )}
                     </div>
                     <div>
-                        <span className="text-xs text-slate-300">Total Saldo</span>
+                        <span className="text-xs text-slate-500">Total Saldo</span>
                         <h1 className="text-3xl font-bold">{formatNumber(summarizeBalance ?? 0)}</h1>
                     </div>
                     <button type="button" className="w-full sm:hidden bg-blue-500 text-white py-2 px-4 rounded-md" onClick={() => setIsDailyReportOpen(false)}>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "@/libs/axios";
 import Label from "@/components/Label";
 import formatNumber from "@/libs/formatNumber";
+import Input from "@/components/Input";
 
 const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => {
     const [formData, setFormData] = useState({
@@ -93,12 +94,29 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                     </select>
                     <h1 className="text-sm">Tagihan: RP. {selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa)}</h1>
                 </div>
+                {filterDataByInvoice[0]?.finance_type === "Payable" && (
+                    <div className="flex items-center gap-2 mb-2">
+                        <input
+                            id="deposit_customer"
+                            type="checkbox"
+                            checked={formData.account_id === 8}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    account_id: e.target.checked ? 8 : "",
+                                })
+                            }
+                        />
+                        <Label htmlFor="deposit_customer">Masukan ke Deposit Customer</Label>
+                    </div>
+                )}
                 <div className="mb-4">
                     <Label>Rekening</Label>
                     <select
                         onChange={(e) => setFormData({ ...formData, account_id: e.target.value })}
                         value={formData.account_id}
-                        className="w-full border rounded-lg p-2"
+                        className="w-full border rounded-lg p-2 disabled:bg-slate-300 disabled:text-white disabled:cursor-not-allowed"
+                        disabled={formData.account_id === 8}
                     >
                         <option value="">Select account</option>
                         {accounts.map((account) => (
@@ -119,7 +137,14 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                                 type="number"
                                 className="w-full border rounded-lg p-2"
                             />
-                            <h1 className="text-xs">Sisa Tagihan: {selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa - formData.amount)}</h1>
+                            <h1 className="text-xs">
+                                Sisa Tagihan:{" "}
+                                {filterDataByInvoice[0]?.sisa - formData.amount < 0 ? (
+                                    <span className="text-red-500">Melebihi sisa tagihan!</span>
+                                ) : (
+                                    selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa - formData.amount)
+                                )}
+                            </h1>
                         </div>
                         {errors.amount && <span className="text-red-500 text-sm">{errors.amount}</span>}
                     </div>
@@ -139,7 +164,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                 <button
                     type="submit"
                     className="bg-indigo-500 hover:bg-indigo-600 rounded-xl px-8 py-3 text-white disabled:bg-slate-300 disabled:cursor-not-allowed"
-                    disabled={loading || !formData.invoice || !formData.account_id || !formData.amount}
+                    disabled={loading || !formData.invoice || !formData.account_id || !formData.amount || filterDataByInvoice[0]?.sisa - formData.amount < 0}
                 >
                     {loading ? "Loading..." : "Simpan"}
                 </button>

@@ -105,7 +105,6 @@ const JournalTable = ({
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
-    const hqCashBankIds = hqCashBank.map((cashBank) => cashBank.id);
     return (
         <div className="">
             <div className="px-4 flex gap-2">
@@ -242,7 +241,7 @@ const JournalTable = ({
                                             #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
                                             {formatDateTime(journal.created_at)}
                                         </span>
-                                        Note: {journal.trx_type} {journal.description}
+                                        Tanggal Transaksi: {formatDateTime(journal.date_issued)}. Note: {journal.trx_type} {journal.description}.
                                         <span className="font-bold text-xs block">
                                             {journal.trx_type === "Voucher & SP" || journal.trx_type === "Accessories" ? (
                                                 <ul className="list-disc font-normal scale-95">
@@ -286,7 +285,7 @@ const JournalTable = ({
                                             </button>
                                             <button
                                                 className=" hover:scale-125 transtition-all duration-200"
-                                                hidden={!["Mutasi Kas"].includes(journal.trx_type) || hqCashBankIds.includes(journal.cred_code)}
+                                                hidden={!["Mutasi Kas"].includes(journal.trx_type)}
                                                 onClick={() => {
                                                     setSelectedJournalId(journal.id);
                                                     setIsModalEditMutationJournalOpen(true);
@@ -299,10 +298,7 @@ const JournalTable = ({
                                                     setSelectedJournalId(journal.id);
                                                     setIsModalDeleteJournalOpen(true);
                                                 }}
-                                                disabled={
-                                                    ["Voucher & SP", "Accessories", null].includes(journal.trx_type) ||
-                                                    (userRole !== "Administrator" && hqCashBankIds.includes(journal.cred_code))
-                                                }
+                                                disabled={["Voucher & SP", "Accessories", null].includes(journal.trx_type) || userRole !== "Administrator"}
                                                 className="disabled:text-slate-300 disabled:cursor-not-allowed text-red-600 hover:scale-125 transition-all group-hover:text-white duration-200"
                                             >
                                                 <TrashIcon className="size-4" />

@@ -80,7 +80,9 @@ const BalanceSheet = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <h1 className="text-lg font-bold">Assets</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(balanceSheet?.assets?.total)}</span>
+                                    <span className="block text-slate-500 text-sm mb-2">
+                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.assets?.total)}
+                                    </span>
                                     <table className="table-auto w-full">
                                         <tbody>
                                             {balanceSheet?.assets?.accounts?.map((account, index) => (
@@ -108,7 +110,9 @@ const BalanceSheet = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold">Liabilities</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">Total : {formatNumber(balanceSheet?.liabilities?.total)}</span>
+                                    <span className="block text-slate-500 text-sm mb-2">
+                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.liabilities?.total)}
+                                    </span>
 
                                     <table className="table-auto w-full">
                                         <tbody>
@@ -136,7 +140,7 @@ const BalanceSheet = () => {
                                     </table>
                                     <h1 className="mt-5 text-lg font-bold">Equity (Modal)</h1>
                                     <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}
+                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}
                                     </span>
 
                                     <table className="table-auto w-full">
