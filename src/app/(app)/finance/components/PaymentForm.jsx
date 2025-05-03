@@ -94,22 +94,24 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                     </select>
                     <h1 className="text-sm">Tagihan: RP. {selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa)}</h1>
                 </div>
-                <div className="flex items-center gap-2 mb-2">
-                    <input
-                        id="deposit_customer"
-                        type="checkbox"
-                        checked={formData.account_id === 8}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                account_id: e.target.checked ? 8 : "",
-                            })
-                        }
-                    />
-                    <Label htmlFor="deposit_customer">
-                        {filterDataByInvoice[0]?.finance_type === "Payable" ? "Masukan ke Deposit Customer" : "Ambil dari Deposit Customer"}
-                    </Label>
-                </div>
+                {formData.invoice && (
+                    <div className="flex items-center gap-2 mb-2">
+                        <input
+                            id="deposit_customer"
+                            type="checkbox"
+                            checked={formData.account_id === 8}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    account_id: e.target.checked ? 8 : "",
+                                })
+                            }
+                        />
+                        <Label htmlFor="deposit_customer">
+                            {filterDataByInvoice[0]?.finance_type === "Payable" ? "Masukan ke Deposit Customer" : "Ambil dari Deposit Customer"}
+                        </Label>
+                    </div>
+                )}
                 <div className="mb-4">
                     <Label>Rekening</Label>
                     <select
