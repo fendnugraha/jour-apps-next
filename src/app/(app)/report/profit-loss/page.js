@@ -151,7 +151,9 @@ const ProfitLoss = () => {
 
                                     <h1 className="mt-5 text-sm font-bold">Laba (Net Profit)</h1>
                                     <span className="block text-slate-500 text-5xl font-bold mb-2">
-                                        {formatNumber(profitLoss?.revenue?.total - profitLoss?.cost?.total - profitLoss?.expense?.total)}
+                                        {loading
+                                            ? "Loading.."
+                                            : formatNumber(profitLoss?.revenue?.total - profitLoss?.cost?.total - profitLoss?.expense?.total)}
                                     </span>
                                 </div>
                                 <div>

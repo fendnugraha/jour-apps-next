@@ -7,7 +7,7 @@ import { set } from "date-fns";
 
 const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notification, fetchJournalsByWarehouse, user }) => {
     const [formData, setFormData] = useState({
-        debt_code: 49,
+        debt_code: 37,
         cred_code: "",
         amount: "",
         fee_amount: 0,
