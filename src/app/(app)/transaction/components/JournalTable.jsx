@@ -5,7 +5,17 @@ import formatDateTime from "@/libs/formatDateTime";
 import axios from "@/libs/axios";
 import { useState } from "react";
 import Pagination from "@/components/PaginateList";
-import { ArrowRightIcon, FilterIcon, LoaderCircleIcon, MessageCircleWarningIcon, PencilIcon, RefreshCcwIcon, SearchIcon, TrashIcon } from "lucide-react";
+import {
+    ArrowRightIcon,
+    Contact2Icon,
+    FilterIcon,
+    LoaderCircleIcon,
+    MessageCircleWarningIcon,
+    PencilIcon,
+    RefreshCcwIcon,
+    SearchIcon,
+    TrashIcon,
+} from "lucide-react";
 import Modal from "@/components/Modal";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
@@ -105,6 +115,7 @@ const JournalTable = ({
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+    console.log(journalsByWarehouse);
     return (
         <div className="">
             <div className="px-4 flex gap-2">
@@ -247,8 +258,11 @@ const JournalTable = ({
                                             #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
                                             {formatDateTime(journal.created_at)}
                                         </span>
-                                        Tanggal Transaksi: {formatDateTime(journal.date_issued)}. Note: {journal.trx_type} {journal.description}.
-                                        <span className="font-bold text-xs block">
+                                        <span className="font-semibold text-teal-600 text-xs block" hidden={!journal.finance[0]?.contact?.name}>
+                                            Contact: {journal.finance[0]?.contact?.name}
+                                        </span>
+                                        at {formatDateTime(journal.date_issued)}. Note: {journal.trx_type} {journal.description}.
+                                        <span className="font-bold text-xs block text-slate-700">
                                             {journal.trx_type === "Voucher & SP" || journal.trx_type === "Accessories" ? (
                                                 <ul className="list-disc font-normal scale-95">
                                                     {journal.transaction.map((trx) => (
