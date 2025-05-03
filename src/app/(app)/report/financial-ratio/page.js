@@ -142,13 +142,13 @@ const FinancialRatio = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Current Ratio</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.currentRatio.toFixed(2)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">1.5 - 2.5</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("currentRatio", rasioInput.currentRatio)}</td>
                                         </tr>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4">Quick Ratio</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.quickRatio.toFixed(2)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
@@ -169,13 +169,13 @@ const FinancialRatio = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt Ratio</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.debtRatio.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">40% – 60%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("debtRatio", rasioInput.debtRatio)}</td>
                                         </tr>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.debtToEquity.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
@@ -196,13 +196,13 @@ const FinancialRatio = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Return to Equity</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.roe.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">10% - 20%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("roe", rasioInput.roe)}</td>
                                         </tr>
-                                        <tr className="border-b border-slate-300 border-dashed">
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{rasioInput.netProfitMargin.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">5% – 15%</td>

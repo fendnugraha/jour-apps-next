@@ -406,7 +406,7 @@ const TransactionPage = () => {
                                 isModalOpen={setIsModalCreateExpenseOpen}
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
+                                today={today}
                             />
                         </Modal>
                         <Modal isOpen={isModalCreatePriveOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penarikan Modal (Prive)">

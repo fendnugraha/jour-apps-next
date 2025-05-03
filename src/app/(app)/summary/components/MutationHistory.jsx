@@ -41,6 +41,7 @@ const MutationHistory = ({ account, notification, user }) => {
             const response = await axios.get(url, {
                 params: {
                     search: search,
+                    account: selectedAccount,
                 },
             });
             setMutation(response.data.data);
@@ -175,7 +176,6 @@ const MutationHistory = ({ account, notification, user }) => {
                                             >
                                                 {formatNumber(item.amount)}
                                             </span>
-                                            {item.fee_amount !== 0 && <span className="text-xs text-blue-600 block">{formatNumber(item.fee_amount)}</span>}
                                         </td>
                                         <td className="text-center">
                                             <button

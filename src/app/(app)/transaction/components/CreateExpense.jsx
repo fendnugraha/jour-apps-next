@@ -4,9 +4,10 @@ import axios from "@/libs/axios";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 
-const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, user }) => {
+const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification, fetchJournalsByWarehouse, today }) => {
     const [expense, setExpense] = useState([]);
     const [formData, setFormData] = useState({
+        dateIssued: today,
         debt_code: "",
         cred_code: "",
         amount: "",
@@ -56,6 +57,19 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
     };
     return (
         <form onSubmit={handleSubmit}>
+            <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                <Label>Tanggal</Label>
+                <div className="col-span-1 sm:col-span-2">
+                    <Input
+                        className="w-full text-xs sm:text-sm"
+                        type="datetime-local"
+                        placeholder="Rp."
+                        value={formData.dateIssued || today}
+                        onChange={(e) => setFormData({ ...formData, dateIssued: e.target.value })}
+                    />
+                    {errors.date_issued && <span className="text-red-500 text-xs">{errors.date_issued}</span>}
+                </div>
+            </div>
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                 <Label>Dari Rekening</Label>
                 <div className="col-span-1 sm:col-span-2">

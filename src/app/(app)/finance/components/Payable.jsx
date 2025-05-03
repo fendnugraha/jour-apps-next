@@ -50,25 +50,29 @@ const Payable = ({ notification }) => {
         setIsModalPaymentOpen(false);
     };
 
-    const filteredFinance = finance.financeGroupByContactId?.filter((fnc) => {
-        if (searchTerm === "") {
-            return fnc;
-        } else if (fnc.contact.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-            return fnc;
-        }
-    });
+    const [paymentStatus, setPaymentStatus] = useState("Unpaid");
 
-    const filterFinanceByContactIdAndType = filteredFinance?.filter((fnc) => fnc.finance_type === financeType) || [];
+    const filteredFinance =
+        finance.financeGroupByContactId?.filter((fnc) => {
+            const matchesSearch = searchTerm === "" || fnc.contact.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+            const matchesUnpaidCondition = paymentStatus === "Unpaid" ? fnc.sisa > 0 : paymentStatus === "Paid" ? fnc.sisa === 0 : true;
+
+            const matchesFinanceType = fnc.finance_type === financeType;
+
+            return matchesSearch && matchesUnpaidCondition && matchesFinanceType;
+        }) || [];
+
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Number of items per page
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     // Calculate the total number of pages
-    const totalItems = filterFinanceByContactIdAndType.length;
+    const totalItems = filteredFinance.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     // Get the items for the current page
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentItems = filterFinanceByContactIdAndType.slice(startIndex, startIndex + itemsPerPage);
+    const currentItems = filteredFinance.slice(startIndex, startIndex + itemsPerPage);
 
     // Handle page change from the Pagination component
     const handlePageChange = (page) => {
@@ -141,7 +145,7 @@ const Payable = ({ notification }) => {
                             </Modal>
                         </div>
                     </div>
-                    <div className="p-4 w-1/2">
+                    <div className="p-4 w-1/2 flex justify-between gap-2">
                         <Input
                             type="search"
                             className="w-full border rounded-lg p-2"
@@ -149,6 +153,23 @@ const Payable = ({ notification }) => {
                             placeholder="Search"
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                        <select className="border border-slate-300 rounded-lg p-2" onChange={(e) => setPaymentStatus(e.target.value)}>
+                            <option value="All">All</option>
+                            <option value="Paid">Lunas</option>
+                            <option value="Unpaid">Belum lunas</option>
+                        </select>
+                        <select
+                            onChange={(e) => {
+                                setItemsPerPage(e.target.value), setCurrentPage(1);
+                            }}
+                            className="border border-slate-300 rounded-lg p-2"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="table w-full text-xs">
@@ -192,7 +213,7 @@ const Payable = ({ notification }) => {
                                         Total {financeType === "Payable" ? "Hutang" : "Piutang"}
                                     </td>
                                     <td className="font-bold text-end">
-                                        {formatNumber(filterFinanceByContactIdAndType.reduce((total, item) => total + Number(item.sisa), 0))}
+                                        {formatNumber(filteredFinance.reduce((total, item) => total + Number(item.sisa), 0))}
                                     </td>
                                     <td className="font-bold text-end"></td>
                                 </tr>
