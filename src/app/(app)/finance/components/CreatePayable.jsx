@@ -78,7 +78,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
                     <Label htmlFor="date_issued">Tanggal</Label>
                     <div className="col-span-2">
-                        <Input type="datetime-local" className="w-1/2 border rounded-lg p-2" />
+                        <Input type="datetime-local" className="w-1/2 border border-slate-300 rounded-lg p-2" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
@@ -87,7 +87,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                         <select
                             value={formData.debt_code}
                             onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
-                            className="w-full border rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2"
                         >
                             <option value="">--Pilih Rekening--</option>
                             {filterCashAccounts.map((account) => (
@@ -104,7 +104,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                         <select
                             value={formData.cred_code}
                             onChange={(e) => setFormData({ ...formData, cred_code: e.target.value })}
-                            className="w-full border rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2"
                         >
                             <option value="">--Pilih Akun--</option>
                             {filterPayableAccounts.map((account) => (
@@ -121,7 +121,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                         <select
                             value={formData.contact_id}
                             onChange={(e) => setFormData({ ...formData, contact_id: e.target.value })}
-                            className={`w-full border rounded-lg p-2 ${errors.contact_id ? "border-red-500" : ""}`}
+                            className={`w-full border border-slate-300 rounded-lg p-2 ${errors.contact_id ? "border-red-500" : ""}`}
                         >
                             <option value="">--Pilih Contact--</option>
                             {contacts.map((contact) => (
@@ -140,7 +140,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                             onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                             min="0"
                             type="number"
-                            className="w-full border rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2"
                             placeholder="Rp"
                         />
                     </div>
@@ -152,7 +152,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                         <textarea
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full border rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2"
                             placeholder="Catatan (Optional)"
                         />
                     </div>
