@@ -56,7 +56,7 @@ const Payable = ({ notification }) => {
         finance.financeGroupByContactId?.filter((fnc) => {
             const matchesSearch = searchTerm === "" || fnc.contact.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-            const matchesUnpaidCondition = paymentStatus === "Unpaid" ? fnc.sisa > 0 : paymentStatus === "Paid" ? fnc.sisa === 0 : true;
+            const matchesUnpaidCondition = paymentStatus === "Unpaid" ? fnc.sisa > 0 : paymentStatus === "Paid" ? Number(fnc.sisa) === 0 : true;
 
             const matchesFinanceType = fnc.finance_type === financeType;
 
