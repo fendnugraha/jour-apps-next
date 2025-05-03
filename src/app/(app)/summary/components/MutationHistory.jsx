@@ -30,6 +30,7 @@ const MutationHistory = ({ account, notification, user }) => {
     const [isModalFilterDataOpen, setIsModalFilterDataOpen] = useState(false);
     const [isModalDeleteJournalOpen, setIsModalDeleteJournalOpen] = useState(false);
     const [selectedJournalId, setSelectedJournalId] = useState(null);
+    const [perPage, setPerPage] = useState(10);
 
     const closeModal = () => {
         setIsModalFilterDataOpen(false);
@@ -42,6 +43,7 @@ const MutationHistory = ({ account, notification, user }) => {
                 params: {
                     search: search,
                     account: selectedAccount,
+                    per_page: perPage,
                 },
             });
             setMutation(response.data.data);
@@ -55,7 +57,7 @@ const MutationHistory = ({ account, notification, user }) => {
 
     useEffect(() => {
         fetchMutation();
-    }, [selectedAccount]);
+    }, [selectedAccount, perPage]);
 
     const handleChangePage = (url) => {
         fetchMutation(url);
@@ -110,6 +112,16 @@ const MutationHistory = ({ account, notification, user }) => {
                             {item.acc_name}
                         </option>
                     ))}
+                </select>
+                <select
+                    onChange={(e) => setPerPage(e.target.value)}
+                    value={perPage}
+                    className="bg-gray-50 border border-gray-300 w-24 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
                 <button
                     onClick={() => setIsModalFilterDataOpen(true)}

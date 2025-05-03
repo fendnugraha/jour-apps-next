@@ -6,7 +6,7 @@ import formatNumber from "@/libs/formatNumber";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
-import { FilterIcon } from "lucide-react";
+import { FilterIcon, RefreshCcwIcon } from "lucide-react";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -56,12 +56,20 @@ const BalanceSheet = () => {
                                     <h1 className="text-2xl font-bold">Neraca (Balance Sheet)</h1>
                                     <span className="block text-sm text-slate-400">Periode : {endDate}</span>
                                 </div>
-                                <button
-                                    onClick={() => setIsModalFilterDataOpen(true)}
-                                    className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
-                                >
-                                    <FilterIcon className="size-4" />
-                                </button>
+                                <div>
+                                    <button
+                                        onClick={fetchBalanceSheet}
+                                        className="bg-white mr-1 font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                                    >
+                                        <RefreshCcwIcon className="size-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsModalFilterDataOpen(true)}
+                                        className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
+                                    >
+                                        <FilterIcon className="size-4" />
+                                    </button>
+                                </div>
                                 <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
                                     <div className="mb-4">
                                         <Label className="font-bold">Filter tanggal</Label>
