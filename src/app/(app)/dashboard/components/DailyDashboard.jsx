@@ -199,7 +199,9 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Saldo Kas & Bank</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{formatNumber(dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)}</h1>
+                        <h1 className="text-3xl  text-slate-500">
+                            {isValidating ? "loading.." : formatNumber(dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)}
+                        </h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl col-start-3">
@@ -257,7 +259,9 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <div className="flex items-start gap-2 justify-between">
                             <div>
                                 <h1 className="text-xl font-bold">Net Profit</h1>
-                                <span className="text-sm font-bold text-slate-500">{((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%</span>
+                                <span className="text-sm font-bold text-slate-500">
+                                    {isValidating ? "loading.." : ((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%
+                                </span>
                             </div>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>

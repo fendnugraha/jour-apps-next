@@ -5,7 +5,7 @@ import formatDateTime from "@/libs/formatDateTime";
 import axios from "@/libs/axios";
 import { useState } from "react";
 import Pagination from "@/components/PaginateList";
-import { ArrowRightIcon, FilterIcon, LoaderCircleIcon, MessageCircleWarningIcon, PencilIcon, SearchIcon, TrashIcon } from "lucide-react";
+import { ArrowRightIcon, FilterIcon, LoaderCircleIcon, MessageCircleWarningIcon, PencilIcon, RefreshCcwIcon, SearchIcon, TrashIcon } from "lucide-react";
 import Modal from "@/components/Modal";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
@@ -136,6 +136,12 @@ const JournalTable = ({
                         </option>
                     ))}
                 </select>
+                <button
+                    onClick={() => fetchJournalsByWarehouse()}
+                    className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                >
+                    <RefreshCcwIcon className="size-4" />
+                </button>
                 <button
                     onClick={() => setIsModalFilterJournalOpen(true)}
                     className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
