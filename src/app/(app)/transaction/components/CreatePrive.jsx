@@ -21,7 +21,7 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
         setLoading(true);
         try {
             const response = await axios.post("/api/create-mutation", formData);
-            notification("success", "Pengeluaran biaya operasional berhasil");
+            notification("success", "Pentarikan modal berhasil");
             fetchJournalsByWarehouse();
             setFormData({
                 debt_code: 12,

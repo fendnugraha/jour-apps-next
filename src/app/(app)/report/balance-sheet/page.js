@@ -89,10 +89,10 @@ const BalanceSheet = () => {
                                     <h1 className="text-lg font-bold">Assets</h1>
                                     <span className="block text-slate-500 text-sm mb-2">
                                         Total : {loading ? "Loading.." : formatNumber(balanceSheet?.assets?.total)}{" "}
-                                        {typeof balanceSheet?.assetsGrowthRate === "number" && (
-                                            <span className={balanceSheet.assetsGrowthRate > 0 ? "text-green-600" : "text-red-600"}>
-                                                ({balanceSheet.assetsGrowthRate > 0 ? "+" : ""}
-                                                {balanceSheet.assetsGrowthRate.toFixed(2)}%)
+                                        {typeof balanceSheet?.assetsGrowthRate?.rate === "number" && (
+                                            <span className={balanceSheet?.assetsGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                                ({balanceSheet?.assetsGrowthRate?.rate > 0 ? "+" : ""}
+                                                {balanceSheet?.assetsGrowthRate?.rate.toFixed(2)}%)
                                             </span>
                                         )}
                                     </span>
@@ -125,10 +125,10 @@ const BalanceSheet = () => {
                                     <h1 className="text-lg font-bold">Liabilities</h1>
                                     <span className="block text-slate-500 text-sm mb-2">
                                         Total : {loading ? "Loading.." : formatNumber(balanceSheet?.liabilities?.total)}{" "}
-                                        {typeof balanceSheet?.liabilitiesGrowthRate === "number" && (
-                                            <span className={balanceSheet.liabilitiesGrowthRate > 0 ? "text-green-600" : "text-red-600"}>
-                                                ({balanceSheet.liabilitiesGrowthRate > 0 ? "+" : ""}
-                                                {balanceSheet.liabilitiesGrowthRate.toFixed(2)}%)
+                                        {typeof balanceSheet?.liabilitiesGrowthRate?.rate === "number" && (
+                                            <span className={balanceSheet?.liabilitiesGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                                ({balanceSheet?.liabilitiesGrowthRate?.rate > 0 ? "+" : ""}
+                                                {balanceSheet?.liabilitiesGrowthRate?.rate.toFixed(2)}%)
                                             </span>
                                         )}
                                     </span>
@@ -160,10 +160,10 @@ const BalanceSheet = () => {
                                     <h1 className="mt-5 text-lg font-bold">Equity (Modal)</h1>
                                     <span className="block text-slate-500 text-sm mb-2">
                                         Total : {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}{" "}
-                                        {typeof balanceSheet?.equityGrowthRate === "number" && (
-                                            <span className={balanceSheet.equityGrowthRate > 0 ? "text-green-600" : "text-red-600"}>
-                                                ({balanceSheet.equityGrowthRate > 0 ? "+" : ""}
-                                                {balanceSheet.equityGrowthRate.toFixed(2)}%)
+                                        {typeof balanceSheet?.equityGrowthRate?.rate === "number" && (
+                                            <span className={balanceSheet?.equityGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                                ({balanceSheet?.equityGrowthRate?.rate > 0 ? "+" : ""}
+                                                {balanceSheet?.equityGrowthRate?.rate.toFixed(2)}%/{formatNumber(balanceSheet?.equityGrowthRate?.amount)})
                                             </span>
                                         )}
                                     </span>

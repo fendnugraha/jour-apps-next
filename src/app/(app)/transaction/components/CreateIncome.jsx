@@ -39,7 +39,7 @@ const CreateIncome = ({ filteredCashBankByWarehouse, isModalOpen, notification, 
         setLoading(true);
         try {
             const response = await axios.post("/api/create-mutation", formData);
-            notification("success", "Pengeluaran biaya operasional berhasil");
+            notification("success", "Penambahan pendapatan berhasil");
             fetchJournalsByWarehouse();
             setFormData({
                 debt_code: "",
