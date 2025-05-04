@@ -72,7 +72,7 @@ const DailyProfit = () => {
                         onClick={() => fetchDailyReport()}
                         className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                     >
-                        <RefreshCcwIcon className="size-4" />
+                        <RefreshCcwIcon className={`size-4 ${loading ? "animate-spin" : ""}`} />
                     </button>
                     <button
                         onClick={() => exportToExcel(dailyProfit, headersRevenue, `Daily profit ${month}/${year}.xlsx`, `Daily profit ${month}/${year}`)}

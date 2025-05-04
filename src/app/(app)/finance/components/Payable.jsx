@@ -153,8 +153,8 @@ const Payable = ({ notification }) => {
                             placeholder="Search"
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <select className="border border-slate-300 rounded-lg p-2" onChange={(e) => setPaymentStatus(e.target.value)}>
-                            <option value="All">All</option>
+                        <select className="border border-slate-300 rounded-lg p-2" value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)}>
+                            <option value="All">Semua</option>
                             <option value="Paid">Lunas</option>
                             <option value="Unpaid">Belum lunas</option>
                         </select>
