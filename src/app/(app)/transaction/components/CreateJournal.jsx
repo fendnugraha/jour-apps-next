@@ -33,7 +33,7 @@ const CreateJournal = ({ isModalOpen, notification, fetchJournalsByWarehouse, to
     };
 
     useEffect(() => {
-        fetchAccounts({ account_ids: [1, 2, 6, 7, 19] });
+        fetchAccounts({ account_ids: [1, 2, 6, 7] });
     }, []);
 
     const destAccount = accounts.filter((accounts) => accounts.id !== Number(formData.cred_code));

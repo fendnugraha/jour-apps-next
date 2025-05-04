@@ -51,7 +51,8 @@ const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification,
                         <select
                             onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
                             value={formData.debt_code}
-                            className="w-full text-sm rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            className="w-full text-sm rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:text-slate-400"
+                            disabled={formData.debt_code === 9}
                         >
                             <option value="">--Pilih Rekening--</option>
                             {filteredCashBankByWarehouse.map((cashBank) => (
@@ -61,6 +62,25 @@ const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification,
                             ))}
                         </select>
                         {errors.debt_code && <span className="text-red-500 text-xs">{errors.debt_code}</span>}
+                    </div>
+                </div>
+
+                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                    <div></div>
+                    <div className="col-span-1 sm:col-span-2 flex items-center gap-2.5">
+                        <input
+                            id="deposit_customer"
+                            type="checkbox"
+                            checked={formData.debt_code === 9}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    debt_code: e.target.checked ? 9 : "",
+                                    description: e.target.checked ? "Tukar Komisi Penjualan ke Deposit" : "Deposit Customer",
+                                })
+                            }
+                        />
+                        <Label htmlFor="deposit_customer">Tukar Komisi (Fee Customer)</Label>
                     </div>
                 </div>
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
