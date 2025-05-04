@@ -43,7 +43,7 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
     };
 
     useEffect(() => {
-        fetchAccounts({ account_ids: [1, 2, 6, 7] });
+        fetchAccounts({ account_ids: [1, 2, 6, 7, 19] });
     }, []);
 
     const handleSubmit = async (e) => {
