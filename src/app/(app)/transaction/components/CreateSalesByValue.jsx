@@ -11,6 +11,7 @@ const CreateSalesByValue = ({ isModalOpen, notification, fetchJournalsByWarehous
         debt_code: "",
         cost: "",
         sale: "",
+        fee_customer: "",
         trx_type: "Penjualan Barang",
         description: "",
     });
@@ -45,6 +46,7 @@ const CreateSalesByValue = ({ isModalOpen, notification, fetchJournalsByWarehous
                 debt_code: formData.debt_code,
                 cost: "",
                 sale: "",
+                fee_customer: "",
                 trx_type: "Penjualan Barang",
                 description: "",
             });
@@ -93,21 +95,6 @@ const CreateSalesByValue = ({ isModalOpen, notification, fetchJournalsByWarehous
                     </div>
                 </div>
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
-                    <Label>Cost (Harga Pokok)</Label>
-                    <div className="col-span-1">
-                        <Input
-                            className={"w-full text-sm"}
-                            type="number"
-                            placeholder="Rp."
-                            value={formData.cost}
-                            onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                            autoFocus={true}
-                        />
-                        {errors.cost && <span className="text-red-500 text-xs">{errors.cost}</span>}
-                    </div>
-                    <h1 className="textsm sm:text-lg font-bold">{formatNumber(formData.cost)}</h1>
-                </div>
-                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                     <Label>Sale (Harga Jual)</Label>
                     <div className="col-span-1">
                         <Input
@@ -123,6 +110,37 @@ const CreateSalesByValue = ({ isModalOpen, notification, fetchJournalsByWarehous
                     <h1 className="textsm sm:text-lg font-bold">{formatNumber(formData.sale)}</h1>
                 </div>
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                    <Label>Cost (Harga Pokok)</Label>
+                    <div className="col-span-1">
+                        <Input
+                            className={"w-full text-sm"}
+                            type="number"
+                            placeholder="Rp."
+                            value={formData.cost}
+                            onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                            autoFocus={true}
+                        />
+                        {errors.cost && <span className="text-red-500 text-xs">{errors.cost}</span>}
+                    </div>
+                    <h1 className="textsm sm:text-lg font-bold">{formatNumber(formData.cost)}</h1>
+                </div>
+
+                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                    <Label>Markup (Komisi Agen)</Label>
+                    <div className="col-span-1">
+                        <Input
+                            className={"w-full text-sm"}
+                            type="number"
+                            placeholder="Rp."
+                            value={formData.fee_customer}
+                            onChange={(e) => setFormData({ ...formData, fee_customer: e.target.value })}
+                            autoFocus={true}
+                        />
+                        {errors.fee_customer && <span className="text-red-500 text-xs">{errors.fee_customer}</span>}
+                    </div>
+                    <h1 className="textsm sm:text-lg font-bold">{formatNumber(formData.fee_customer)}</h1>
+                </div>
+                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                     <Label>Keterangan</Label>
                     <div className="col-span-1 sm:col-span-2">
                         <textarea
@@ -135,6 +153,8 @@ const CreateSalesByValue = ({ isModalOpen, notification, fetchJournalsByWarehous
                         {errors.description && <span className="text-red-500 text-xs">{errors.description}</span>}
                     </div>
                 </div>
+                <span className="textsm sm:text-lg font-bold text-end">Laba : {formatNumber(formData.sale - formData.cost - formData.fee_customer)}</span>
+
                 <div className="flex justify-end gap-2">
                     <button
                         onClick={() => isModalOpen(false)}
