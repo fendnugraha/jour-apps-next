@@ -144,15 +144,23 @@ const DailyProfit = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dailyProfit.map((item, index) => (
-                            <tr key={index}>
-                                <td className="">{item.day}</td>
-                                <td className="">{formatNumber(item.revenue)}</td>
-                                <td className="">{formatNumber(item.cost)}</td>
-                                <td className="">{formatNumber(item.expense)}</td>
-                                <td className="">{formatNumber(item.revenue - item.cost - item.expense)}</td>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={5} className="text-center">
+                                    Loading...
+                                </td>
                             </tr>
-                        ))}
+                        ) : (
+                            dailyProfit.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.date}</td>
+                                    <td>{formatNumber(item.revenue)}</td>
+                                    <td>{formatNumber(item.cost)}</td>
+                                    <td>{formatNumber(item.expense)}</td>
+                                    <td>{formatNumber(item.revenue - item.cost - item.expense)}</td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                     <tfoot className="font-semibold text-gray-800 bg-gray-100">
                         <tr>
