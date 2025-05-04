@@ -32,6 +32,7 @@ import CreateSalesByValue from "./components/CreateSalesByValue";
 import Pagination from "@/components/PaginateList";
 import CreatePrive from "./components/CreatePrive";
 import CreateEquity from "./components/CreateEquity";
+import CreateIncome from "./components/CreateIncome";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -61,6 +62,7 @@ const TransactionPage = () => {
     const [isModalCreateSalesByValueOpen, setIsModalCreateSalesByValueOpen] = useState(false);
     const [isModalCreateDepositOpen, setIsModalCreateDepositOpen] = useState(false);
     const [isModalCreateExpenseOpen, setIsModalCreateExpenseOpen] = useState(false);
+    const [isModalCreateIncomeOpen, setIsModalCreateIncomeOpen] = useState(false);
     const [isModalCreatePriveOpen, setIsModalCreatePriveOpen] = useState(false);
     const [isModalCreateEquityOpen, setIsModalCreateEquityOpen] = useState(false);
     const [isModalCreateBankAdminFeeOpen, setIsModalCreateBankAdminFeeOpen] = useState(false);
@@ -70,8 +72,6 @@ const TransactionPage = () => {
     });
     const [endDate, setEndDate] = useState(getCurrentDate());
 
-    const [isVoucherMenuOpen, setIsVoucherMenuOpen] = useState(false);
-    const [isExpenseMenuOpen, setIsExpenseMenuOpen] = useState(false);
     const [isDailyReportOpen, setIsDailyReportOpen] = useState(false);
     const [cashBankType, setCashBankType] = useState("");
 
@@ -117,6 +117,7 @@ const TransactionPage = () => {
         setIsModalCreateDepositOpen(false);
         setIsModalCreateBankAdminFeeOpen(false);
         setIsModalCreateExpenseOpen(false);
+        setIsModalCreateIncomeOpen(false);
         setIsModalCreatePriveOpen(false);
         setIsModalCreateEquityOpen(false);
     };
@@ -157,7 +158,7 @@ const TransactionPage = () => {
         fetchCashBank();
     }, []);
 
-    const filteredCashBankByWarehouse = cashBank.filter((cashBank) => cashBank.warehouse_id === warehouse);
+    const filteredCashBankByWarehouse = cashBank.filter((cashBank) => cashBank.warehouse_id === warehouse || Number(cashBank.account_id) === 6);
     const filteredCashBankType = cashBankType === "" ? accountBalance?.data || [] : accountBalance?.data?.filter((ac) => ac.account_id === cashBankType) || [];
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -182,83 +183,6 @@ const TransactionPage = () => {
         <>
             <Header title="Transaction" />
             <div className="py-8 relative">
-                <div ref={menuRef} className="fixed sm:hidden bottom-0 w-full z-[999]">
-                    <div className={`text-white shadow-xl ${!isVoucherMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
-                        <button onClick={() => setIsModalCreateVoucherOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Penjualan Voucher
-                        </button>
-                        <button onClick={() => setIsModalCreateDepositOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Input Deposit
-                        </button>
-                    </div>
-                    <div className={`text-white ${!isExpenseMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
-                        <button
-                            onClick={() => setIsModalCreateMutationToHqOpen(true)}
-                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
-                        >
-                            Pengembailan Saldo
-                        </button>
-                        <button onClick={() => setIsModalCreateExpenseOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Biaya Operasional
-                        </button>
-                        <button
-                            onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
-                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
-                        >
-                            Biaya Admin Bank
-                        </button>
-                    </div>
-                    <div className="text-white flex justify-between items-center">
-                        <button
-                            onClick={() => {
-                                setIsModalCreateJournalOpen(true);
-                                setIsExpenseMenuOpen(false);
-                                setIsVoucherMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1"
-                        >
-                            <ArrowUpCircleIcon className="w-7 h-7" /> Transfer
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsModalCreateSalesByValueOpen(true);
-                                setIsExpenseMenuOpen(false);
-                                setIsVoucherMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1"
-                        >
-                            <ArrowDownCircleIcon className="w-7 h-7" /> Tarik Tunai
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsVoucherMenuOpen(!isVoucherMenuOpen);
-                                setIsExpenseMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <ShoppingBagIcon className="w-7 h-7" /> Voucher
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsExpenseMenuOpen(!isExpenseMenuOpen);
-                                setIsVoucherMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <HandCoinsIcon className="w-7 h-7" /> Biaya
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsDailyReportOpen(!isDailyReportOpen);
-                                setIsVoucherMenuOpen(false);
-                                setIsExpenseMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <LayoutDashboardIcon className="w-7 h-7" /> Report
-                        </button>
-                    </div>
-                </div>
                 <div className="max-w-7xl mx-auto sm:px-6">
                     {notification.message && (
                         <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
@@ -282,6 +206,16 @@ const TransactionPage = () => {
                                                 onClick={() => setIsModalCreateJournalOpen(true)}
                                             >
                                                 Journal Umum
+                                            </button>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <button
+                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                onClick={() => setIsModalCreateIncomeOpen(true)}
+                                            >
+                                                Kas Masuk (income)
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -404,6 +338,15 @@ const TransactionPage = () => {
                             <CreateExpense
                                 filteredCashBankByWarehouse={filteredCashBankByWarehouse}
                                 isModalOpen={setIsModalCreateExpenseOpen}
+                                notification={(type, message) => setNotification({ type, message })}
+                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                                today={today}
+                            />
+                        </Modal>
+                        <Modal isOpen={isModalCreateIncomeOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Pendapatan Lainnya">
+                            <CreateIncome
+                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                                isModalOpen={setIsModalCreateIncomeOpen}
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
                                 today={today}
