@@ -3,12 +3,12 @@ import { useAuth } from "@/libs/auth";
 import {
     ArrowRightLeftIcon,
     ChartAreaIcon,
-    ChartNoAxesCombinedIcon,
     CircleDollarSignIcon,
     CirclePowerIcon,
     CogIcon,
     LayoutDashboardIcon,
     MenuIcon,
+    ScaleIcon,
     StoreIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -116,7 +116,7 @@ const Navigation = ({ user }) => {
                                 </NavLink>
                                 <NavLink href="/report" isOpen={isOpen} active={pathname === "/report"}>
                                     <div>
-                                        <ChartNoAxesCombinedIcon className="w-5 h-5" />
+                                        <ScaleIcon className="w-5 h-5" />
                                     </div>
                                     <span
                                         className={`transition-all duration-300 ease-in-out transform text-nowrap ${
