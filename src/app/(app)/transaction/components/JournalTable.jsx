@@ -115,7 +115,6 @@ const JournalTable = ({
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
-    console.log(journalsByWarehouse);
     return (
         <div className="">
             <div className="px-4 flex gap-2">
