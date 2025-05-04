@@ -73,7 +73,7 @@ const DailyProfit = () => {
                         className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         disabled={loading}
                     >
-                        <RefreshCcwIcon className={`size-4 ${loading ? "animate-spin scale-110" : ""}`} />
+                        <RefreshCcwIcon className={`size-4 ${loading ? "" : "animate-spin"}`} />
                     </button>
                     <button
                         onClick={() => exportToExcel(dailyProfit, headersRevenue, `Daily profit ${month}/${year}.xlsx`, `Daily profit ${month}/${year}`)}
@@ -154,7 +154,7 @@ const DailyProfit = () => {
                         ) : (
                             dailyProfit.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.date}</td>
+                                    <td>{item.day}</td>
                                     <td>{formatNumber(item.revenue)}</td>
                                     <td>{formatNumber(item.cost)}</td>
                                     <td>{formatNumber(item.expense)}</td>
