@@ -257,11 +257,14 @@ const JournalTable = ({
                                             #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
                                             {formatDateTime(journal.created_at)}
                                         </span>
-                                        <span className="font-semibold text-teal-600 text-xs block" hidden={!journal.finance[0]?.contact?.name}>
+                                        <span
+                                            className="font-semibold text-teal-600 group-hover:text-yellow-300 text-xs block"
+                                            hidden={!journal.finance[0]?.contact?.name}
+                                        >
                                             Contact: {journal.finance[0]?.contact?.name}
                                         </span>
                                         at {formatDateTime(journal.date_issued)}. Note: {journal.trx_type} {journal.description}.
-                                        <span className="font-bold text-xs block text-slate-700">
+                                        <span className="font-bold text-xs block text-slate-700 group-hover:text-white">
                                             {journal.trx_type === "Voucher & SP" || journal.trx_type === "Accessories" ? (
                                                 <ul className="list-disc font-normal scale-95">
                                                     {journal.transaction.map((trx) => (

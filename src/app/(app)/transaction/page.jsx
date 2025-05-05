@@ -494,7 +494,10 @@ const TransactionPage = () => {
                             >
                                 <RefreshCcwIcon className={`w-5 h-5 ${isValidating ? "animate-spin" : ""}`} />
                             </button>
-                            <button className="text-slate-400 hover:scale-110 transition-transform duration-75" onClick={() => setIsDailyReportOpen(false)}>
+                            <button
+                                className="text-slate-400 hover:scale-110 transition-transform duration-75 sm:hidden"
+                                onClick={() => setIsDailyReportOpen(false)}
+                            >
                                 <XIcon className={`w-8 h-8`} />
                             </button>
                         </div>
