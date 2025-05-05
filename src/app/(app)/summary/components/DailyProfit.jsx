@@ -9,6 +9,7 @@ import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Link from "next/link";
 import exportToExcel from "@/libs/exportToExcel";
+import { formatNumberToK } from "@/libs/formatNumberToK";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -57,6 +58,12 @@ const DailyProfit = () => {
         { key: "cost", label: "HPP" },
         { key: "expense", label: "Biaya" },
     ];
+
+    const summarizeProfit = dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0);
+    const averageProfit = dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0) / dailyProfit?.length;
+    const summarizeRevenue = dailyProfit?.reduce((sum, item) => sum + item.revenue, 0);
+
+    const netProfitRate = (summarizeProfit / summarizeRevenue) * 100;
 
     return (
         <div className="bg-white rounded-lg mb-3 relative">
@@ -133,6 +140,18 @@ const DailyProfit = () => {
                     </Modal>
                 </div>
             </div>
+            <div className="flex justify-end items-center gap-5 px-4">
+                <div>
+                    <span className="text-gray-600 text-xs">Profit Avg.</span>
+                    <h1 className="text-2xl font-bold">{formatNumberToK(averageProfit || 0)}</h1>
+                </div>
+                <div>
+                    <span className="text-gray-600 text-xs">
+                        Net Profit <span className="text-gray-500 text-xs">({netProfitRate.toFixed(2)}%)</span>
+                    </span>
+                    <h1 className="text-2xl font-bold">{formatNumber(summarizeProfit || 0)}</h1>
+                </div>
+            </div>
             <div className="overflow-x-auto">
                 <table className="table w-full text-xs mb-2">
                     <thead className="">
@@ -152,7 +171,7 @@ const DailyProfit = () => {
                                 </td>
                             </tr>
                         ) : (
-                            dailyProfit.map((item, index) => (
+                            dailyProfit?.map((item, index) => (
                                 <tr key={index}>
                                     <td>{item.day}</td>
                                     <td>{formatNumber(item.revenue)}</td>
@@ -166,10 +185,10 @@ const DailyProfit = () => {
                     <tfoot className="font-semibold text-gray-800 bg-gray-100">
                         <tr>
                             <td>Total</td>
-                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.revenue, 0))}</td>
-                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.cost, 0))}</td>
-                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + item.expense, 0))}</td>
-                            <td>{formatNumber(dailyProfit.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0))}</td>
+                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.revenue, 0))}</td>
+                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.cost, 0))}</td>
+                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.expense, 0))}</td>
+                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0))}</td>
                         </tr>
                     </tfoot>
                 </table>

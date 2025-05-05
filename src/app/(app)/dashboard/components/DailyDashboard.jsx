@@ -163,14 +163,18 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-400" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-600">Debt Ratio</h1>
-                            <span className="text-xl font-bold ">{((dailyDashboard?.data?.liabilities / dailyDashboard?.data?.assets) * 100).toFixed(2)}%</span>
+                            <span className="text-xl font-bold ">
+                                {((dailyDashboard?.data?.liabilities / dailyDashboard?.data?.assets) * 100).toFixed(2) || 0}%
+                            </span>
                         </div>
                     </div>
                     <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
                         <PercentCircleIcon className="w-8 h-8 inline text-slate-400" />
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-600">Current Ratio</h1>
-                            <span className="text-xl font-bold ">{((dailyDashboard?.data?.assets / dailyDashboard?.data?.liabilities) * 100).toFixed(2)}%</span>
+                            <span className="text-xl font-bold ">
+                                {((dailyDashboard?.data?.assets / dailyDashboard?.data?.liabilities) * 100).toFixed(2) || 0}%
+                            </span>
                         </div>
                     </div>
                     <div className="flex gap-2 justify-between items-center bg-amber-300 h-full rounded-2xl px-3 py-4">
@@ -178,7 +182,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-600">Debt to Equity Ratio</h1>
                             <span className="text-xl font-bold ">
-                                {((dailyDashboard?.data?.liabilities / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%
+                                {((dailyDashboard?.data?.liabilities / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2) || 0}%
                             </span>
                         </div>
                     </div>
@@ -187,7 +191,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <div className="flex flex-col items-end">
                             <h1 className="text-sm font-bold text-slate-600">Return to Equity Ratio</h1>
                             <span className="text-xl font-bold ">
-                                {((dailyDashboard?.data?.netProfitCurrentMonth / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2)}%
+                                {((dailyDashboard?.data?.netProfitCurrentMonth / (dailyDashboard?.data?.equity + netProfit)) * 100).toFixed(2) || 0}%
                             </span>
                         </div>
                     </div>
