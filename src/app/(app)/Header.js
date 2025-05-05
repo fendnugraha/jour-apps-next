@@ -12,6 +12,7 @@ import {
     StoreIcon,
     ArrowRightLeftIcon,
     GemIcon,
+    ScaleIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/libs/auth";
@@ -78,6 +79,9 @@ const Header = ({ title }) => {
                         {getCurrentDate()}
                     </span>
                 </h1>
+                <button className=" text-white sm:hidden">
+                    <MenuIcon className="w-8 h-8" onClick={() => setIsOpen(!isOpen)} />
+                </button>
             </header>
             <div
                 className={`transition-all duration-300 ease-in-out transform ${
@@ -99,11 +103,11 @@ const Header = ({ title }) => {
                             <ArrowRightLeftIcon size={20} className="mr-2 inline" /> Transaction
                         </ResponsiveNavLink>
                     </li>
-                    <li className="">
+                    {/* <li className="">
                         <ResponsiveNavLink href="/store" active={pathname === "/store"}>
                             <StoreIcon size={20} className="mr-2 inline" /> Store
                         </ResponsiveNavLink>
-                    </li>
+                    </li> */}
                     {user.role?.role === "Administrator" && (
                         <>
                             <li className="">
@@ -116,14 +120,19 @@ const Header = ({ title }) => {
                                     <ChartAreaIcon size={20} className="mr-2 inline" /> Summary
                                 </ResponsiveNavLink>
                             </li>
-                            <li className="border-t py-2">
+                            <li className="">
+                                <ResponsiveNavLink href="/report" active={pathname === "/report"}>
+                                    <ScaleIcon size={20} className="mr-2 inline" /> Report
+                                </ResponsiveNavLink>
+                            </li>
+                            <li className="border-t border-slate-200 py-2">
                                 <ResponsiveNavLink href="/setting" active={pathname.startsWith("/setting")}>
                                     <CogIcon size={20} className="mr-2 inline" /> Setting
                                 </ResponsiveNavLink>
                             </li>
                         </>
                     )}
-                    <li className="border-t py-4">
+                    <li className="border-t border-slate-200 py-4">
                         <ResponsiveNavButton onClick={logout}>
                             <CirclePowerIcon size={20} className="mr-2 inline" /> Logout ({user.email})
                         </ResponsiveNavButton>

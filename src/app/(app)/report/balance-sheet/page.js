@@ -87,10 +87,12 @@ const BalanceSheet = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <h1 className="text-lg font-bold">Assets</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.assets?.total)}{" "}
+                                    <span className="block text-slate-500 text-sm mb-2 font-bold">
+                                        {loading ? "Loading.." : formatNumber(balanceSheet?.assets?.total)}{" "}
                                         {typeof balanceSheet?.assetsGrowthRate?.rate === "number" && (
-                                            <span className={balanceSheet?.assetsGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                            <span
+                                                className={balanceSheet?.assetsGrowthRate?.rate > 0 ? "font-normal text-green-600" : "font-normal text-red-600"}
+                                            >
                                                 ({balanceSheet?.assetsGrowthRate?.rate > 0 ? "+" : ""}
                                                 {balanceSheet?.assetsGrowthRate?.rate.toFixed(2)}%)
                                             </span>
@@ -123,10 +125,14 @@ const BalanceSheet = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold">Liabilities</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.liabilities?.total)}{" "}
+                                    <span className="block text-slate-500 text-sm mb-2 font-bold">
+                                        {loading ? "Loading.." : formatNumber(balanceSheet?.liabilities?.total)}{" "}
                                         {typeof balanceSheet?.liabilitiesGrowthRate?.rate === "number" && (
-                                            <span className={balanceSheet?.liabilitiesGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                            <span
+                                                className={
+                                                    balanceSheet?.liabilitiesGrowthRate?.rate > 0 ? "font-normal text-green-600" : "font-normal text-red-600"
+                                                }
+                                            >
                                                 ({balanceSheet?.liabilitiesGrowthRate?.rate > 0 ? "+" : ""}
                                                 {balanceSheet?.liabilitiesGrowthRate?.rate.toFixed(2)}%)
                                             </span>
@@ -158,10 +164,12 @@ const BalanceSheet = () => {
                                         </tbody>
                                     </table>
                                     <h1 className="mt-5 text-lg font-bold">Equity (Modal)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}{" "}
+                                    <span className="block text-slate-500 text-sm mb-2 font-bold">
+                                        {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}{" "}
                                         {typeof balanceSheet?.equityGrowthRate?.rate === "number" && (
-                                            <span className={balanceSheet?.equityGrowthRate?.rate > 0 ? "text-green-600" : "text-red-600"}>
+                                            <span
+                                                className={balanceSheet?.equityGrowthRate?.rate > 0 ? "font-normal text-green-600" : "font-normal text-red-600"}
+                                            >
                                                 ({balanceSheet?.equityGrowthRate?.rate > 0 ? "+" : ""}
                                                 {balanceSheet?.equityGrowthRate?.rate.toFixed(2)}%/{formatNumber(balanceSheet?.equityGrowthRate?.amount)})
                                             </span>
@@ -190,11 +198,13 @@ const BalanceSheet = () => {
                                                     ))}
                                                 </React.Fragment>
                                             ))}
-                                            <tr className="text-xs">
-                                                <td className="text-start">-</td>
-                                                <td className="py-1 text-start">Laba Rugi Berjalan</td>
-                                                <td className="py-1 text-end">{formatNumber(balanceSheet?.profitloss)}</td>
-                                            </tr>
+                                            {loading ? null : (
+                                                <tr className="text-xs">
+                                                    <td className="text-start">-</td>
+                                                    <td className="py-1 text-start">Laba Rugi Berjalan</td>
+                                                    <td className="py-1 text-end">{formatNumber(balanceSheet?.profitloss)}</td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>

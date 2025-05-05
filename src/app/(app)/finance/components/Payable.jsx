@@ -145,10 +145,10 @@ const Payable = ({ notification }) => {
                             </Modal>
                         </div>
                     </div>
-                    <div className="p-4 w-1/2 flex justify-between gap-2">
+                    <div className="p-4 w-full sm:w-1/2 flex justify-between gap-2">
                         <Input
                             type="search"
-                            className="w-full border rounded-lg p-2"
+                            className="border border-slate-300 rounded-lg p-2 w-full"
                             value={searchTerm}
                             placeholder="Search"
                             onChange={(e) => setSearchTerm(e.target.value)}

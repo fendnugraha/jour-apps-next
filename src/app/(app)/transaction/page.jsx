@@ -14,6 +14,7 @@ import Loading from "../loading";
 import {
     ArrowDownCircleIcon,
     ArrowUpCircleIcon,
+    BuildingIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
     HandCoinsIcon,
@@ -21,6 +22,7 @@ import {
     LoaderCircleIcon,
     RefreshCcwIcon,
     ShoppingBagIcon,
+    XIcon,
 } from "lucide-react";
 import useCashBankBalance from "@/libs/cashBankBalance";
 import { mutate } from "swr";
@@ -33,6 +35,7 @@ import Pagination from "@/components/PaginateList";
 import CreatePrive from "./components/CreatePrive";
 import CreateEquity from "./components/CreateEquity";
 import CreateIncome from "./components/CreateIncome";
+import { set } from "date-fns";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -65,6 +68,8 @@ const TransactionPage = () => {
     const [isModalCreateIncomeOpen, setIsModalCreateIncomeOpen] = useState(false);
     const [isModalCreatePriveOpen, setIsModalCreatePriveOpen] = useState(false);
     const [isModalCreateEquityOpen, setIsModalCreateEquityOpen] = useState(false);
+    const [isExpenseMenuOpen, setIsExpenseMenuOpen] = useState(false);
+    const [isJournalMenuOpen, setIsJournalMenuOpen] = useState(false);
     const [isModalCreateBankAdminFeeOpen, setIsModalCreateBankAdminFeeOpen] = useState(false);
     const [notification, setNotification] = useState({
         type: "",
@@ -100,8 +105,8 @@ const TransactionPage = () => {
     useEffect(() => {
         function handleClickOutside(event) {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsVoucherMenuOpen(false); // Tutup menu jika klik di luar
                 setIsExpenseMenuOpen(false);
+                setIsJournalMenuOpen(false);
             }
         }
 
@@ -183,6 +188,74 @@ const TransactionPage = () => {
         <>
             <Header title="Transaction" />
             <div className="py-8 relative">
+                <div ref={menuRef} className="fixed sm:hidden bottom-0 w-full z-[999]">
+                    <div className={`text-white shadow-xl ${!isJournalMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
+                        <button onClick={() => setIsModalCreateJournalOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Jurnal Umum
+                        </button>
+                        <button onClick={() => setIsModalCreateIncomeOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Kas Masuk (Income)
+                        </button>
+                        <button onClick={() => setIsModalCreateDepositOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Deposit Customer
+                        </button>
+                        <button
+                            onClick={() => setIsModalCreateSalesByValueOpen(true)}
+                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
+                        >
+                            Penjualan (By Value)
+                        </button>
+                        <button onClick={() => setIsModalCreateEquityOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Penambahan Modal (Equity)
+                        </button>
+                    </div>
+                    <div className={`text-white ${!isExpenseMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
+                        <button onClick={() => setIsModalCreateExpenseOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Biaya Operasional
+                        </button>
+                        <button
+                            onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
+                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
+                        >
+                            Biaya Admin Bank
+                        </button>
+                        <button onClick={() => setIsModalCreatePriveOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                            Penarikan Modal (prive)
+                        </button>
+                    </div>
+                    <div className="text-white flex justify-between items-center">
+                        <button
+                            onClick={() => {
+                                setIsJournalMenuOpen(!isJournalMenuOpen);
+                                setIsExpenseMenuOpen(false);
+                                setIsDailyReportOpen(false);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                        >
+                            <BuildingIcon className="w-7 h-7" /> Journal
+                        </button>
+                        <button
+                            onClick={() => {
+                                setIsExpenseMenuOpen(!isExpenseMenuOpen);
+                                setIsJournalMenuOpen(false);
+                                setIsDailyReportOpen(false);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                        >
+                            <HandCoinsIcon className="w-7 h-7" /> Biaya
+                        </button>
+                        <button
+                            onClick={() => {
+                                setIsDailyReportOpen(!isDailyReportOpen);
+                                setIsJournalMenuOpen(false);
+                                setIsExpenseMenuOpen(false);
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                        >
+                            <LayoutDashboardIcon className="w-7 h-7" /> Kas Bank
+                        </button>
+                    </div>
+                </div>
                 <div className="max-w-7xl mx-auto sm:px-6">
                     {notification.message && (
                         <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
@@ -401,25 +474,30 @@ const TransactionPage = () => {
             >
                 <button
                     className={` ${
-                        isDailyReportOpen ? "w-8 -left-8" : "-left-8 w-8"
-                    } h-8 py-1 px-2 top-0 absolute bg-orange-300 shadow-lg text-xs hidden sm:flex items-center justify-start rounded-s-lg transition-all duration-300 ease-in-out text-nowrap hover:bg-orange-200`}
+                        isDailyReportOpen ? "w-8 -left-8" : "-left-24 w-24"
+                    } h-8 py-1 px-2 top-0 absolute bg-orange-300 shadow-lg text-xs hidden sm:flex items-center justify-start rounded-s-lg transition-all duration-300 delay-500 ease-in-out text-nowrap hover:bg-orange-200`}
                     onClick={() => setIsDailyReportOpen(!isDailyReportOpen)}
                 >
                     <ChevronLeftIcon
                         size={20}
                         className={`inline ${isDailyReportOpen ? "rotate-180" : ""} transition-transform duration-300 delay-300 ease-in-out`}
                     />{" "}
-                    {/* {isDailyReportOpen ? "" : "Daily Report"} */}
+                    {isDailyReportOpen ? "" : "Kas & Bank"}
                 </button>
                 <div className="px-4 py-2">
                     <div className="flex justify-between items-center">
                         <h1 className="text-lg font-bold">Saldo Kas & Bank</h1>
-                        <button
-                            className="text-slate-400 hover:scale-110 transition-transform duration-75"
-                            onClick={() => mutate(`/api/get-cash-bank-balance/${warehouse}/${endDate}`)}
-                        >
-                            <RefreshCcwIcon className={`w-5 h-5 ${isValidating ? "animate-spin" : ""}`} />
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                className="text-slate-400 hover:scale-110 transition-transform duration-75"
+                                onClick={() => mutate(`/api/get-cash-bank-balance/${warehouse}/${endDate}`)}
+                            >
+                                <RefreshCcwIcon className={`w-5 h-5 ${isValidating ? "animate-spin" : ""}`} />
+                            </button>
+                            <button className="text-slate-400 hover:scale-110 transition-transform duration-75" onClick={() => setIsDailyReportOpen(false)}>
+                                <XIcon className={`w-8 h-8`} />
+                            </button>
+                        </div>
                     </div>
                     <span className="block text-xs mb-4 text-slate-400">{getCurrentDate()}</span>
 

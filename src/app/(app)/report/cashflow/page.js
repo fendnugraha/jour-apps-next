@@ -328,12 +328,12 @@ const CashFlow = () => {
                             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <h1 className="text-lg font-bold">Total Kas Awal (Start Balance)</h1>
-                                    <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.start_balance)}</span>
+                                    <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.start_balance || 0)}</span>
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold">Total Kas Akhir (End Balance)</h1>
                                     <div className="flex items-center gap-2">
-                                        <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.end_balance)}</span>
+                                        <span className="block text-slate-500 text-lg font-bold">{formatNumber(cashflow?.end_balance || 0)}</span>
                                         <div>
                                             {cashflow?.end_balance - cashflow?.start_balance > 0 ? (
                                                 <>

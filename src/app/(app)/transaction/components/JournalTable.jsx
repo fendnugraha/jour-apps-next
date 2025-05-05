@@ -217,7 +217,7 @@ const JournalTable = ({
                 </Modal>
             </div>
             <div className="px-4 pt-2 flex">
-                <button className="rounded-l-lg bg-white p-2 border border-gray-300">
+                <button className="rounded-l-lg bg-white py-2 px-8 border  border-gray-300">
                     <SearchIcon size={20} />
                 </button>
                 <Input
