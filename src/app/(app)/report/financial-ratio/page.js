@@ -59,6 +59,7 @@ const FinancialRatio = () => {
         roe: (dailyDashboard?.data?.netProfitCurrentMonth / (dailyDashboard?.data?.equity + netProfit)) * 100,
         quickRatio: (dailyDashboard?.data?.currentAssets - dailyDashboard?.data?.inventory) / dailyDashboard?.data?.liabilities,
         netProfitMargin: (netProfit / dailyDashboard?.data?.revenue) * 100,
+        cashRatio: cashBank / dailyDashboard?.data?.liabilities,
     };
 
     const evaluate = (name, value) => {
@@ -78,6 +79,11 @@ const FinancialRatio = () => {
                 if (value > 150) return "Perusahaan terlalu mengandalkan utang (>150%), yang dapat memperbesar beban bunga dan risiko insolvensi.";
                 if (value >= 50) return "Struktur pendanaan cukup seimbang antara utang dan modal sendiri (50–150%).";
                 return "Pendanaan didominasi ekuitas (<50%), menunjukkan struktur modal yang konservatif dan minim risiko.";
+
+            case "cashRatio":
+                if (value < 1) return "Kas tidak mencukupi untuk menutup kewajiban jangka pendek. Perusahaan berisiko kesulitan likuiditas.";
+                if (value <= 2) return "Kas cukup untuk menutup kewajiban lancar.";
+                return "Kas sangat tinggi (>2), namun perlu dipastikan bahwa kas dimanfaatkan secara efisien.";
 
             case "roe":
                 if (value < 10) return "Pengembalian terhadap modal pemilik rendah (<10%). Perlu evaluasi strategi efisiensi dan profitabilitas.";
@@ -152,15 +158,21 @@ const FinancialRatio = () => {
                                     <tbody>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Current Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.currentRatio.toFixed(2)}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.currentRatio.toFixed(2)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">1.5 - 2.5</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("currentRatio", rasioInput.currentRatio)}</td>
                                         </tr>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4">Quick Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.quickRatio.toFixed(2)}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.quickRatio.toFixed(2)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("quickRatio", rasioInput.quickRatio)}</td>
+                                        </tr>
+                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                            <td className="px-6 py-4">Cash Ratio</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.cashRatio.toFixed(2)}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
+                                            <td className="px-6 py-4 whitespace-normal">{evaluate("cashRatio", rasioInput.cashRatio)}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -179,13 +191,13 @@ const FinancialRatio = () => {
                                     <tbody>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.debtRatio.toFixed(2)}%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtRatio.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">40% – 60%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("debtRatio", rasioInput.debtRatio)}</td>
                                         </tr>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.debtToEquity.toFixed(2)}%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtToEquity.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("debtToEquity", rasioInput.debtToEquity)}</td>
                                         </tr>
@@ -206,13 +218,13 @@ const FinancialRatio = () => {
                                     <tbody>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Return to Equity</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.roe.toFixed(2)}%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.roe.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">10% - 20%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("roe", rasioInput.roe)}</td>
                                         </tr>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{rasioInput.netProfitMargin.toFixed(2)}%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.netProfitMargin.toFixed(2)}%</td>
                                             <td className="px-6 py-4 whitespace-nowrap">5% – 15%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("netProfitMargin", rasioInput.netProfitMargin)}</td>
                                         </tr>
