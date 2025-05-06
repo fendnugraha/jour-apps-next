@@ -134,12 +134,17 @@ const EditJournal = ({ isModalOpen, journal, branchAccount, notification, fetchJ
                         {errors.description && <span className="text-red-500 text-xs">{errors.description}</span>}
                     </div>
                 </div>
-                <button
-                    className="bg-green-500 hover:bg-green-600 rounded-xl px-8 py-3 text-white disabled:bg-slate-300 disabled:cursor-not-allowed"
-                    disabled={loading}
-                >
-                    {loading ? "Loading..." : "Update"}
-                </button>
+                <div className="flex justify-end">
+                    <button className="rounded-xl px-8 py-3 text-red-300 hover:border-red-300 hover:border mr-1" onClick={() => isModalOpen(false)}>
+                        Cancel
+                    </button>
+                    <button
+                        className="bg-green-500 hover:bg-green-600 rounded-xl px-8 py-3 text-white disabled:bg-slate-300 disabled:cursor-not-allowed"
+                        disabled={loading}
+                    >
+                        {loading ? "Loading..." : "Update"}
+                    </button>
+                </div>
             </form>
         </div>
     );

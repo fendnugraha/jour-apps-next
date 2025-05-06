@@ -145,7 +145,7 @@ const Navigation = ({ user }) => {
                     </div>
                     {userRole === "Administrator" && (
                         <>
-                            <hr className="my-4 bg-slate-200" />
+                            <hr className="my-4 border-slate-200" />
                             <ul className="mt-4 text-sm">
                                 <NavLink href="/setting" isOpen={isOpen} active={pathname.startsWith("/setting")}>
                                     <div>
