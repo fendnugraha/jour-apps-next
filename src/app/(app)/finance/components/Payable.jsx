@@ -198,7 +198,7 @@ const Payable = ({ notification }) => {
                                                     setSelectedContactIdPayment(item.contact_id);
                                                 }}
                                                 type="button"
-                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl disabled:bg-slate-400 disabled:cursor-not-allowed"
+                                                className="bg-blue-500 hover:bg-yellow-300 hover:text-slate-700 text-white font-bold py-2 px-6 rounded-xl disabled:bg-slate-400 disabled:cursor-not-allowed cursor-pointer hover:scale-110 transition-transform duration-300 ease-out"
                                                 disabled={Number(item.sisa) === 0}
                                             >
                                                 {Number(item.sisa) === 0 ? "Lunas" : "Bayar"}
@@ -240,7 +240,7 @@ const Payable = ({ notification }) => {
                                 <tr>
                                     <th>Type</th>
                                     <th>Amount</th>
-                                    <th>Payment Method</th>
+                                    <th>Method</th>
                                     <th>Description</th>
                                     <th>Contact</th>
                                     <th>Action</th>
@@ -256,7 +256,7 @@ const Payable = ({ notification }) => {
                                 ) : (
                                     finance.finance?.data.map((item, index) => (
                                         <tr key={index} className="hover:bg-slate-700 hover:text-white">
-                                            <td>
+                                            <td className="text-center whitespace-nowrap">
                                                 {item.bill_amount > 0 ? (
                                                     <ArrowBigDown className="inline text-green-600" />
                                                 ) : (

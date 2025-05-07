@@ -73,7 +73,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
     const filterDataByInvoice = financeData.filter((finance) => finance.invoice === selectedInvoice);
     return (
         <div>
-            <h1 className="text-lg mb-4">Contact: {contactName}</h1>
+            <h1 className="text-lg mb-4 font-semibold">{contactName}</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <Label>Invoice No.</Label>
@@ -83,7 +83,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                             setFormData({ ...formData, invoice: e.target.value });
                         }}
                         value={selectedInvoice}
-                        className="w-full border rounded-lg p-2"
+                        className="w-full border border-slate-300 rounded-lg p-2"
                     >
                         <option value="">Select Invoice</option>
                         {financeData.map((finance, index) => (
@@ -117,7 +117,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                     <select
                         onChange={(e) => setFormData({ ...formData, account_id: e.target.value })}
                         value={formData.account_id}
-                        className="w-full border rounded-lg p-2 disabled:bg-slate-300 disabled:text-white disabled:cursor-not-allowed"
+                        className="w-full border border-slate-300 rounded-lg p-2 disabled:bg-slate-300 disabled:text-white disabled:cursor-not-allowed"
                         disabled={formData.account_id === 8}
                     >
                         <option value="">Select account</option>
@@ -137,12 +137,15 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                                 value={formData.amount}
                                 type="number"
-                                className="w-full border rounded-lg p-2"
+                                className="w-full border border-slate-300 rounded-lg p-2"
+                                min={0}
                             />
                             <h1 className="text-xs">
                                 Sisa Tagihan:{" "}
                                 {filterDataByInvoice[0]?.sisa - formData.amount < 0 ? (
                                     <span className="text-red-500">Melebihi sisa tagihan!</span>
+                                ) : formData.amount < 0 ? (
+                                    <span className="text-red-500">Jumlah bayar kurang dari 0</span>
                                 ) : (
                                     selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa - formData.amount)
                                 )}
@@ -158,7 +161,8 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             value={formData.notes}
                             rows="2"
-                            className="w-full border rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2"
+                            required
                         />
                     </div>
                     {errors.notes && <span className="text-red-500 text-sm">{errors.notes}</span>}
@@ -166,7 +170,14 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                 <button
                     type="submit"
                     className="bg-indigo-500 hover:bg-indigo-600 rounded-xl px-8 py-3 text-white disabled:bg-slate-300 disabled:cursor-not-allowed"
-                    disabled={loading || !formData.invoice || !formData.account_id || !formData.amount || filterDataByInvoice[0]?.sisa - formData.amount < 0}
+                    disabled={
+                        loading ||
+                        !formData.invoice ||
+                        !formData.account_id ||
+                        !formData.amount ||
+                        filterDataByInvoice[0]?.sisa - formData.amount < 0 ||
+                        formData.amount < 0
+                    }
                 >
                     {loading ? "Loading..." : "Simpan"}
                 </button>
