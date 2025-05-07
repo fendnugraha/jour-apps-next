@@ -247,40 +247,48 @@ const Payable = ({ notification }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {finance.finance?.data.map((item, index) => (
-                                    <tr key={index} className="hover:bg-slate-700 hover:text-white">
-                                        <td>
-                                            {item.bill_amount > 0 ? (
-                                                <ArrowBigDown className="inline text-green-600" />
-                                            ) : (
-                                                <ArrowBigUp className="inline text-red-600" />
-                                            )}
-                                        </td>
-                                        <td className={`text-end font-bold ${item.bill_amount > 0 ? "text-green-600" : "text-red-600"}`}>
-                                            {formatNumber(item.bill_amount > 0 ? item.bill_amount : item.payment_amount)}
-                                        </td>
-                                        <td className="">{item.account.acc_name}</td>
-                                        <td className="whitespace-normal break-words max-w-xs">
-                                            <span className="font-bold text-xs text-slate-400 block">
-                                                {formatDateTime(item.created_at)} | {item.invoice}
-                                            </span>
-                                            Note: {item.description}
-                                        </td>
-                                        <td className="">{item.contact.name}</td>
-                                        <td className="text-center">
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedFinanceId(item.id);
-                                                    setIsModalDeleteFinanceOpen(true);
-                                                }}
-                                                type="button"
-                                                className=""
-                                            >
-                                                <XCircleIcon className="w-4 h-4 mr-2 inline text-red-600" />
-                                            </button>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} className="text-center animate-pulse">
+                                            Loading data, please wait...
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    finance.finance?.data.map((item, index) => (
+                                        <tr key={index} className="hover:bg-slate-700 hover:text-white">
+                                            <td>
+                                                {item.bill_amount > 0 ? (
+                                                    <ArrowBigDown className="inline text-green-600" />
+                                                ) : (
+                                                    <ArrowBigUp className="inline text-red-600" />
+                                                )}
+                                            </td>
+                                            <td className={`text-end font-bold ${item.bill_amount > 0 ? "text-green-600" : "text-red-600"}`}>
+                                                {formatNumber(item.bill_amount > 0 ? item.bill_amount : item.payment_amount)}
+                                            </td>
+                                            <td className="">{item.account.acc_name}</td>
+                                            <td className="whitespace-normal break-words max-w-xs">
+                                                <span className="font-bold text-xs text-slate-400 block">
+                                                    {formatDateTime(item.created_at)} | {item.invoice}
+                                                </span>
+                                                Note: {item.description}
+                                            </td>
+                                            <td className="">{item.contact.name}</td>
+                                            <td className="text-center">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedFinanceId(item.id);
+                                                        setIsModalDeleteFinanceOpen(true);
+                                                    }}
+                                                    type="button"
+                                                    className=""
+                                                >
+                                                    <XCircleIcon className="w-4 h-4 mr-2 inline text-red-600" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
