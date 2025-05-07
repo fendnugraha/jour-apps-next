@@ -137,7 +137,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Assets</h1>
                             <WalletCardsIcon className="w-8 h-8 inline" />
                         </div>
-                        <h1 className="text-3xl">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.assets)}</h1>
+                        <h1 className="text-3xl font-semibold">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.assets)}</h1>
                     </div>
                 </div>
                 <div className="bg-violet-500 text-white px-3 py-4 rounded-2xl">
@@ -146,7 +146,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Liabilities</h1>
                             <ReceiptTextIcon className="w-8 h-8 inline" />
                         </div>
-                        <h1 className="text-3xl">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.liabilities)}</h1>
+                        <h1 className="text-3xl font-semibold">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.liabilities)}</h1>
                     </div>
                 </div>
                 <div className="bg-violet-500 text-white px-3 py-4 rounded-2xl">
@@ -155,7 +155,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Equity</h1>
                             <BriefcaseIcon className="w-8 h-8 inline" />
                         </div>
-                        <h1 className="text-3xl">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.equity + netProfit)}</h1>
+                        <h1 className="text-3xl font-semibold">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.equity + netProfit)}</h1>
                     </div>
                 </div>
                 <div className="row-span-3 flex h-full justify-between gap-4 flex-col">
@@ -192,16 +192,38 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white px-3 py-4 rounded-2xl col-span-2 row-span-2">
+                <div className="bg-white px-3 py-4 rounded-2xl col-span-2 row-span-2 flex flex-col justify-between gap-4">
                     {" "}
-                    <div className="flex flex-col gap-2 justify-start h-full">
+                    <div className="flex flex-col gap-2 justify-start">
                         <div className="flex items-start gap-2 justify-between">
                             <h1 className="text-xl font-bold">Saldo Kas & Bank</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">
+                        <h1 className="text-5xl font-semibold  text-slate-500">
                             {isValidating ? "loading.." : formatNumber(dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)}
                         </h1>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 h-full">
+                        <div className="flex justify-evenly items-center flex-col gap-2 bg-violet-100 rounded-2xl">
+                            <h1 className="font-bold text-xl text-slate-700">Total Cash</h1>
+                            <h1 className="text-4xl font-semibold text-violet-500">
+                                {isValidating
+                                    ? ".."
+                                    : ((dailyDashboard?.data?.cash / (dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)) * 100).toFixed(2)}
+                                %
+                            </h1>
+                            <h1 className="font-semibold text-slate-500">{isValidating ? "loading.." : formatNumber(dailyDashboard?.data?.cash)}</h1>
+                        </div>
+                        <div className="flex justify-evenly items-center flex-col gap-2 bg-violet-100 rounded-2xl">
+                            <h1 className="font-bold text-xl text-slate-700">Total Bank</h1>
+                            <h1 className="text-4xl font-semibold text-violet-500">
+                                {isValidating
+                                    ? ".."
+                                    : ((dailyDashboard?.data?.bank / (dailyDashboard?.data?.cash + dailyDashboard?.data?.bank)) * 100).toFixed(2)}
+                                %
+                            </h1>
+                            <h1 className="font-semibold text-slate-500">{isValidating ? "loading.." : formatNumber(dailyDashboard?.data?.bank)}</h1>
+                        </div>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl col-start-3">
@@ -210,7 +232,9 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Piutang</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.receivable)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">
+                            {isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.receivable)}
+                        </h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl col-start-3 row-start-3">
@@ -219,7 +243,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Hutang</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.payable)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.payable)}</h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
@@ -228,7 +252,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">Pendapatan</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.revenue)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.revenue)}</h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
@@ -237,7 +261,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <h1 className="text-xl font-bold">HPP</h1>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.cost)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.cost)}</h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
@@ -251,7 +275,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             </div>
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.expense)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.expense)}</h1>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
@@ -266,7 +290,7 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                             <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
                         </div>
 
-                        <h1 className="text-3xl  text-slate-500">{isValidating ? "loading.." : formatNumberToK(netProfit)}</h1>
+                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(netProfit)}</h1>
                     </div>
                 </div>
             </div>

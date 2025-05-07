@@ -255,7 +255,7 @@ const JournalTable = ({
                                     <td className="whitespace-normal">
                                         <span className="text-xs text-slate-500 group-hover:text-orange-300 block">
                                             #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
-                                            {formatDateTime(journal.created_at)}
+                                            {formatDateTime(journal.date_issued)}
                                         </span>
                                         <span
                                             className="font-semibold text-teal-600 group-hover:text-yellow-300 text-xs block"
@@ -263,7 +263,7 @@ const JournalTable = ({
                                         >
                                             Contact: {journal.finance[0]?.contact?.name}
                                         </span>
-                                        at {formatDateTime(journal.date_issued)}. Note: {journal.trx_type} {journal.description}.
+                                        {journal.trx_type} Note: {journal.description}.
                                         <span className="font-bold text-xs block text-slate-700 group-hover:text-white">
                                             {journal.trx_type === "Voucher & SP" || journal.trx_type === "Accessories" ? (
                                                 <ul className="list-disc font-normal scale-95">
@@ -289,9 +289,6 @@ const JournalTable = ({
                                         >
                                             {formatNumber(journal.amount)}
                                         </span>
-                                        {journal.fee_amount !== 0 && (
-                                            <span className="text-xs text-yellow-600 group-hover:text-white block">{formatNumber(journal.fee_amount)}</span>
-                                        )}
                                     </td>
                                     <td className="">
                                         <div className="flex justify-center gap-3">

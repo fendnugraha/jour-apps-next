@@ -43,6 +43,7 @@ const BalanceSheet = () => {
     useEffect(() => {
         fetchBalanceSheet();
     }, [fetchBalanceSheet]);
+
     return (
         <>
             <Header title="Neraca (Balance Sheet)" />
