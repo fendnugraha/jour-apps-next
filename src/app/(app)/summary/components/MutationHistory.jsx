@@ -171,7 +171,7 @@ const MutationHistory = ({ account, notification, user }) => {
                             mutation.journals?.data?.length > 0 ? (
                                 mutation.journals?.data?.map((item, index) => (
                                     <tr key={index}>
-                                        <td>
+                                        <td className="whitespace-normal break-words max-w-xs">
                                             <span className="text-xs text-slate-500 block">
                                                 #{item.id} {item.invoice} | {formatDateTime(item.date_issued)}
                                             </span>
