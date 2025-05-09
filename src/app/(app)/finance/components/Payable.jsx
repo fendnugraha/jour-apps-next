@@ -319,7 +319,7 @@ const Payable = ({ notification }) => {
                         </button>
                     </div>
                 </Modal>
-                <Modal isOpen={isModalPaymentOpen} onClose={closeModal} modalTitle="Form Pembayaran" maxWidth="max-w-xl">
+                <Modal isOpen={isModalPaymentOpen} onClose={closeModal} modalTitle="Form Pembayaran" maxWidth="max-w-2xl">
                     <PaymentForm
                         contactId={selectedContactIdPayment}
                         notification={(message) => notification(message)}

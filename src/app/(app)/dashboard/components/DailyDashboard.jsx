@@ -246,51 +246,51 @@ const DailyDashboard = ({ notification, warehouse, warehouses, userRole }) => {
                         <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.payable)}</h1>
                     </div>
                 </div>
-                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                <div className="bg-green-200 px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
                             <h1 className="text-xl font-bold">Pendapatan</h1>
-                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                            <WalletCardsIcon className="w-8 h-8 inline text-green-700" />
                         </div>
-                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.revenue)}</h1>
+                        <h1 className="text-3xl font-semibold text-green-700">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.revenue)}</h1>
                     </div>
                 </div>
-                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                <div className="bg-green-200 px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
                             <h1 className="text-xl font-bold">HPP</h1>
-                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                            <WalletCardsIcon className="w-8 h-8 inline text-green-700" />
                         </div>
-                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.cost)}</h1>
+                        <h1 className="text-3xl font-semibold text-green-700">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.cost)}</h1>
                     </div>
                 </div>
-                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                <div className="bg-green-200 px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
                             <div>
                                 <h1 className="text-xl font-bold">Biaya</h1>
-                                <span className="text-sm font-bold text-slate-500">
+                                <span className="text-sm font-bold text-green-700">
                                     {((dailyDashboard?.data?.expense / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%
                                 </span>
                             </div>
-                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                            <WalletCardsIcon className="w-8 h-8 inline text-green-700" />
                         </div>
-                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.expense)}</h1>
+                        <h1 className="text-3xl font-semibold text-green-700">{isValidating ? "loading.." : formatNumberToK(dailyDashboard?.data?.expense)}</h1>
                     </div>
                 </div>
-                <div className="bg-white px-3 py-4 rounded-2xl row-start-4">
+                <div className="bg-green-200 px-3 py-4 rounded-2xl row-start-4">
                     <div className="flex flex-col gap-2 justify-between h-full">
                         <div className="flex items-start gap-2 justify-between">
                             <div>
                                 <h1 className="text-xl font-bold">Net Profit</h1>
-                                <span className="text-sm font-bold text-slate-500">
+                                <span className="text-sm font-bold text-green-700">
                                     {isValidating ? "loading.." : ((netProfit / dailyDashboard?.data?.revenue) * 100).toFixed(2)}%
                                 </span>
                             </div>
-                            <WalletCardsIcon className="w-8 h-8 inline text-slate-600" />
+                            <WalletCardsIcon className="w-8 h-8 inline text-green-700" />
                         </div>
 
-                        <h1 className="text-3xl font-semibold text-slate-500">{isValidating ? "loading.." : formatNumberToK(netProfit)}</h1>
+                        <h1 className="text-3xl font-semibold text-green-700">{isValidating ? "loading.." : formatNumberToK(netProfit)}</h1>
                     </div>
                 </div>
             </div>

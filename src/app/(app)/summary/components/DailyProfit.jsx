@@ -65,6 +65,18 @@ const DailyProfit = () => {
 
     const netProfitRate = (summarizeProfit / summarizeRevenue) * 100;
 
+    const formatLongDate = (dateString) => {
+        const tanggal = new Date(dateString);
+        const formatted = new Intl.DateTimeFormat("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }).format(tanggal);
+
+        return formatted;
+    };
+
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4 flex justify-between">
@@ -172,8 +184,8 @@ const DailyProfit = () => {
                             </tr>
                         ) : (
                             dailyProfit?.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.day}</td>
+                                <tr key={index} className="hover:bg-gray-50" hidden={item.revenue === 0 && item.cost === 0 && item.expense === 0}>
+                                    <td>{formatLongDate(item.day)}</td>
                                     <td>{formatNumber(item.revenue)}</td>
                                     <td>{formatNumber(item.cost)}</td>
                                     <td>{formatNumber(item.expense)}</td>
@@ -182,7 +194,7 @@ const DailyProfit = () => {
                             ))
                         )}
                     </tbody>
-                    <tfoot className="font-semibold text-gray-800 bg-gray-100">
+                    <tfoot className="font-bold text-gray-800 bg-gray-100">
                         <tr>
                             <td>Total</td>
                             <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.revenue, 0))}</td>

@@ -44,6 +44,18 @@ const BalanceSheet = () => {
         fetchBalanceSheet();
     }, [fetchBalanceSheet]);
 
+    const formatLongDate = (dateString) => {
+        const tanggal = new Date(dateString);
+        const formatted = new Intl.DateTimeFormat("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }).format(tanggal);
+
+        return formatted;
+    };
+
     return (
         <>
             <Header title="Neraca (Balance Sheet)" />
@@ -54,7 +66,7 @@ const BalanceSheet = () => {
                             <div className="mb-5 flex justify-between items-start">
                                 <div>
                                     <h1 className="text-2xl font-bold">Neraca (Balance Sheet)</h1>
-                                    <span className="block text-sm text-slate-400">Periode : {endDate}</span>
+                                    <span className="block text-sm text-slate-400">Periode : {formatLongDate(endDate)}</span>
                                 </div>
                                 <div>
                                     <button

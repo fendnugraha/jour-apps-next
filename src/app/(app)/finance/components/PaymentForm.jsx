@@ -5,6 +5,7 @@ import axios from "@/libs/axios";
 import Label from "@/components/Label";
 import formatNumber from "@/libs/formatNumber";
 import Input from "@/components/Input";
+import formatDateTime from "@/libs/formatDateTime";
 
 const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => {
     const [formData, setFormData] = useState({
@@ -71,6 +72,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
 
     const contactName = financeData[0]?.contact.name;
     const filterDataByInvoice = financeData.filter((finance) => finance.invoice === selectedInvoice);
+
     return (
         <div>
             <h1 className="text-lg mb-4 font-semibold">{contactName}</h1>
@@ -88,11 +90,14 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                         <option value="">Select Invoice</option>
                         {financeData.map((finance, index) => (
                             <option key={index} value={finance.invoice} hidden={finance.sisa <= 0}>
-                                {finance.invoice}, Total Tagihan : {formatNumber(finance.sisa)}
+                                {finance.invoice} | Tgl: {finance.date_issued} | Rp : {formatNumber(finance.sisa)}
                             </option>
                         ))}
                     </select>
-                    <h1 className="text-sm">Tagihan: RP. {selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa)}</h1>
+                    <h1 className="text-sm">
+                        Tgl: {selectedInvoice && formatDateTime(filterDataByInvoice[0]?.date_issued)}, Sisa Tagihan: RP.{" "}
+                        {selectedInvoice && formatNumber(filterDataByInvoice[0]?.sisa)}
+                    </h1>
                 </div>
                 {formData.invoice && (
                     <div className="flex items-center gap-2 mb-2">

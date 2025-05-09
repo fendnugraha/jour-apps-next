@@ -44,6 +44,17 @@ const ProfitLoss = () => {
         fetchProfitLoss();
     }, [fetchProfitLoss]);
 
+    const formatLongDate = (dateString) => {
+        const tanggal = new Date(dateString);
+        const formatted = new Intl.DateTimeFormat("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }).format(tanggal);
+
+        return formatted;
+    };
     return (
         <>
             <Header title="Laba Rugi (Profit Loss Statement)" />
@@ -55,7 +66,7 @@ const ProfitLoss = () => {
                                 <div>
                                     <h1 className="text-2xl font-bold text-blue-600">Laba Rugi (Profit Loss Statement)</h1>
                                     <span className="block text-sm text-slate-400">
-                                        Periode : {startDate} s/d {endDate}
+                                        Periode : {formatLongDate(startDate)} s/d {formatLongDate(endDate)}
                                     </span>
                                 </div>
                                 <div>
@@ -99,8 +110,8 @@ const ProfitLoss = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div>
                                     <h1 className="text-lg font-bold">Pendapatan (Revenue)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.revenue?.total)}
+                                    <span className="block font-bold text-slate-500 text-sm mb-2">
+                                        {loading ? "Calculating.." : formatNumber(profitLoss?.revenue?.total)}
                                     </span>
 
                                     <table className="table-auto w-full">
@@ -128,8 +139,8 @@ const ProfitLoss = () => {
                                         </tbody>
                                     </table>
                                     <h1 className="mt-5 text-xl font-bold">HPP (Harga Pokok Penjualan)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.cost?.total)}
+                                    <span className="block font-bold text-slate-500 text-sm mb-2">
+                                        {loading ? "Calculating.." : formatNumber(profitLoss?.cost?.total)}
                                     </span>
 
                                     <table className="table-auto w-full">
@@ -160,14 +171,14 @@ const ProfitLoss = () => {
                                     <h1 className="mt-5 text-sm font-bold">Laba (Net Profit)</h1>
                                     <span className="block text-slate-500 text-5xl font-bold mb-2">
                                         {loading
-                                            ? "Loading.."
+                                            ? "Calculating.."
                                             : formatNumber(profitLoss?.revenue?.total - profitLoss?.cost?.total - profitLoss?.expense?.total)}
                                     </span>
                                 </div>
                                 <div>
                                     <h1 className="text-lg font-bold">Biaya (Expense)</h1>
-                                    <span className="block text-slate-500 text-sm mb-2">
-                                        Total : {loading ? "Loading.." : formatNumber(profitLoss?.expense?.total)}
+                                    <span className="block font-bold text-slate-500 text-sm mb-2">
+                                        {loading ? "Calculating.." : formatNumber(profitLoss?.expense?.total)}
                                     </span>
                                     <table className="table-auto w-full">
                                         <tbody>

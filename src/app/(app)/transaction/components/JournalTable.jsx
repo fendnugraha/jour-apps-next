@@ -115,6 +115,18 @@ const JournalTable = ({
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
+    const formatLongDate = (dateString) => {
+        const tanggal = new Date(dateString);
+        const formatted = new Intl.DateTimeFormat("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }).format(tanggal);
+
+        return formatted;
+    };
     return (
         <div className="">
             <div className="px-4 flex gap-2">
@@ -217,7 +229,7 @@ const JournalTable = ({
                 </Modal>
             </div>
             <div className="px-4 pt-2 flex">
-                <button className="rounded-l-lg bg-white py-2 px-8 border  border-gray-300">
+                <button className="rounded-l-lg bg-white py-2 px-6 border  border-gray-300">
                     <SearchIcon size={20} />
                 </button>
                 <Input
@@ -228,9 +240,9 @@ const JournalTable = ({
                     className="w-full rounded-e-lg rounded-l-none border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
             </div>
-            <div className="px-4">
+            <div className="px-4 pt-1">
                 <h4 className="text-xs text-slate-500">
-                    {warehouses?.data?.find((w) => w.id === Number(selectedWarehouse))?.name} Periode {startDate} s/d {endDate}
+                    {warehouses?.data?.find((w) => w.id === Number(selectedWarehouse))?.name}, {formatLongDate(startDate)} s/d {formatLongDate(endDate)}
                 </h4>
             </div>
             <div className="overflow-x-auto">

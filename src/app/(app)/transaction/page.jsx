@@ -504,21 +504,27 @@ const TransactionPage = () => {
                     </div>
                     <span className="block text-xs mb-4 text-slate-400">{getCurrentDate()}</span>
 
-                    <div className="flex gap-2 mb-4 w-full bg-slate-300 p-1 text-xs rounded-3xl">
+                    <div className="flex gap-2 mb-4 w-full bg-slate-300 p-0.5 text-xs rounded-3xl">
                         <button
-                            className={`w-full ${cashBankType === "" ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            className={`w-full ${
+                                cashBankType === "" ? "bg-white" : "bg-slate-300 text-white"
+                            } rounded-2xl p-1.5 cursor-pointer transition-colors duration-300 ease-out`}
                             onClick={() => setCashBankType("")}
                         >
                             Semua
                         </button>
                         <button
-                            className={`w-full ${cashBankType === 2 ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            className={`w-full ${
+                                cashBankType === 2 ? "bg-white" : "bg-slate-300 text-white"
+                            } rounded-2xl p-1.5 cursor-pointer transition-colors duration-300 ease-out`}
                             onClick={() => setCashBankType(2)}
                         >
                             Bank
                         </button>
                         <button
-                            className={`w-full ${cashBankType === 1 ? "bg-white" : "bg-slate-300 text-white"} rounded-2xl p-1.5 cursor-pointer`}
+                            className={`w-full ${
+                                cashBankType === 1 ? "bg-white" : "bg-slate-300 text-white"
+                            } rounded-2xl p-1.5 cursor-pointer transition-colors duration-300 ease-out`}
                             onClick={() => setCashBankType(1)}
                         >
                             Kas
