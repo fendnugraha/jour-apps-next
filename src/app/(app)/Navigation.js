@@ -114,7 +114,7 @@ const Navigation = ({ user }) => {
                                         Summary
                                     </span>
                                 </NavLink>
-                                <NavLink href="/report" isOpen={isOpen} active={pathname === "/report"}>
+                                <NavLink href="/report" isOpen={isOpen} active={pathname.startsWith("/report")}>
                                     <div>
                                         <ScaleIcon className="w-5 h-5" />
                                     </div>
