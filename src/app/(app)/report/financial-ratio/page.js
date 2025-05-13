@@ -168,7 +168,7 @@ const FinancialRatio = () => {
                     message: "Debt to equity ratio di bawah 100% menandakan keseimbangan modal yang baik dan struktur keuangan yang stabil.",
                 };
 
-            case "returnOnEquity":
+            case "roe":
                 if (value < 5)
                     return {
                         score: 2,
@@ -361,13 +361,13 @@ const FinancialRatio = () => {
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Return to Equity</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.roe.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">10% - 20%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">5% - 15%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("roe", rasioInput.roe).message}</td>
                                         </tr>
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.netProfitMargin.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">5% – 15%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">2% – 10%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("netProfitMargin", rasioInput.netProfitMargin).message}</td>
                                         </tr>
                                     </tbody>
