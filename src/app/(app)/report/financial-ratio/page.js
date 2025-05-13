@@ -189,14 +189,14 @@ const FinancialRatio = () => {
                 };
 
             case "netProfitMargin":
-                if (value < 2)
+                if (value < 1)
                     return {
                         score: 2,
                         rating: "Rendah",
                         message:
                             "Net profit margin sangat kecil, menandakan bahwa hampir seluruh pendapatan habis untuk menutup biaya. Perusahaan perlu menekan biaya atau meningkatkan efisiensi penjualan.",
                     };
-                if (value <= 10)
+                if (value <= 5)
                     return {
                         score: 6,
                         rating: "Cukup",
@@ -340,7 +340,7 @@ const FinancialRatio = () => {
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtToEquity.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">100% – 150%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("debtToEquity", rasioInput.debtToEquity).message}</td>
                                         </tr>
                                     </tbody>
@@ -367,7 +367,7 @@ const FinancialRatio = () => {
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.netProfitMargin.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">2% – 10%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">1% – 5%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("netProfitMargin", rasioInput.netProfitMargin).message}</td>
                                         </tr>
                                     </tbody>

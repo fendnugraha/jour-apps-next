@@ -286,7 +286,7 @@ const JournalTable = ({
                                                     ))}
                                                 </ul>
                                             ) : (
-                                                journal.cred.acc_name + " -> " + journal.debt.acc_name
+                                                journal.cred?.acc_name + " -> " + journal.debt?.acc_name
                                             )}
                                         </span>
                                         <span className="text-xs block text-slate-500 group-hover:text-white">
