@@ -68,7 +68,7 @@ const FinancialRatio = () => {
                         message:
                             "Current ratio di bawah 1 menunjukkan bahwa aset lancar perusahaan tidak cukup untuk menutup kewajiban jangka pendek. Ini menandakan potensi kesulitan likuiditas dan risiko gagal bayar dalam jangka pendek.",
                     };
-                if (value < 2.5)
+                if (value <= 2.5)
                     return {
                         score: 7,
                         rating: "Baik",
@@ -90,7 +90,7 @@ const FinancialRatio = () => {
                         message:
                             "Quick ratio di bawah 1 menunjukkan bahwa aset lancar tanpa persediaan tidak cukup untuk menutup kewajiban jangka pendek. Perusahaan mungkin terlalu bergantung pada persediaan yang kurang likuid.",
                     };
-                if (value < 2.5)
+                if (value <= 2)
                     return {
                         score: 7,
                         rating: "Baik",
@@ -105,14 +105,14 @@ const FinancialRatio = () => {
                 };
 
             case "cashRatio":
-                if (value < 0.5)
+                if (value < 1)
                     return {
                         score: 2,
                         rating: "Kurang",
                         message:
                             "Cash ratio di bawah 0.5 menandakan bahwa kas dan setara kas tidak cukup untuk menutup setengah dari kewajiban jangka pendek. Ini berisiko menyebabkan masalah likuiditas apabila terjadi kebutuhan dana mendadak.",
                     };
-                if (value < 1)
+                if (value <= 2)
                     return {
                         score: 6,
                         rating: "Cukup",
@@ -134,7 +134,7 @@ const FinancialRatio = () => {
                         message:
                             "Debt ratio di atas 60% menandakan bahwa sebagian besar aset perusahaan dibiayai dari utang. Struktur keuangan seperti ini berisiko tinggi, apalagi jika arus kas tidak stabil.",
                     };
-                if (value > 40)
+                if (value >= 40)
                     return {
                         score: 6,
                         rating: "Cukup",
@@ -155,17 +155,17 @@ const FinancialRatio = () => {
                         message:
                             "Debt to equity ratio di atas 150% menunjukkan bahwa perusahaan dibiayai lebih banyak oleh utang daripada ekuitas. Ini meningkatkan risiko keuangan dan membatasi fleksibilitas pendanaan.",
                     };
-                if (value > 100)
+                if (value >= 50)
                     return {
                         score: 6,
                         rating: "Cukup",
                         message:
-                            "Debt to equity ratio antara 100%–150% mencerminkan struktur modal yang agresif. Risiko moderat, namun bisa diterima tergantung pada industri dan stabilitas arus kas.",
+                            "Debt to equity ratio antara 50%–150% mencerminkan struktur modal yang agresif. Risiko moderat, namun bisa diterima tergantung pada industri dan stabilitas arus kas.",
                     };
                 return {
                     score: 9,
                     rating: "Baik",
-                    message: "Debt to equity ratio di bawah 100% menandakan keseimbangan modal yang baik dan struktur keuangan yang stabil.",
+                    message: "Debt to equity ratio di bawah 50% menandakan keseimbangan modal yang baik dan struktur keuangan yang stabil.",
                 };
 
             case "roe":
@@ -176,7 +176,7 @@ const FinancialRatio = () => {
                         message:
                             "Return on Equity (ROE) rendah, menunjukkan bahwa perusahaan belum mampu menghasilkan keuntungan yang signifikan dibanding modal yang ditanamkan pemilik.",
                     };
-                if (value < 15)
+                if (value <= 15)
                     return {
                         score: 6,
                         rating: "Cukup",
@@ -196,7 +196,7 @@ const FinancialRatio = () => {
                         message:
                             "Net profit margin sangat kecil, menandakan bahwa hampir seluruh pendapatan habis untuk menutup biaya. Perusahaan perlu menekan biaya atau meningkatkan efisiensi penjualan.",
                     };
-                if (value < 10)
+                if (value <= 10)
                     return {
                         score: 6,
                         rating: "Cukup",
@@ -340,7 +340,7 @@ const FinancialRatio = () => {
                                         <tr className="border-b border-slate-300 border-dashed text-slate-500">
                                             <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtToEquity.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">100% – 150%</td>
                                             <td className="px-6 py-4 whitespace-normal">{evaluate("debtToEquity", rasioInput.debtToEquity).message}</td>
                                         </tr>
                                     </tbody>
