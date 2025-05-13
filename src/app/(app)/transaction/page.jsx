@@ -22,6 +22,7 @@ import {
     LoaderCircleIcon,
     RefreshCcwIcon,
     ShoppingBagIcon,
+    VaultIcon,
     XIcon,
 } from "lucide-react";
 import useCashBankBalance from "@/libs/cashBankBalance";
@@ -262,9 +263,15 @@ const TransactionPage = () => {
                     )}
                     <div className=" sm:rounded-lg">
                         <div className="mb-2 hidden sm:flex justify-start gap-2">
+                            <button
+                                className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group"
+                                onClick={() => setIsModalCreateDepositOpen(true)}
+                            >
+                                Input Deposit
+                            </button>
                             <Dropdown
                                 trigger={
-                                    <button className="bg-green-600 text-sm hover:bg-green-500 text-white py-2 px-6 rounded-lg group">
+                                    <button className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
                                         Input Journal
                                         <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
                                     </button>
@@ -275,7 +282,7 @@ const TransactionPage = () => {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                                className={`w-full min-w-40 text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
                                                 onClick={() => setIsModalCreateJournalOpen(true)}
                                             >
                                                 Journal Umum
@@ -289,16 +296,6 @@ const TransactionPage = () => {
                                                 onClick={() => setIsModalCreateIncomeOpen(true)}
                                             >
                                                 Kas Masuk (income)
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateDepositOpen(true)}
-                                            >
-                                                Deposit
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -326,7 +323,7 @@ const TransactionPage = () => {
                             </Dropdown>
                             <Dropdown
                                 trigger={
-                                    <button className="bg-red-600 text-sm hover:bg-red-500 text-white py-2 px-6 rounded-lg group">
+                                    <button className="bg-red-600 text-sm hover:bg-red-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
                                         Biaya (Pengeluaran)
                                         <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
                                     </button>
