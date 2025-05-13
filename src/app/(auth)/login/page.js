@@ -13,10 +13,16 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const router = useRouter();
-    const { login } = useAuth({
+    const { login, error: authError } = useAuth({
         middleware: "guest",
         redirectIfAuthenticated: "/transaction",
     });
+
+    useEffect(() => {
+        if (authError) {
+            setStatus(authError.message);
+        }
+    }, [authError]);
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
@@ -30,6 +36,7 @@ const LoginPage = () => {
         e.preventDefault();
         await login({ email, password, setErrors, setStatus, setMessage, setLoading });
     };
+
     return (
         <>
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full sm:w-[400px] md:1/3">
@@ -74,7 +81,7 @@ const LoginPage = () => {
                     reserved
                 </p>
             </div>
-
+            <span className="italics font-bold fixed bottom-5 right-8">{status && <p className="text-red-500 text-xs">Network Status: {status}!</p>}</span>
             {/* <div className="italics font-bold fixed bottom-5 right-8">{message && <p className="text-green-500 text-xs">{message}</p>}</div> */}
             {message && <Loading />}
         </>

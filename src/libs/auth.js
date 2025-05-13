@@ -17,17 +17,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             .get("/api/user")
             .then((res) => res.data)
             .catch((error) => {
-                // Avoid logging the 401 error to the console
-                if (error.response && error.response.status === 401) {
-                    return null; // Return null or handle the case as needed
-                }
-
-                // If it's any other error, throw it
-                if (error.response && error.response.status !== 409) {
-                    throw error;
-                }
-
-                router.push("/");
+                throw error;
             })
     );
 
