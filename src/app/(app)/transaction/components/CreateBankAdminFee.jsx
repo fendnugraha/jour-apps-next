@@ -5,8 +5,9 @@ import Label from "@/components/Label";
 import Input from "@/components/Input";
 import { set } from "date-fns";
 
-const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notification, fetchJournalsByWarehouse, user }) => {
+const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notification, fetchJournalsByWarehouse, user, today }) => {
     const [formData, setFormData] = useState({
+        dateIssued: today,
         debt_code: 37,
         cred_code: "",
         amount: "",
@@ -45,6 +46,19 @@ const CreateBankAdminFee = ({ isModalOpen, filteredCashBankByWarehouse, notifica
     return (
         <>
             <form onSubmit={handleSubmit}>
+                <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
+                    <Label>Tanggal</Label>
+                    <div className="col-span-1 sm:col-span-2">
+                        <Input
+                            className="w-full text-xs sm:text-sm"
+                            type="datetime-local"
+                            placeholder="Rp."
+                            value={formData.dateIssued || today}
+                            onChange={(e) => setFormData({ ...formData, dateIssued: e.target.value })}
+                        />
+                        {errors.date_issued && <span className="text-red-500 text-xs">{errors.date_issued}</span>}
+                    </div>
+                </div>
                 <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
                     <Label>Dari Rekening</Label>
                     <div className="col-span-1 sm:col-span-2">
