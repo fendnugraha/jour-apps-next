@@ -6,8 +6,12 @@ import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
 
 const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const [formData, setFormData] = useState({
-        date_issued: "",
+        date_issued: today,
         contact_id: "",
         amount: "",
         description: "",
@@ -78,7 +82,12 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
                     <Label htmlFor="date_issued">Tanggal</Label>
                     <div className="col-span-2">
-                        <Input type="datetime-local" className="w-1/2 border border-slate-300 rounded-lg p-2" />
+                        <Input
+                            value={formData.date_issued}
+                            onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
+                            type="datetime-local"
+                            className="w-1/2 border border-slate-300 rounded-lg p-2"
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
@@ -87,7 +96,8 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                         <select
                             value={formData.debt_code}
                             onChange={(e) => setFormData({ ...formData, debt_code: e.target.value })}
-                            className="w-full border border-slate-300 rounded-lg p-2"
+                            className="w-full border border-slate-300 rounded-lg p-2 disabled:bg-slate-300 disabled:text-white"
+                            disabled={formData.debt_code === 6}
                         >
                             <option value="">--Pilih Rekening--</option>
                             {filterCashAccounts.map((account) => (
@@ -96,6 +106,20 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                                 </option>
                             ))}
                         </select>
+                        <div className="flex items-center gap-2 mb-2">
+                            <input
+                                id="deposit_customer"
+                                type="checkbox"
+                                checked={formData.debt_code === 6}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        debt_code: e.target.checked ? 6 : "",
+                                    })
+                                }
+                            />
+                            <Label htmlFor="deposit_customer">Pembelian Invntory Stock</Label>
+                        </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
