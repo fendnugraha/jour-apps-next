@@ -3,7 +3,7 @@
 import Header from "@/app/(app)/Header";
 import Paginator from "@/components/Paginator";
 import axios from "@/libs/axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import CreateCategoryProduct from "./CreateCategoryProduct";
@@ -30,6 +30,7 @@ export default function Product() {
 
     // Fetch Accounts
     const fetchProducts = async (url = "/api/products") => {
+        setLoading(true);
         try {
             const response = await axios.get(url, {
                 params: {
@@ -39,6 +40,8 @@ export default function Product() {
             setProduct(response.data.data);
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -115,6 +118,14 @@ export default function Product() {
         fetchProducts("/api/products");
     }, []);
 
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchProducts("/api/products");
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
+
     // useEffect(() => {
     //     // console.log(selectedUpdateAccount)
 
@@ -129,9 +140,9 @@ export default function Product() {
             <Header title="Product" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-2xl">
+                    <div className="overflow-hidden">
                         {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
-                        <div className="bg-white border-b border-gray-200">
+                        <div className="">
                             {errors.length > 0 && (
                                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                                     <ul>
@@ -149,7 +160,7 @@ export default function Product() {
                                         Hapus terpilih {selectedAccount.length}
                                     </button>
                                 )} */}
-                                <div className="flex justify-end gap-2 p-4">
+                                <div className="flex justify-end gap-2 mb-4">
                                     <button className="btn-primary text-sm" onClick={() => setIsModalCreateProductOpen(true)}>
                                         Tambah Produk <PlusCircleIcon className="w-5 h-5 inline" />
                                     </button>
@@ -173,24 +184,25 @@ export default function Product() {
                                     />
                                 </Modal>
                             </div>
-                            <div className="px-4 mb-2 flex">
-                                <Input
+                            <div className="relative w-full sm:max-w-sm">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <SearchIcon className="w-6 h-6 text-gray-500" />
+                                </div>
+                                <input
                                     type="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari barang..."
-                                    className="w-full text-sm rounded-l-lg rounded-r-none border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                    placeholder="Search..."
+                                    className="block w-full text-sm mb-2 pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                    autoComplete="off"
                                 />
-                                <button
-                                    onClick={() => {
-                                        fetchProducts();
-                                    }}
-                                    className="bg-slate-500 text-sm text-white min-w-20 sm:min-w-32 p-2 rounded-r-lg border border-gray-500 hover:border-gray-400 w-fit"
-                                >
-                                    <SearchIcon size={24} className="inline" /> <span className="hidden sm:inline">Search</span>
-                                </button>
                             </div>
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto bg-white rounded-2xl relative">
+                                {loading && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm">
+                                        <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                                    </div>
+                                )}
                                 <table className="table w-full text-xs">
                                     <thead>
                                         <tr>
@@ -253,8 +265,8 @@ export default function Product() {
                                         )}
                                     </tbody>
                                 </table>
+                                <div className="px-4">{product?.last_page > 1 && <Paginator links={product} handleChangePage={handleChangePage} />}</div>
                             </div>
-                            <div className="px-4">{product?.last_page > 1 && <Paginator links={product} handleChangePage={handleChangePage} />}</div>
                         </div>
                         <Modal isOpen={isModalUpdateProductOpen} onClose={closeModal} modalTitle="Edit Product" maxWidth="max-w-md">
                             <EditProduct

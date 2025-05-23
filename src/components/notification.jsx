@@ -1,7 +1,7 @@
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, CircleAlertIcon, InfoIcon } from "lucide-react";
 import { useEffect } from "react";
 
-const Notification = ({ type = "success", notification, onClose }) => {
+const Notification = ({ type = "success", notification, title, onClose }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose();
@@ -11,26 +11,30 @@ const Notification = ({ type = "success", notification, onClose }) => {
     }, [onClose]);
 
     // Conditional styles based on notification type
+    let notificationTitle = "";
     let notificationStyles = "";
     let notificationIcon = null;
 
     // Set styles and icon based on notification type
     switch (type) {
         case "success":
-            notificationStyles = "bg-green-500 border-green-700 text-white";
-            notificationIcon = <CheckCircleIcon className="w-6 h-6 text-white" />;
+            notificationTitle = "Success";
+            notificationStyles = "border-green-100 border";
+            notificationIcon = <CheckCircleIcon className="w-8 h-8 text-green-500" />;
             break;
         case "error":
-            notificationStyles = "bg-red-100 border-red-500 text-red-900";
-            notificationIcon = <CheckCircleIcon className="w-6 h-6 text-red-500" />;
+            notificationTitle = "Error !";
+            notificationStyles = "border-red-100 border";
+            notificationIcon = <CircleAlertIcon className="w-8 h-8 text-red-500" />;
             break;
         default:
-            notificationStyles = "bg-teal-100 border-teal-500 text-teal-900";
-            notificationIcon = <CheckCircleIcon className="w-6 h-6 text-teal-500" />;
+            notificationTitle = "Info";
+            notificationStyles = "border-teal-100 border";
+            notificationIcon = <InfoIcon className="w-8 h-8 text-teal-500" />;
     }
 
     return (
-        <div className={`${notificationStyles} fixed w-full sm:w-fit top-5 sm:right-8 z-[1000] rounded-xl px-4 py-2 shadow-lg`}>
+        <div className={`${notificationStyles} fixed w-full bg-white sm:w-96 top-5 sm:right-8 z-[9999] rounded-xl px-4 py-2 shadow-lg`}>
             <div className="flex items-center gap-4">
                 <div className="py-1">
                     {/* <svg className={`fill-current h-6 w-5 text-white mr-4`} viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -40,7 +44,8 @@ const Notification = ({ type = "success", notification, onClose }) => {
                 </div>
                 <div>
                     <p className="text-sm">
-                        <span className="font-bold block">{type === "success" ? "Success" : "Error"}</span> {notification}
+                        <span className="font-bold block">{title || notificationTitle}</span>
+                        {notification}
                     </p>
                 </div>
             </div>

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Input from "@/components/Input";
 import FormCreateAccount from "./formCreateAccount";
 import Modal from "@/components/Modal";
-import { LockIcon, PencilIcon, PlusCircleIcon, Trash2Icon, TrashIcon } from "lucide-react";
+import { LockIcon, PencilIcon, PlusCircleIcon, SearchIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import Notification from "@/components/notification";
 import formatNumber from "@/libs/formatNumber";
 
@@ -15,6 +15,8 @@ export default function Account() {
     const [account, setAccount] = useState(null);
     const [selectedAccount, setSelectedAccount] = useState([]);
     const [selectedUpdateAccount, setSelectedUpdateAccount] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(false);
     const [selectedAccountID, setselectedAccountID] = useState(null);
     const [notification, setNotification] = useState("");
     const [errors, setErrors] = useState([]); // Store validation errors
@@ -23,11 +25,18 @@ export default function Account() {
 
     // Fetch Accounts
     const fetchAccount = async (url = "/api/accounts") => {
+        setLoading(true);
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                params: {
+                    search: searchTerm,
+                },
+            });
             setAccount(response.data.data);
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -98,16 +107,11 @@ export default function Account() {
     }, []);
 
     useEffect(() => {
-        if (notification || errors.length > 0) {
-            const timeoutId = setTimeout(() => {
-                setNotification("");
-                setErrors([]);
-            }, 3000); // Notification disappears after 3 seconds
-
-            // Cleanup timeout on component unmount
-            return () => clearTimeout(timeoutId);
-        }
-    }, [notification, errors]);
+        const timeout = setTimeout(() => {
+            fetchAccount();
+        }, 500); // debounce: tunggu 500ms setelah ketikan berhenti
+        return () => clearTimeout(timeout);
+    }, [searchTerm]);
 
     const handleChangePage = (url) => {
         fetchAccount(url);
@@ -130,159 +134,170 @@ export default function Account() {
             <Header title="Account" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="overflow-hidden">
                         <div className="fixed top-0 right-0 px-6 py-4 sm:block" onClick={() => setNotification("")}>
                             {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
                         </div>
-                        <div className="p-6 bg-white border-b border-gray-200">
-                            {errors.length > 0 && (
-                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                                    <ul>
-                                        {errors.map((error, index) => (
-                                            <li key={index}>{error}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                            <div className="flex justify-between">
-                                {selectedAccount.length > 0 && (
-                                    <button className="btn-primary" onClick={handleDeleteSelectedAccounts}>
-                                        Hapus terpilih {selectedAccount.length}
-                                    </button>
-                                )}
-
-                                <button className="btn-primary" onClick={() => setIsModalCreateAccountOpen(true)}>
-                                    Tambah Account <PlusCircleIcon className="w-5 h-5 inline" />
-                                </button>
-                                <Modal isOpen={isModalCreateAccountOpen} onClose={closeModal} modalTitle="Create account">
-                                    <FormCreateAccount
-                                        isModalOpen={setIsModalCreateAccountOpen}
-                                        notification={(message) => setNotification(message)}
-                                        fetchAccount={fetchAccount}
-                                    />
-                                </Modal>
-                                {selectedUpdateAccount && (
-                                    <Modal isOpen={isModalUpdateAccountOpen} onClose={closeModal} modalTitle="Update account">
-                                        <div className="mb-4">
-                                            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">
-                                                Account Name
-                                            </label>
-                                            <Input
-                                                type="text"
-                                                id="name"
-                                                defaultValue={selectedUpdateAccount.acc_name}
-                                                onChange={(event) =>
-                                                    setSelectedUpdateAccount({
-                                                        ...selectedUpdateAccount,
-                                                        acc_name: event.target.value,
-                                                    })
-                                                }
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                placeholder="John Doe"
-                                            />
-                                        </div>
-                                        <div className="mb-4">
-                                            <label htmlFor="st_balance" className="block mb-2 text-sm font-medium text-gray-900">
-                                                Starting Balance
-                                            </label>
-                                            <Input
-                                                type="number"
-                                                defaultValue={selectedUpdateAccount.st_balance}
-                                                onChange={(event) =>
-                                                    setSelectedUpdateAccount({
-                                                        ...selectedUpdateAccount,
-                                                        st_balance: event.target.value,
-                                                    })
-                                                }
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                placeholder="0"
-                                            />
-                                        </div>
-                                        <button className="btn-primary" onClick={handleUpdateAccount}>
-                                            Update Account
-                                        </button>
-                                    </Modal>
-                                )}
+                        {errors.length > 0 && (
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                                <ul>
+                                    {errors.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                                </ul>
                             </div>
-                            <div className="overflow-y-auto">
-                                <table className="table w-full text-xs">
-                                    <thead>
+                        )}
+                        <div className="flex justify-between mb-4">
+                            {selectedAccount.length > 0 && (
+                                <button className="btn-primary" onClick={handleDeleteSelectedAccounts}>
+                                    Hapus terpilih {selectedAccount.length}
+                                </button>
+                            )}
+
+                            <button className="btn-primary" onClick={() => setIsModalCreateAccountOpen(true)}>
+                                Tambah Account <PlusCircleIcon className="w-5 h-5 inline" />
+                            </button>
+                            <Modal isOpen={isModalCreateAccountOpen} onClose={closeModal} modalTitle="Create account">
+                                <FormCreateAccount
+                                    isModalOpen={setIsModalCreateAccountOpen}
+                                    notification={(message) => setNotification(message)}
+                                    fetchAccount={fetchAccount}
+                                />
+                            </Modal>
+                            {selectedUpdateAccount && (
+                                <Modal isOpen={isModalUpdateAccountOpen} onClose={closeModal} modalTitle="Update account">
+                                    <div className="mb-4">
+                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">
+                                            Account Name
+                                        </label>
+                                        <Input
+                                            type="text"
+                                            id="name"
+                                            defaultValue={selectedUpdateAccount.acc_name}
+                                            onChange={(event) =>
+                                                setSelectedUpdateAccount({
+                                                    ...selectedUpdateAccount,
+                                                    acc_name: event.target.value,
+                                                })
+                                            }
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label htmlFor="st_balance" className="block mb-2 text-sm font-medium text-gray-900">
+                                            Starting Balance
+                                        </label>
+                                        <Input
+                                            type="number"
+                                            defaultValue={selectedUpdateAccount.st_balance}
+                                            onChange={(event) =>
+                                                setSelectedUpdateAccount({
+                                                    ...selectedUpdateAccount,
+                                                    st_balance: event.target.value,
+                                                })
+                                            }
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                    <button className="btn-primary" onClick={handleUpdateAccount}>
+                                        Update Account
+                                    </button>
+                                </Modal>
+                            )}
+                        </div>
+                        <div className="relative w-full sm:max-w-sm">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <SearchIcon className="w-6 h-6 text-gray-500" />
+                            </div>
+                            <input
+                                type="search"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search..."
+                                className="block w-full text-sm mb-2 pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="overflow-y-auto bg-white rounded-2xl">
+                            <table className="table w-full text-xs">
+                                <thead>
+                                    <tr>
+                                        <th className="">
+                                            <Input type="checkbox" disabled />
+                                        </th>
+                                        <th className="">Name</th>
+                                        <th className="hidden sm:table-cell">Balance</th>
+                                        <th className="">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {account?.data?.length === 0 ? (
                                         <tr>
-                                            <th className="">
-                                                <Input type="checkbox" disabled />
-                                            </th>
-                                            <th className="">Name</th>
-                                            <th className="hidden sm:table-cell">Balance</th>
-                                            <th className="">Action</th>
+                                            <td colSpan="5" className="text-center py-4">
+                                                No data
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {account?.data?.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="5" className="text-center py-4">
-                                                    No data
+                                    ) : (
+                                        account?.data?.map((account) => (
+                                            <tr key={account.id}>
+                                                <td className="w-4">
+                                                    <Input
+                                                        checked={selectedAccount.includes(account.id)}
+                                                        onChange={() => {
+                                                            handleSelectAccount(account.id);
+                                                        }}
+                                                        type="checkbox"
+                                                    />
+                                                </td>
+                                                <td className="">
+                                                    <span className="font-bold text-blue-800">
+                                                        ID: {account.id}. {account.acc_name}{" "}
+                                                        {account.is_locked === 1 && <LockIcon size={16} className="inline" />}
+                                                    </span>
+                                                    <br />
+                                                    <span className="text-slate-600">
+                                                        {account.acc_code} # {account.account?.name} # {account?.warehouse?.name ?? "NotAssociated"}
+                                                    </span>
+                                                    <span className="font-bold block text-sm sm:hidden">{formatNumber(account.st_balance)}</span>
+                                                </td>
+                                                <td className="text-right text-lg hidden sm:table-cell">
+                                                    {new Intl.NumberFormat("id-ID", {
+                                                        style: "currency",
+                                                        currency: "IDR",
+                                                    }).format(account.st_balance)}
+                                                </td>
+                                                <td className="text-center">
+                                                    <div className="flex justify-center gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                handleShowAccount(account.id);
+                                                            }}
+                                                            className=""
+                                                        >
+                                                            <PencilIcon className="w-5 h-5 inline" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteAccount(account.id)}
+                                                            className="disabled:text-red-400"
+                                                            disabled={account.is_locked === 1}
+                                                        >
+                                                            {" "}
+                                                            {account.is_locked === 1 ? (
+                                                                <LockIcon className="w-5 h-5 inline" />
+                                                            ) : (
+                                                                <Trash2Icon className="w-5 h-5 inline" />
+                                                            )}
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
-                                        ) : (
-                                            account?.data?.map((account) => (
-                                                <tr key={account.id}>
-                                                    <td className="w-4">
-                                                        <Input
-                                                            checked={selectedAccount.includes(account.id)}
-                                                            onChange={() => {
-                                                                handleSelectAccount(account.id);
-                                                            }}
-                                                            type="checkbox"
-                                                        />
-                                                    </td>
-                                                    <td className="">
-                                                        <span className="font-bold text-blue-800">
-                                                            ID:{account.id} {account.acc_name}{" "}
-                                                            {account.is_locked === 1 && <LockIcon size={16} className="inline" />}
-                                                        </span>
-                                                        <br />
-                                                        <span className="text-slate-600">
-                                                            {account.acc_code} # {account.account?.name} # {account?.warehouse?.name ?? "NotAssociated"}
-                                                        </span>
-                                                        <span className="font-bold block text-sm sm:hidden">{formatNumber(account.st_balance)}</span>
-                                                    </td>
-                                                    <td className="text-right text-lg hidden sm:table-cell">
-                                                        {new Intl.NumberFormat("id-ID", {
-                                                            style: "currency",
-                                                            currency: "IDR",
-                                                        }).format(account.st_balance)}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div className="flex justify-center gap-2">
-                                                            <button
-                                                                onClick={() => {
-                                                                    handleShowAccount(account.id);
-                                                                }}
-                                                                className=""
-                                                            >
-                                                                <PencilIcon className="w-5 h-5 inline" />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDeleteAccount(account.id)}
-                                                                className="disabled:text-red-400"
-                                                                disabled={account.is_locked === 1}
-                                                            >
-                                                                {" "}
-                                                                {account.is_locked === 1 ? (
-                                                                    <LockIcon className="w-5 h-5 inline" />
-                                                                ) : (
-                                                                    <Trash2Icon className="w-5 h-5 inline" />
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            {account === null ? "" : <Paginator links={account} handleChangePage={handleChangePage} />}
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                            <div className="px-4">{account === null ? "" : <Paginator links={account} handleChangePage={handleChangePage} />}</div>
                         </div>
                     </div>
                 </div>

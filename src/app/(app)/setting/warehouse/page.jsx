@@ -10,12 +10,12 @@ import formatDateTime from "@/libs/formatDateTime";
 import Notification from "@/components/notification";
 import Link from "next/link";
 import FormCreateAccount from "../account/formCreateAccount";
-import { EyeIcon, MapPinIcon, PlusCircleIcon, TrashIcon } from "lucide-react";
+import { EyeIcon, MapPinIcon, PlusCircleIcon, SearchIcon, TrashIcon } from "lucide-react";
 
 const Warehouse = () => {
     const [warehouses, setWarehouses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
     const [isModalCreateWarehouseOpen, setIsModalCreateWarehouseOpen] = useState(false);
     const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] = useState(false);
     const [notification, setNotification] = useState(null);
@@ -32,17 +32,30 @@ const Warehouse = () => {
     const fetchWarehouses = async (url = "/api/warehouse") => {
         setLoading(true);
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                params: {
+                    search: search,
+                },
+            });
             setWarehouses(response.data.data);
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchWarehouses();
-        setLoading(false);
     }, []);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchWarehouses();
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
 
     const handleChangePage = (url) => {
         fetchWarehouses(url);
@@ -74,8 +87,8 @@ const Warehouse = () => {
             <div className="py-12">
                 {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <div className="flex justify-start gap-2">
+                    <div className="overflow-hidden">
+                        <div className="flex justify-start gap-2 mb-4">
                             <button className="btn-primary" onClick={() => setIsModalCreateWarehouseOpen(true)}>
                                 Tambah Gudang <PlusCircleIcon className="w-5 h-5 inline" />
                             </button>
@@ -110,7 +123,25 @@ const Warehouse = () => {
                                 </div>
                             </Modal>
                         </div>
-                        <div className="overflow-y-auto">
+                        <div className="relative w-full sm:max-w-sm">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <SearchIcon className="w-6 h-6 text-gray-500" />
+                            </div>
+                            <input
+                                type="search"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search..."
+                                className="block w-full text-sm mb-2 pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="overflow-y-auto bg-white rounded-2xl relative">
+                            {loading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm">
+                                    <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                                </div>
+                            )}
                             <table className="table w-full text-xs">
                                 <thead>
                                     <tr>
@@ -161,8 +192,8 @@ const Warehouse = () => {
                                     )}
                                 </tbody>
                             </table>
+                            <div className="px-4">{warehouses?.links && <Paginator links={warehouses} handleChangePage={handleChangePage} />}</div>
                         </div>
-                        {warehouses?.links && <Paginator links={warehouses} handleChangePage={handleChangePage} />}
                     </div>
                 </div>
             </div>

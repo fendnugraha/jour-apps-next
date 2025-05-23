@@ -9,18 +9,23 @@ import CreateUser from "./CreateUser";
 import Paginator from "@/components/Paginator";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BuildingIcon, MailIcon, PencilIcon, PlusCircleIcon, SmileIcon, StoreIcon, Trash2Icon } from "lucide-react";
+import { BuildingIcon, MailIcon, PencilIcon, PlusCircleIcon, SearchIcon, SmileIcon, StoreIcon, Trash2Icon } from "lucide-react";
 import TimeAgo from "@/libs/formatDateDistance";
 
 const User = () => {
     const router = useRouter();
     const [notification, setNotification] = useState("");
     const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const fetchUsers = async (url = "/api/users") => {
         setLoading(true);
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                params: {
+                    search: search,
+                },
+            });
             setUsers(response.data.data);
         } catch (error) {
             setNotification(error.response?.data?.message || "Something went wrong.");
@@ -31,8 +36,14 @@ const User = () => {
 
     useEffect(() => {
         fetchUsers();
-        setLoading(false);
     }, []);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchUsers();
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [search]);
 
     const handleChangePage = (url) => {
         fetchUsers(url);
@@ -57,21 +68,33 @@ const User = () => {
             <Header title="User Management" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden rounded-2xl">
+                    <div className="overflow-hidden">
                         {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
-                        <div className="p-4">
-                            <button onClick={() => setIsModalCreateUserOpen(true)} className="bg-indigo-500 text-white text-sm py-2 px-6 rounded-lg">
-                                Tambah User <PlusCircleIcon className="size-4 inline" />
-                            </button>
-                            <Modal isOpen={isModalCreateUserOpen} onClose={closeModal} modalTitle="Create User">
-                                <CreateUser
-                                    isModalOpen={setIsModalCreateUserOpen}
-                                    notification={(message) => setNotification(message)}
-                                    fetchUsers={fetchUsers}
-                                />
-                            </Modal>
+                        <button onClick={() => setIsModalCreateUserOpen(true)} className="btn-primary text-sm mb-4">
+                            Tambah User <PlusCircleIcon className="size-4 inline" />
+                        </button>
+                        <Modal isOpen={isModalCreateUserOpen} onClose={closeModal} modalTitle="Create User">
+                            <CreateUser isModalOpen={setIsModalCreateUserOpen} notification={(message) => setNotification(message)} fetchUsers={fetchUsers} />
+                        </Modal>
+                        <div className="relative w-full sm:max-w-sm">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <SearchIcon className="w-6 h-6 text-gray-500" />
+                            </div>
+                            <input
+                                type="search"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search..."
+                                className="block w-full text-sm mb-2 pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                autoComplete="off"
+                            />
                         </div>
-                        <div className="overflow-y-auto">
+                        <div className="overflow-x-auto bg-white rounded-2xl relative">
+                            {loading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm">
+                                    <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                                </div>
+                            )}
                             <table className="table w-full text-xs">
                                 <thead>
                                     <tr>
@@ -120,8 +143,8 @@ const User = () => {
                                     )}
                                 </tbody>
                             </table>
+                            <div className="px-4">{users?.links && <Paginator links={users} handleChangePage={handleChangePage} />}</div>
                         </div>
-                        <div className="px-4">{users?.links && <Paginator links={users} handleChangePage={handleChangePage} />}</div>
                     </div>
                 </div>
             </div>
