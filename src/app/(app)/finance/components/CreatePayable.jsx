@@ -53,10 +53,10 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
     };
 
     useEffect(() => {
-        fetchAccounts({ account_ids: [1, 2, 19, 20] });
+        fetchAccounts({ account_ids: [1, 2, 19, 20, 33] });
     }, []);
 
-    const filterCashAccounts = accounts.filter((account) => account.account_id === 1 || account.account_id === 2);
+    const filterCashAccounts = accounts.filter((account) => account.account_id === 1 || account.account_id === 2 || account.account_id === 33);
 
     const filterPayableAccounts = accounts.filter((account) => account.account_id === 19 || account.account_id === 20);
 
