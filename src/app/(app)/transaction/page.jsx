@@ -392,6 +392,7 @@ const TransactionPage = () => {
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
                                 user={user}
+                                today={today}
                             />
                         </Modal>
                         {/* Expenses */}
