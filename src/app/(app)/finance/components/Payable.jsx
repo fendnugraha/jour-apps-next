@@ -13,6 +13,7 @@ import Paginator from "@/components/Paginator";
 import CreateReceivable from "./CreateReceivable";
 import Pagination from "@/components/PaginateList";
 import Input from "@/components/Input";
+import FinanceYearlyTable from "./FinanceYearlyTable";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -109,8 +110,8 @@ const Payable = ({ notification }) => {
                     </button>
                 </div>
             </div>
-            <div className="overflow-hidden">
-                <div className="bg-white shadow-sm sm:rounded-2xl mb-4">
+            <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="bg-white shadow-sm sm:rounded-2xl">
                     <div className="p-4 flex justify-between flex-col sm:flex-row">
                         <h1 className="text-2xl font-bold mb-4">{financeType === "Payable" ? "Hutang" : "Piutang"}</h1>
                         <div>
@@ -145,7 +146,7 @@ const Payable = ({ notification }) => {
                             </Modal>
                         </div>
                     </div>
-                    <div className="p-4 w-full sm:w-1/2 flex justify-between gap-2">
+                    <div className="p-4 w-full flex justify-between gap-2">
                         <Input
                             type="search"
                             className="border border-slate-300 rounded-lg p-2 w-full"
@@ -176,20 +177,18 @@ const Payable = ({ notification }) => {
                             <thead>
                                 <tr>
                                     <th>Contact</th>
-                                    <th>Tagihan</th>
-                                    <th>Dibayar</th>
                                     <th>Sisa</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {currentItems.map((item, index) => (
-                                    <tr key={index} className="hover:bg-slate-700 hover:text-white" onClick={() => setSelectedContactId(item.contact_id)}>
+                                    <tr key={index} className="hover:bg-slate-700 hover:text-white">
                                         <td>
-                                            <button className="hover:underline">{item.contact.name}</button>
+                                            <button onClick={() => setSelectedContactId(item.contact_id)} className="hover:underline cursor-pointer">
+                                                {item.contact.name}
+                                            </button>
                                         </td>
-                                        <td className="text-end">{formatNumber(item.tagihan)}</td>
-                                        <td className="text-end">{formatNumber(item.terbayar)}</td>
                                         <td className="text-end">{formatNumber(item.sisa)}</td>
                                         <td className="text-center">
                                             <button
@@ -209,13 +208,10 @@ const Payable = ({ notification }) => {
                             </tbody>
                             <tfoot>
                                 <tr className="text-lg">
-                                    <td colSpan={3} className="font-bold">
-                                        Total {financeType === "Payable" ? "Hutang" : "Piutang"}
-                                    </td>
-                                    <td className="font-bold text-end">
+                                    <td className="font-bold">Total {financeType === "Payable" ? "Hutang" : "Piutang"}</td>
+                                    <td colSpan={2} className="font-bold text-end">
                                         {formatNumber(filteredFinance.reduce((total, item) => total + Number(item.sisa), 0))}
                                     </td>
-                                    <td className="font-bold text-end"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -230,6 +226,11 @@ const Payable = ({ notification }) => {
                         />
                     )}
                 </div>
+                <div>
+                    <FinanceYearlyTable financeType={financeType} />
+                </div>
+            </div>
+            <div>
                 <div className="bg-white shadow-sm sm:rounded-2xl">
                     <div className="p-4 flex justify-between">
                         <h1 className="text-2xl font-bold mb-4">Riwayat Transaksi</h1>
