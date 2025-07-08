@@ -59,7 +59,7 @@ const FinanceYearlyTable = ({ financeType }) => {
                             <td>Saldo Awal</td>
                             <td></td>
                             <td></td>
-                            <td className="text-right">{formatNumber(initBalance)}</td>
+                            <td className="text-right">{loading ? "loading.." : formatNumber(initBalance)}</td>
                         </tr>
 
                         {filteredFinanceByType?.map((item, index) => {
