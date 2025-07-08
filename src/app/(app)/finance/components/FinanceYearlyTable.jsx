@@ -23,7 +23,7 @@ const FinanceYearlyTable = ({ financeType }) => {
     useEffect(() => {
         fetchFinanceYearly();
     }, [year]);
-    const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
     const filteredFinanceByType = finance?.finance?.filter((item) => item.finance_type === financeType);
     console.log(financeType);
