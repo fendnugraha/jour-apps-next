@@ -43,6 +43,15 @@ const CreateJournal = ({ isModalOpen, notification, fetchJournalsByWarehouse, to
         setLoading(true);
         try {
             const response = await axios.post("/api/create-mutation", formData);
+            setFormData({
+                dateIssued: today,
+                debt_code: "",
+                cred_code: "",
+                amount: "",
+                fee_amount: 0,
+                trx_type: "Jurnal Umum",
+                description: "",
+            });
             notification(response.data.message);
             fetchJournalsByWarehouse();
             isModalOpen(false);

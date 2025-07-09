@@ -25,6 +25,7 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
             notification("success", "Pentarikan modal berhasil");
             fetchJournalsByWarehouse();
             setFormData({
+                dateIssued: today,
                 debt_code: 12,
                 cred_code: "",
                 amount: "",

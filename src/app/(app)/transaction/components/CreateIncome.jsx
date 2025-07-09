@@ -42,6 +42,7 @@ const CreateIncome = ({ filteredCashBankByWarehouse, isModalOpen, notification, 
             notification("success", "Penambahan pendapatan berhasil");
             fetchJournalsByWarehouse();
             setFormData({
+                dateIssued: today,
                 debt_code: "",
                 cred_code: "",
                 amount: "",

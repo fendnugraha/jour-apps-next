@@ -39,6 +39,7 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
             notification("success", "Pengeluaran biaya operasional berhasil");
             fetchJournalsByWarehouse();
             setFormData({
+                dateIssued: today,
                 debt_code: "",
                 cred_code: "",
                 amount: "",

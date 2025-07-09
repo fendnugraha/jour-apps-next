@@ -25,6 +25,7 @@ const CreateEquity = ({ filteredCashBankByWarehouse, isModalOpen, notification, 
             notification("success", "Penambahan modal berhasil");
             fetchJournalsByWarehouse();
             setFormData({
+                dateIssued: today,
                 debt_code: "",
                 cred_code: 10,
                 amount: "",

@@ -25,6 +25,7 @@ const CreateDeposit = ({ isModalOpen, filteredCashBankByWarehouse, notification,
             const response = await axios.post("/api/create-transfer", formData);
             notification("success", response.data.message);
             setFormData({
+                dateIssued: today,
                 debt_code: formData.debt_code,
                 cred_code: 8,
                 amount: "",
