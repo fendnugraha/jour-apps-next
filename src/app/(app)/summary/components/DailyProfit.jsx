@@ -57,6 +57,7 @@ const DailyProfit = () => {
         { key: "revenue", label: "Pendapatan" },
         { key: "cost", label: "HPP" },
         { key: "expense", label: "Biaya" },
+        { key: "netprofit", label: "Laba" },
     ];
 
     const summarizeProfit = dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0);
@@ -64,6 +65,11 @@ const DailyProfit = () => {
     const summarizeRevenue = dailyProfit?.reduce((sum, item) => sum + item.revenue, 0);
 
     const netProfitRate = (summarizeProfit / summarizeRevenue) * 100;
+
+    const dailyProfitToExport = dailyProfit?.map((item) => ({
+        ...item,
+        netprofit: item.revenue - item.cost - item.expense,
+    }));
 
     const formatLongDate = (dateString) => {
         const tanggal = new Date(dateString);
@@ -95,7 +101,9 @@ const DailyProfit = () => {
                         <RefreshCcwIcon className={`size-4 ${loading ? "animate-spin scale-110" : ""}`} />
                     </button>
                     <button
-                        onClick={() => exportToExcel(dailyProfit, headersRevenue, `Daily profit ${month}/${year}.xlsx`, `Daily profit ${month}/${year}`)}
+                        onClick={() =>
+                            exportToExcel(dailyProfitToExport, headersRevenue, `Daily profit ${month}/${year}.xlsx`, `Daily profit ${month}/${year}`)
+                        }
                         className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         // disabled={revenue?.revenue?.length === 0}
                     >

@@ -6,7 +6,7 @@ import formatNumber from "@/libs/formatNumber";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
-import { FilterIcon, RefreshCcwIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, RefreshCcwIcon } from "lucide-react";
 
 const getCurrentDate = () => {
     const today = new Date();

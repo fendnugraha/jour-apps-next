@@ -1,5 +1,5 @@
 "use client";
-import { ArrowBigDown, ArrowBigUp, MessageCircleWarningIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp, DownloadIcon, MessageCircleWarningIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "@/libs/axios";
 import Modal from "@/components/Modal";
@@ -14,6 +14,7 @@ import CreateReceivable from "./CreateReceivable";
 import Pagination from "@/components/PaginateList";
 import Input from "@/components/Input";
 import FinanceYearlyTable from "./FinanceYearlyTable";
+import exportToExcel from "@/libs/exportToExcel";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -92,6 +93,31 @@ const Payable = ({ notification }) => {
     const handleChangePage = (url) => {
         fetchFinance(url);
     };
+
+    const exportFinanceToExcel = () => {
+        const headers = [
+            { key: "contact_name", label: "Contact Name" },
+            { key: "tagihan", label: "Tagihan" },
+            { key: "terbayar", label: "Terbayar" },
+            { key: "sisa", label: "Sisa" },
+            { key: "finance_type", label: "Type" },
+        ];
+
+        const data = filteredFinance.map((item) => ({
+            contact_name: item.contact.name,
+            tagihan: formatNumber(item.tagihan),
+            terbayar: formatNumber(item.terbayar),
+            sisa: formatNumber(item.sisa),
+            finance_type: item.finance_type === "Payable" ? "Hutang" : "Piutang",
+        }));
+
+        exportToExcel(
+            data,
+            headers,
+            `Laporan ${financeType === "Payable" ? "Hutang Usaha" : "Piutang Usaha"} ${formatDateTime(new Date())}.xlsx`,
+            `Laporan ${financeType === "Payable" ? "Hutang Usaha" : "Piutang Usaha"} ${formatDateTime(new Date())}`
+        );
+    };
     return (
         <>
             <div className="bg-slate-400 rounded-2xl mb-4 p-1">
@@ -111,7 +137,7 @@ const Payable = ({ notification }) => {
                 </div>
             </div>
             <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <div className="bg-white shadow-sm sm:rounded-2xl">
+                <div className="bg-white shadow-sm sm:rounded-2xl sm:order-1 order-2">
                     <div className="p-4 flex justify-between flex-col sm:flex-row">
                         <h1 className="text-2xl font-bold mb-4">{financeType === "Payable" ? "Hutang" : "Piutang"}</h1>
                         <div>
@@ -146,7 +172,7 @@ const Payable = ({ notification }) => {
                             </Modal>
                         </div>
                     </div>
-                    <div className="p-4 w-full flex justify-between gap-2">
+                    <div className="p-4 w-full flex justify-between gap-1">
                         <Input
                             type="search"
                             className="border border-slate-300 rounded-lg p-2 w-full"
@@ -154,7 +180,11 @@ const Payable = ({ notification }) => {
                             placeholder="Search"
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <select className="border border-slate-300 rounded-lg p-2" value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)}>
+                        <select
+                            className="border text-sm border-slate-300 rounded-lg p-2"
+                            value={paymentStatus}
+                            onChange={(e) => setPaymentStatus(e.target.value)}
+                        >
                             <option value="All">Semua</option>
                             <option value="Paid">Lunas</option>
                             <option value="Unpaid">Belum lunas</option>
@@ -163,7 +193,7 @@ const Payable = ({ notification }) => {
                             onChange={(e) => {
                                 setItemsPerPage(e.target.value), setCurrentPage(1);
                             }}
-                            className="border border-slate-300 rounded-lg p-2"
+                            className="border border-slate-300 text-sm rounded-lg p-2"
                         >
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -171,6 +201,12 @@ const Payable = ({ notification }) => {
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
+                        <button
+                            onClick={exportFinanceToExcel}
+                            className="cursor-pointer bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                        >
+                            <DownloadIcon className="size-4" />
+                        </button>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="table w-full text-xs">
@@ -226,7 +262,7 @@ const Payable = ({ notification }) => {
                         />
                     )}
                 </div>
-                <div>
+                <div className="sm:order-2 order-1">
                     <FinanceYearlyTable financeType={financeType} />
                 </div>
             </div>

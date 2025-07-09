@@ -26,7 +26,6 @@ const FinanceYearlyTable = ({ financeType }) => {
     const monthNames = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
     const filteredFinanceByType = finance?.finance?.filter((item) => item.finance_type === financeType);
-    console.log(financeType);
     const initBalance = finance?.initBalance?.[financeType];
     let runningBalance = Number(initBalance);
 
