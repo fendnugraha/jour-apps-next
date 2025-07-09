@@ -431,6 +431,7 @@ const TransactionPage = () => {
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
                                 user={user}
+                                today={today}
                             />
                         </Modal>
                         <Modal isOpen={isModalCreateEquityOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penambahan Modal (Equity)">
@@ -440,6 +441,7 @@ const TransactionPage = () => {
                                 notification={(type, message) => setNotification({ type, message })}
                                 fetchJournalsByWarehouse={fetchJournalsByWarehouse}
                                 user={user}
+                                today={today}
                             />
                         </Modal>
                         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-20 sm:mb-0">

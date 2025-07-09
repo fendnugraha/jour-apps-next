@@ -118,7 +118,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
                                     })
                                 }
                             />
-                            <Label htmlFor="deposit_customer">Pembelian Invntory Stock</Label>
+                            <Label htmlFor="deposit_customer">Pembelian Inventory Stock</Label>
                         </div>
                     </div>
                 </div>
