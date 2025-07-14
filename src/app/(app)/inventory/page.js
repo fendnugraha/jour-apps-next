@@ -122,7 +122,7 @@ const InventoryPage = () => {
             )}
             <div className="">
                 {/* <h1 className="text-2xl font-bold mb-4">Point of Sales - Add to Cart</h1> */}
-                <Header title={"Store"} />
+                <Header title={"Inventory Management"} />
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-4 gap-4">

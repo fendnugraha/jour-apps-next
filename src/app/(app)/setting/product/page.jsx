@@ -9,10 +9,10 @@ import Modal from "@/components/Modal";
 import CreateCategoryProduct from "./CreateCategoryProduct";
 import CreateProduct from "./CreateProduct";
 import formatNumber from "@/libs/formatNumber";
-import Notification from "@/components/notification";
-import { EyeIcon, MessageCircleWarningIcon, PencilIcon, PlusCircleIcon, SearchIcon, TrashIcon } from "lucide-react";
-import { set } from "date-fns";
+import { EyeIcon, MessageCircleWarningIcon, PencilIcon, PlusCircleIcon, PlusIcon, SearchIcon, TrashIcon } from "lucide-react";
 import EditProduct from "./EditProduct";
+import AddInitStockToWarehouse from "./AddInitStockToWarehouse";
+import Notification from "@/components/notification";
 
 export default function Product() {
     const [product, setProduct] = useState(null);
@@ -20,12 +20,16 @@ export default function Product() {
     const [search, setSearch] = useState("");
     const [selectedProduct, setSelectedProduct] = useState([]);
     const [selectedProductId, setSelectedProductId] = useState(null);
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState({
+        type: "",
+        message: "",
+    });
     const [errors, setErrors] = useState([]); // Store validation errors
     const [isModalCreateProductOpen, setIsModalCreateProductOpen] = useState(false);
     const [isModalCreateCategoryProductOpen, setIsModalCreateCategoryProductOpen] = useState(false);
     const [isModalUpdateProductOpen, setIsModalUpdateProductOpen] = useState(false);
     const [isModalDeleteProductOpen, setIsModalDeleteProductOpen] = useState(false);
+    const [isModalAddInitStockOpen, setIsModalAddInitStockOpen] = useState(false);
     const [productCategories, setProductCategories] = useState([]);
 
     // Fetch Accounts
@@ -84,6 +88,7 @@ export default function Product() {
         setIsModalCreateCategoryProductOpen(false);
         setIsModalUpdateProductOpen(false);
         setIsModalDeleteProductOpen(false);
+        setIsModalAddInitStockOpen(false);
         // setIsModalUpdateAccountOpen(false)
     };
 
@@ -99,20 +104,6 @@ export default function Product() {
             }
         });
     };
-
-    // const handleDeleteSelectedAccounts = async () => {
-    //     try {
-    //         const response = await axios.delete(
-    //             `api/delete-selected-account`,
-    //             { data: { ids: selectedAccount } },
-    //         )
-    //         setNotification(response.data.message)
-    //         fetchAccount()
-    //         setSelectedAccount([])
-    //     } catch (error) {
-    //         setErrors(error.response?.data?.errors || ['Something went wrong.'])
-    //     }
-    // }
 
     useEffect(() => {
         fetchProducts("/api/products");
@@ -135,13 +126,20 @@ export default function Product() {
         fetchProducts(url);
     };
 
+    const selectedProductById = product?.data?.find((item) => item.id === selectedProductId);
     return (
         <>
             <Header title="Product" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden">
-                        {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
+                        {notification.message && (
+                            <Notification
+                                type={notification.type}
+                                notification={notification.message}
+                                onClose={() => setNotification({ type: "", message: "" })}
+                            />
+                        )}
                         <div className="">
                             {errors.length > 0 && (
                                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
@@ -243,6 +241,15 @@ export default function Product() {
                                                             <button
                                                                 onClick={() => {
                                                                     setSelectedProductId(product.id);
+                                                                    setIsModalAddInitStockOpen(true);
+                                                                }}
+                                                                className="bg-green-500 py-2 px-4 rounded-lg text-white mr-2"
+                                                            >
+                                                                <PlusIcon className="size-4" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSelectedProductId(product.id);
                                                                     setIsModalUpdateProductOpen(true);
                                                                 }}
                                                                 className="bg-indigo-500 py-2 px-4 rounded-lg text-white mr-2"
@@ -268,6 +275,12 @@ export default function Product() {
                                 <div className="px-4">{product?.last_page > 1 && <Paginator links={product} handleChangePage={handleChangePage} />}</div>
                             </div>
                         </div>
+                        <Modal isOpen={isModalAddInitStockOpen} onClose={closeModal} modalTitle="Add Initial Stock" maxWidth="max-w-md">
+                            <AddInitStockToWarehouse
+                                selectedProductById={selectedProductById}
+                                notification={(type, message) => setNotification({ type, message })}
+                            />
+                        </Modal>
                         <Modal isOpen={isModalUpdateProductOpen} onClose={closeModal} modalTitle="Edit Product" maxWidth="max-w-md">
                             <EditProduct
                                 isModalOpen={setIsModalUpdateProductOpen}
