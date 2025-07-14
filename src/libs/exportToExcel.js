@@ -9,12 +9,11 @@ const exportToExcel = (data, headers, fileName = "data.xlsx", title = "Laporan D
 
     // **Ambil kunci data sesuai dengan header yang diberikan**
     const dataArray = data.map((item, index) => [
-        index + 1, // Nomor urut otomatis
         ...headers.map((header) => item[header.key] || ""), // Ambil data sesuai dengan header
     ]);
 
     // Gabungkan title, header, dan data
-    const finalData = [[title], [], ["No", ...headers.map((header) => header.label)], ...dataArray];
+    const finalData = [[title], [], [...headers.map((header) => header.label)], ...dataArray];
 
     // Buat worksheet & workbook
     const worksheet = XLSX.utils.aoa_to_sheet(finalData);

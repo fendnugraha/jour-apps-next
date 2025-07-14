@@ -26,6 +26,7 @@ const InventoryPage = () => {
     const { user } = useAuth({ middleware: "auth" });
 
     const warehouse = user?.role?.warehouse_id;
+    const warehouseName = user?.role?.warehouse?.name;
     const userRole = user.role?.role;
     const [transactions, setTransactions] = useState([]);
     const [notification, setNotification] = useState({
@@ -292,7 +293,11 @@ const InventoryPage = () => {
                                 </div>
                             </div>
                             <div className="bg-white shadow-sm sm:rounded-2xl">
-                                <WarehouseStock warehouse={warehouse} notification={(type, message) => setNotification({ type, message })} />
+                                <WarehouseStock
+                                    warehouse={warehouse}
+                                    warehouseName={warehouseName}
+                                    notification={(type, message) => setNotification({ type, message })}
+                                />
                             </div>
                             <Modal isOpen={isModalDeleteTrxOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
                                 <div className="flex flex-col items-center justify-center gap-3 mb-4">

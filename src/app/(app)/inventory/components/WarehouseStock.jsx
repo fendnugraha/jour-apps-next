@@ -1,10 +1,13 @@
 "use client";
 import SimplePagination from "@/components/SimplePagination";
 import axios from "@/libs/axios";
+import exportToExcel from "@/libs/exportToExcel";
+import formatDateTime from "@/libs/formatDateTime";
 import formatNumber from "@/libs/formatNumber";
+import { DownloadIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-const WarehouseStock = ({ warehouse, notification }) => {
+const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
     const [search, setSearch] = useState("");
     const [warehouseStock, setWarehouseStock] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -53,10 +56,45 @@ const WarehouseStock = ({ warehouse, notification }) => {
     const summarizedStock = warehouseStock.reduce((acc, item) => {
         return acc + item.current_stock;
     }, 0);
+
+    const exportStockToExcel = () => {
+        const headers = [
+            { key: "product_name", label: "Nama Barang" },
+            { key: "category", label: "Kategori" },
+            { key: "current_stock", label: "Qty" },
+        ];
+
+        const data = [
+            ...warehouseStock.map((item) => ({
+                product_name: item.product.name,
+                category: item.product.category,
+                current_stock: formatNumber(item.current_stock),
+            })),
+            {
+                product_name: "Total",
+                category: "",
+                current_stock: formatNumber(summarizedStock),
+            },
+        ];
+
+        exportToExcel(
+            data,
+            headers,
+            `Laporan Stok Gudang ${warehouseName} ${formatDateTime(new Date())}.xlsx`,
+            `Laporan Stok Gudang ${warehouseName} ${formatDateTime(new Date())}`
+        );
+    };
     return (
         <div className="p-4">
-            <h1 className="text-lg font-bold mb-4">Inventory Stock</h1>
-
+            <div className="mb-4 flex justify-between">
+                <h1 className="text-lg font-bold">Inventory Stock</h1>
+                <button
+                    onClick={exportStockToExcel}
+                    className="cursor-pointer bg-white font-bold p-2 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                >
+                    <DownloadIcon className="size-3" />
+                </button>
+            </div>
             <input
                 type="search"
                 value={search}
