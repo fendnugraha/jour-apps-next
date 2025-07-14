@@ -1,6 +1,6 @@
 import React from "react";
 
-const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, className }) => {
+const SimplePagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, className }) => {
     // Calculate the total number of pages
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -51,7 +51,7 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, class
 
     return (
         <>
-            <div className={`flex sm:hidden justify-between text-xs items-center mt-3 ${className}`}>
+            <div className={`flex justify-between text-xs items-center mt-3 ${className}`}>
                 <button
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -67,47 +67,8 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange, class
                     Next
                 </button>
             </div>
-            <div className={`sm:flex justify-between hidden text-xs items-center mt-3 ${className}`}>
-                <div className="w-1/2 text-slate-500">
-                    <span>
-                        {currentPage} of {totalPages}
-                    </span>
-                </div>
-
-                <div className="flex justify-end items-center gap-1 w-1/2">
-                    <button
-                        onClick={() => goToPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="border border-slate-300 rounded-lg py-1 px-4 cursor-pointer foucus:bg-slate-300 hover:bg-slate-200 disabled:text-slate-300 disabled:border-slate-300"
-                    >
-                        Prev
-                    </button>
-
-                    {/* Render page numbers with ellipsis */}
-                    <div className="flex gap-1">
-                        {generatePageNumbers().map((page, index) => (
-                            <button
-                                key={index}
-                                onClick={() => (typeof page === "number" ? goToPage(page) : null)}
-                                className={`border border-slate-300 rounded-lg py-1 px-3 ${currentPage === page ? "bg-slate-600 text-white scale-110" : ""}`}
-                                disabled={page === "..."}
-                            >
-                                {page}
-                            </button>
-                        ))}
-                    </div>
-
-                    <button
-                        onClick={() => goToPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="border border-slate-300 rounded-lg py-1 px-4 cursor-pointer foucus:bg-slate-300 hover:bg-slate-200 disabled:text-slate-300 disabled:border-slate-300"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
         </>
     );
 };
 
-export default Pagination;
+export default SimplePagination;

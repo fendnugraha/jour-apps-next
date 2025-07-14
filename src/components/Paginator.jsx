@@ -1,7 +1,7 @@
 export default function Paginator({ links, handleChangePage }) {
     return (
         <div className="flex items-center justify-between">
-            <div className="flex-1 p-4 flex justify-between sm:hidden">
+            <div className="flex-1 my-4 flex justify-between sm:hidden">
                 <button
                     onClick={() => handleChangePage(links?.prev_page_url)}
                     disabled={!links?.prev_page_url}

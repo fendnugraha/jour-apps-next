@@ -2,6 +2,7 @@ import NavLink from "@/components/NavLink";
 import { useAuth } from "@/libs/auth";
 import {
     ArrowRightLeftIcon,
+    BoxesIcon,
     ChartAreaIcon,
     CircleDollarSignIcon,
     CirclePowerIcon,
@@ -88,6 +89,19 @@ const Navigation = ({ user }) => {
                         </NavLink> */}
                         {userRole === "Administrator" && (
                             <>
+                                <NavLink href="/inventory" isOpen={isOpen} active={pathname === "/inventory"}>
+                                    <div>
+                                        <BoxesIcon className="w-5 h-5" />
+                                    </div>
+                                    <span
+                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
+                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        }`}
+                                        style={{ display: isOpen ? "inline" : "none" }}
+                                    >
+                                        Inventory
+                                    </span>
+                                </NavLink>
                                 <NavLink href="/finance" isOpen={isOpen} active={pathname === "/finance"}>
                                     <div>
                                         <CircleDollarSignIcon className="w-5 h-5" />

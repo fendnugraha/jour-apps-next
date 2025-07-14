@@ -1,7 +1,6 @@
 "use client";
-import Notification from "@/components/notification";
 import Header from "../Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowBigDown, ArrowBigUp, FilterIcon, MessageCircleWarningIcon, PlusCircleIcon, SearchIcon, XCircleIcon } from "lucide-react";
 import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
@@ -12,6 +11,8 @@ import Modal from "@/components/Modal";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 import { useAuth } from "@/libs/auth";
+import WarehouseStock from "./components/WarehouseStock";
+import Notification from "@/components/notification";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -21,13 +22,16 @@ const getCurrentDate = () => {
     return `${year}-${month}-${day}`;
 };
 
-const StorePage = () => {
+const InventoryPage = () => {
     const { user } = useAuth({ middleware: "auth" });
 
     const warehouse = user?.role?.warehouse_id;
     const userRole = user.role?.role;
     const [transactions, setTransactions] = useState([]);
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState({
+        type: "",
+        message: "",
+    });
     const [startDate, setStartDate] = useState(getCurrentDate());
     const [endDate, setEndDate] = useState(getCurrentDate());
     const [loading, setLoading] = useState(false);
@@ -37,32 +41,34 @@ const StorePage = () => {
     const [isModalDeleteTrxOpen, setIsModalDeleteTrxOpen] = useState(false);
     const [selectedTrxId, setSelectedTrxId] = useState(null);
     const [search, setSearch] = useState("");
-
     const closeModal = () => {
         setIsModalFilterJournalOpen(false);
         setIsModalDeleteTrxOpen(false);
     };
 
-    const fetchTransaction = async (url = `/api/get-trx-by-warehouse/${selectedWarehouse}/${startDate}/${endDate}`) => {
-        setLoading(true);
-        try {
-            const response = await axios.get(url, {
-                params: {
-                    search: search,
-                },
-            });
-            setTransactions(response.data.data);
-        } catch (error) {
-            setNotification(error.response?.data?.message || "Something went wrong.");
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fetchTransaction = useCallback(
+        async (url = `/api/get-trx-by-warehouse/${selectedWarehouse}/${startDate}/${endDate}`) => {
+            setLoading(true);
+            try {
+                const response = await axios.get(url, {
+                    params: {
+                        search: search,
+                    },
+                });
+                setTransactions(response.data.data);
+            } catch (error) {
+                setNotification(error.response?.data?.message || "Something went wrong.");
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [selectedWarehouse, startDate, endDate, search]
+    );
 
     useEffect(() => {
         fetchTransaction();
-    }, []);
+    }, [fetchTransaction]);
     const handleChangePage = (url) => {
         fetchTransaction(url);
     };
@@ -111,14 +117,16 @@ const StorePage = () => {
 
     return (
         <>
-            {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
+            {notification.message && (
+                <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
+            )}
             <div className="">
                 {/* <h1 className="text-2xl font-bold mb-4">Point of Sales - Add to Cart</h1> */}
                 <Header title={"Store"} />
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <div className="bg-white shadow-sm sm:rounded-2xl ">
+                        <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-4 gap-4">
+                            <div className="bg-white shadow-sm sm:rounded-2xl cols-span-1 sm:col-span-3">
                                 <div className="p-4 flex justify-between sm:flex-row flex-col">
                                     <h1 className="text-2xl font-bold mb-4">
                                         Transaksi Barang
@@ -127,11 +135,11 @@ const StorePage = () => {
                                         </span>
                                     </h1>
                                     <div className="flex items-center gap-2">
-                                        <Link href="/store/sales" className="btn-primary text-sm font-normal">
+                                        <Link href="/inventory/sales" className="btn-primary text-sm font-normal">
                                             <PlusCircleIcon className="w-4 h-4 inline" /> Penjualan
                                         </Link>
                                         {userRole === "Administrator" && (
-                                            <Link href="/store/purchase" className="btn-primary text-sm font-normal">
+                                            <Link href="/inventory/purchase" className="btn-primary text-sm font-normal">
                                                 <PlusCircleIcon className="w-4 h-4 inline" /> Pembelian
                                             </Link>
                                         )}
@@ -283,6 +291,9 @@ const StorePage = () => {
                                     {transactions.last_page > 1 && <Paginator links={transactions} handleChangePage={handleChangePage} />}
                                 </div>
                             </div>
+                            <div className="bg-white shadow-sm sm:rounded-2xl">
+                                <WarehouseStock warehouse={warehouse} notification={(type, message) => setNotification({ type, message })} />
+                            </div>
                             <Modal isOpen={isModalDeleteTrxOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
                                 <div className="flex flex-col items-center justify-center gap-3 mb-4">
                                     <MessageCircleWarningIcon size={72} className="text-red-600" />
@@ -314,4 +325,4 @@ const StorePage = () => {
     );
 };
 
-export default StorePage;
+export default InventoryPage;
