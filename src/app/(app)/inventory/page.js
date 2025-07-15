@@ -58,8 +58,7 @@ const InventoryPage = () => {
                 });
                 setTransactions(response.data.data);
             } catch (error) {
-                setNotification(error.response?.data?.message || "Something went wrong.");
-                console.log(error);
+                setNotification({ type: "error", message: error.response?.data?.message || "Something went wrong." });
             } finally {
                 setLoading(false);
             }
@@ -93,27 +92,11 @@ const InventoryPage = () => {
     const handleDeleteTrx = async () => {
         try {
             const response = await axios.delete(`/api/transactions/${selectedTrxId}`);
-            setNotification(response.data.message);
+            setNotification({ type: "success", message: response.data.message });
             fetchTransaction();
         } catch (error) {
-            setNotification(error.response?.data?.message || "Something went wrong.");
-            console.log(error);
+            setNotification({ type: "error", message: error.response?.data?.message || "Something went wrong." });
         }
-    };
-    const [selectedCategory, setSelectedCategory] = useState([]);
-    const addToSelectedCategory = (category) => {
-        if (selectedCategory.includes(category)) {
-            setSelectedCategory(selectedCategory.filter((item) => item !== category));
-        } else {
-            setSelectedCategory([...selectedCategory, category]);
-        }
-    };
-
-    const filterTransactionByCategoryArray = (categoryArray) => {
-        const filteredTransactions = transactions.filter((transaction) => {
-            return categoryArray.includes(transaction.category);
-        });
-        setTransactions(filteredTransactions);
     };
 
     return (
@@ -278,6 +261,7 @@ const InventoryPage = () => {
                                                                     setSelectedTrxId(transaction.id);
                                                                     setIsModalDeleteTrxOpen(true);
                                                                 }}
+                                                                disabled={true}
                                                             >
                                                                 <XCircleIcon className="w-4 h-4 text-red-500 inline hover:scale-125 transition-transform duration-300" />
                                                             </button>

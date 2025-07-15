@@ -4,7 +4,7 @@ import axios from "@/libs/axios";
 import exportToExcel from "@/libs/exportToExcel";
 import formatDateTime from "@/libs/formatDateTime";
 import formatNumber from "@/libs/formatNumber";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, RefreshCwIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
@@ -26,6 +26,7 @@ const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
                 setWarehouseStock(response.data.data);
             } catch (error) {
                 notification("error", error.response?.data?.message || "Something went wrong.");
+                console.log(error);
             } finally {
                 setLoading(false);
             }
@@ -54,7 +55,7 @@ const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
     };
 
     const summarizedStock = warehouseStock.reduce((acc, item) => {
-        return acc + item.current_stock;
+        return acc + item.current_stock * item.product.cost;
     }, 0);
 
     const exportStockToExcel = () => {
@@ -88,12 +89,21 @@ const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
         <div className="p-4">
             <div className="mb-4 flex justify-between">
                 <h1 className="text-lg font-bold">Inventory Stock</h1>
-                <button
-                    onClick={exportStockToExcel}
-                    className="cursor-pointer bg-white font-bold p-2 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
-                >
-                    <DownloadIcon className="size-3" />
-                </button>
+                <div>
+                    <button
+                        onClick={() => fetchWarehouseStock()}
+                        className="cursor-pointer bg-white mr-1 font-bold p-2 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                        disabled={loading}
+                    >
+                        <RefreshCwIcon className="size-3" />
+                    </button>
+                    <button
+                        onClick={exportStockToExcel}
+                        className="cursor-pointer bg-white font-bold p-2 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                    >
+                        <DownloadIcon className="size-3" />
+                    </button>
+                </div>
             </div>
             <input
                 type="search"
