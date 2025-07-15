@@ -155,7 +155,7 @@ const Purchase = () => {
                 dateIssued: today,
                 paymentAccountID: 8,
                 feeCustomer: 0,
-                transaction_type: "Sales",
+                transaction_type: "Purchase",
             });
             clearCart();
             setIsModalCheckOutOpen(false);
