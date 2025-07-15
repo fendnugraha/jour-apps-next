@@ -289,6 +289,7 @@ export default function Product() {
                                 selectedProductId={selectedProductId}
                                 products={product}
                                 productCategories={productCategories}
+                                setSelectedProductId={setSelectedProductId}
                             />
                         </Modal>
                         <Modal isOpen={isModalDeleteProductOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
