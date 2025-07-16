@@ -245,7 +245,7 @@ const InventoryPage = () => {
                                                         </td>
                                                         <td className="font-bold">
                                                             <span className="text-xs font-normal block text-slate-500">
-                                                                {formatDateTime(transaction.created_at)} {transaction.invoice}
+                                                                {formatDateTime(transaction.date_issued)} {transaction.invoice}
                                                             </span>
 
                                                             {transaction.product.name}

@@ -8,39 +8,50 @@ import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
 
+const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+};
+
 const ProductHistory = ({ params }) => {
     const { id } = use(params);
+    const [transaction, setTransaction] = useState([]);
     const [product, setProduct] = useState([]);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth({ middleware: "auth" });
     const warehouseId = user?.role?.warehouse_id;
+    const [startDate, setStartDate] = useState(getCurrentDate());
+    const [endDate, setEndDate] = useState(getCurrentDate());
 
-    const fetchProduct = useCallback(async () => {
+    const fetchTrxByProductId = useCallback(async () => {
         try {
-            const response = await axios.get(`/api/products/${id}`, {
+            const response = await axios.get(`/api/get-trx-by-product-id/${id}/${startDate}/${endDate}`, {
                 params: {
                     warehouse_id: warehouseId,
                 },
             });
-            setProduct(response.data.data);
+            setTransaction(response.data.data.transactions);
+            setProduct(response.data.data.product);
         } catch (error) {
             console.error("Error fetching product:", error);
         }
-    }, [id]);
+    }, [id, warehouseId, startDate, endDate]);
 
     useEffect(() => {
-        fetchProduct();
-    }, [fetchProduct]);
+        fetchTrxByProductId();
+    }, [fetchTrxByProductId]);
 
-    const warehouseInitStock = product?.warehouse_stock?.find((warehouseStock) => warehouseStock?.warehouse_id === warehouseId)?.init_stock;
+    const warehouseInitStock = product?.warehouse_stock?.find((item) => item.warehouse_id === warehouseId)?.init_stock || 0;
 
-    const calculateTotalStock = useCallback(() => {
-        let totalStock = warehouseInitStock;
-        product?.transactions?.forEach((transaction) => {
-            totalStock += transaction?.quantity;
-        });
-        return totalStock;
-    }, [warehouseInitStock, product?.transactions]);
+    const calculateTotalStock = () => {
+        return transaction?.data?.reduce((total, item) => {
+            return total + item.quantity;
+        }, warehouseInitStock);
+    };
+
     console.log(product);
     return (
         <>
@@ -74,8 +85,11 @@ const ProductHistory = ({ params }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {product?.transactions?.map((transaction) => (
-                                    <tr key={transaction?.id}>
+                                {transaction?.data?.map((transaction) => (
+                                    <tr
+                                        key={transaction?.id}
+                                        className={`hover:bg-orange-100 ${transaction?.transaction_type === "Purchase" ? "text-green-700" : "text-red-500"}`}
+                                    >
                                         <td>{transaction?.transaction_type === "Purchase" ? "Pembelian" : "Penjualan"}</td>
                                         <td>{formatDateTime(transaction?.date_issued)}</td>
                                         <td>{formatNumber(transaction?.quantity)}</td>
