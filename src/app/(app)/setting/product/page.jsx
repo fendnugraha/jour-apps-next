@@ -13,6 +13,7 @@ import { EyeIcon, MessageCircleWarningIcon, PencilIcon, PlusCircleIcon, PlusIcon
 import EditProduct from "./EditProduct";
 import AddInitStockToWarehouse from "./AddInitStockToWarehouse";
 import Notification from "@/components/notification";
+import Link from "next/link";
 
 export default function Product() {
     const [product, setProduct] = useState(null);
@@ -229,7 +230,9 @@ export default function Product() {
                                                         />
                                                     </td>
                                                     <td>
-                                                        {product.name}
+                                                        <Link className="hover:underline" href={`/setting/product/history/${product.id}`}>
+                                                            {product.name}
+                                                        </Link>
                                                         <span className="block text-xs text-slate-400">
                                                             {product.category} {formatNumber(product.sold)} terjual
                                                         </span>
