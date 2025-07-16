@@ -42,11 +42,13 @@ const JournalTable = ({
     user,
     loading,
     hqCashBank,
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
 }) => {
     const [selectedAccount, setSelectedAccount] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [startDate, setStartDate] = useState(getCurrentDate());
-    const [endDate, setEndDate] = useState(getCurrentDate());
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [isModalFilterJournalOpen, setIsModalFilterJournalOpen] = useState(false);

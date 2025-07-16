@@ -76,6 +76,8 @@ const TransactionPage = () => {
         type: "",
         message: "",
     });
+
+    const [startDate, setStartDate] = useState(getCurrentDate());
     const [endDate, setEndDate] = useState(getCurrentDate());
 
     const [isDailyReportOpen, setIsDailyReportOpen] = useState(false);
@@ -131,10 +133,10 @@ const TransactionPage = () => {
     const { accountBalance, error: accountBalanceError, loading: isValidating } = useCashBankBalance(selectedWarehouseId, endDate);
 
     const { warehouses, warehousesError } = useGetWarehouses();
-    const fetchJournalsByWarehouse = async (selectedWarehouse = warehouse, startDate = getCurrentDate(), endDate = getCurrentDate()) => {
+    const fetchJournalsByWarehouse = async () => {
         setJournalLoading(true);
         try {
-            const response = await axios.get(`/api/get-journal-by-warehouse/${selectedWarehouse}/${startDate}/${endDate}`);
+            const response = await axios.get(`/api/get-journal-by-warehouse/${selectedWarehouseId}/${startDate}/${endDate}`);
             setJournalsByWarehouse(response.data);
         } catch (error) {
             setNotification(error.response?.data?.message || "Something went wrong.");
@@ -457,6 +459,10 @@ const TransactionPage = () => {
                                     warehouseId={(warehouseId) => setSelectedWarehouseId(warehouseId)}
                                     user={user}
                                     loading={journalLoading}
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    setStartDate={setStartDate}
+                                    setEndDate={setEndDate}
                                 />
                             </div>
                             {/* <div className="order-1 sm:order-2 px-2 sm:px-0">

@@ -186,7 +186,7 @@ const Sales = () => {
                                 className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
                                 placeholder="Cari barang..."
                             />
-                            <div className="flex flex-col gap-1 overflow-auto h-full">
+                            <div className="flex flex-col gap-1 overflow-auto h-fit">
                                 {productList?.data?.length === 0 ? (
                                     <div className="text-center">Barang tidak ditemukan</div>
                                 ) : (
