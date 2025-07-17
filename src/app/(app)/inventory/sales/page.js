@@ -178,7 +178,7 @@ const Sales = () => {
             <div className="py-8 relative">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="h-[calc(100vh-72px-63px)] flex gap-4">
-                        <div className="overflow-hidden w-96">
+                        <div className="overflow-hidden w-96 flex flex-col">
                             <input
                                 type={`search`}
                                 value={search}
@@ -186,7 +186,7 @@ const Sales = () => {
                                 className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
                                 placeholder="Cari barang..."
                             />
-                            <div className="flex flex-col gap-1 overflow-auto h-fit">
+                            <div className="flex-1 overflow-y-auto flex flex-col gap-1">
                                 {productList?.data?.length === 0 ? (
                                     <div className="text-center">Barang tidak ditemukan</div>
                                 ) : (
@@ -197,64 +197,62 @@ const Sales = () => {
                             </div>
                         </div>
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 flex flex-col justify-between">
-                            <div className="">
-                                <div className="p-2 border-b border-gray-200">
-                                    {" "}
-                                    <h1 className="font-bold">Items ({cart.length})</h1>
-                                </div>
-                                <div className="py-2 px-4 sm:px-6 overflow-y-auto">
-                                    <div className="flex flex-col gap-2 h-[calc(58px*7)]">
-                                        {cart.map((product) => (
-                                            <div className="flex flex-col gap-1 border-b border-gray-200 border-dashed pb-2" key={product.id}>
-                                                <div className="flex justify-between items-center">
-                                                    <h1 className="text-sm font-bold">{product.name}</h1>
-                                                    <button onClick={() => removeFromCart(product)}>
-                                                        <MinusCircleIcon size={18} className="text-red-500" />
-                                                    </button>
-                                                </div>
-                                                <div>
+                            <div className="p-2 border-b border-gray-200">
+                                {" "}
+                                <h1 className="font-bold">Items ({cart.length})</h1>
+                            </div>
+                            <div className="flex-1 overflow-y-auto py-2 px-4 sm:px-6">
+                                <div className="flex flex-col gap-2">
+                                    {cart.map((product) => (
+                                        <div className="flex flex-col gap-1 border-b border-gray-200 border-dashed pb-2" key={product.id}>
+                                            <div className="flex justify-between items-center">
+                                                <h1 className="text-sm font-bold">{product.name}</h1>
+                                                <button onClick={() => removeFromCart(product)}>
+                                                    <MinusCircleIcon size={18} className="text-red-500" />
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <small className="text-xs text-gray-500">
+                                                    Qty:{" "}
+                                                    <input
+                                                        type="number"
+                                                        className="w-16 px-2 py-1 rounded-sm mr-4 border border-slate-300 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                                                        value={product.quantity}
+                                                        onChange={(e) => updateQuantity(product, e.target.value)}
+                                                        min={1}
+                                                        disabled={product.category === "Deposit"}
+                                                    />
+                                                </small>
+                                                <small className="text-xs text-gray-500">
+                                                    Harga:{" "}
+                                                    <input
+                                                        type="number"
+                                                        className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
+                                                        value={product.price}
+                                                        onChange={(e) => updatePrice(product, e.target.value)}
+                                                    />
+                                                </small>
+                                                {product.category === "Deposit" && (
                                                     <small className="text-xs text-gray-500">
-                                                        Qty:{" "}
-                                                        <input
-                                                            type="number"
-                                                            className="w-16 px-2 py-1 rounded-sm mr-4 border border-slate-300 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                                                            value={product.quantity}
-                                                            onChange={(e) => updateQuantity(product, e.target.value)}
-                                                            min={1}
-                                                            disabled={product.category === "Deposit"}
-                                                        />
-                                                    </small>
-                                                    <small className="text-xs text-gray-500">
-                                                        Harga:{" "}
+                                                        HPP:{" "}
                                                         <input
                                                             type="number"
                                                             className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                            value={product.price}
-                                                            onChange={(e) => updatePrice(product, e.target.value)}
+                                                            value={product.cost}
+                                                            onChange={(e) => updateCost(product, e.target.value)}
                                                         />
                                                     </small>
-                                                    {product.category === "Deposit" && (
-                                                        <small className="text-xs text-gray-500">
-                                                            HPP:{" "}
-                                                            <input
-                                                                type="number"
-                                                                className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                                value={product.cost}
-                                                                onChange={(e) => updateCost(product, e.target.value)}
-                                                            />
-                                                        </small>
-                                                    )}
+                                                )}
 
-                                                    <small className="text-xs text-gray-500 font-bold">
-                                                        Total: {formatNumber(product.price * product.quantity)}
-                                                    </small>
-                                                </div>
+                                                <small className="text-xs text-gray-500 font-bold">
+                                                    Total: {formatNumber(product.price * product.quantity)}
+                                                </small>
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                            <div className="flex-1 flex flex-col justify-center bg-blue-500 px-4">
+                            <div className="h-24 flex flex-col justify-center bg-blue-500 px-4">
                                 <h1 className="text-white font-semibold">Total: {formatNumber(total)}</h1>
                                 <div className="flex justify-end w-1/2">
                                     <button

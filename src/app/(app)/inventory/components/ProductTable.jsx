@@ -8,6 +8,7 @@ import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import { DownloadIcon, FilterIcon, RefreshCcwIcon } from "lucide-react";
 import Pagination from "@/components/PaginateList";
+import Link from "next/link";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -83,9 +84,15 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                 <div>
                     <button
                         onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
-                        className="bg-white font-bold p-3 mr-2 rounded-lg border border-gray-300 hover:border-gray-400"
+                        className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
                     >
                         <RefreshCcwIcon className="size-4" />
+                    </button>
+                    <button
+                        onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
+                        className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
+                    >
+                        <DownloadIcon className="size-4" />
                     </button>
                     <button
                         onClick={() => setIsModalFilterDataOpen(true)}
@@ -109,6 +116,25 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     </button>
                 </Modal>
             </div>
+            <div>
+                <input
+                    type="search"
+                    placeholder="Search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full sm:w-1/2 rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+                <select
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                    className="rounded-lg border text-sm border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                >
+                    <option value="10">10</option>
+                    <option value="20">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
             <table className="w-full table text-sm">
                 <thead>
                     <tr>
@@ -121,7 +147,11 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                 <tbody>
                     {currentItems?.map((item, index) => (
                         <tr key={index} className="text-xs">
-                            <td>{item.product_name}</td>
+                            <td>
+                                <Link className="hover:underline" href={`/setting/product/history/${item.product_id}`}>
+                                    {item.product_name}
+                                </Link>
+                            </td>
                             <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
                             <td className="text-end">{formatNumber(item.average_cost)}</td>
                             <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
