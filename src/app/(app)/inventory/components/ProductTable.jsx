@@ -9,6 +9,8 @@ import Modal from "@/components/Modal";
 import { DownloadIcon, FilterIcon, RefreshCcwIcon } from "lucide-react";
 import Pagination from "@/components/PaginateList";
 import Link from "next/link";
+import exportToExcel from "@/libs/exportToExcel";
+import formatDateTime from "@/libs/formatDateTime";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -72,6 +74,37 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
         });
         return total;
     };
+
+    const exportStockToExcel = () => {
+        const headers = [
+            { key: "product_name", label: "Nama Barang" },
+            { key: "total_quantity_all", label: "Qty" },
+            { key: "average_cost", label: "Harga" },
+            { key: "total", label: "Qty" },
+        ];
+
+        const data = [
+            ...warehouseStock.map((item) => ({
+                product_name: item.product_name,
+                total_quantity_all: formatNumber(item.total_quantity_all),
+                average_cost: formatNumber(item.average_cost),
+                total: formatNumber(item.average_cost * item.total_quantity_all),
+            })),
+            {
+                product_name: "Total",
+                total_quantity_all: "",
+                average_cost: "",
+                total: formatNumber(summarizeTotal(warehouseStock)),
+            },
+        ];
+
+        exportToExcel(
+            data,
+            headers,
+            `Laporan Stok Gudang ${warehouseName} ${formatDateTime(new Date())}.xlsx`,
+            `Laporan Stok Gudang ${warehouseName} ${formatDateTime(new Date())}`
+        );
+    };
     return (
         <div className="bg-white rounded-3xl p-4">
             <div className="flex justify-between items-start mb-4">
@@ -88,10 +121,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     >
                         <RefreshCcwIcon className="size-4" />
                     </button>
-                    <button
-                        onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
-                        className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
-                    >
+                    <button onClick={exportStockToExcel} className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400">
                         <DownloadIcon className="size-4" />
                     </button>
                     <button
