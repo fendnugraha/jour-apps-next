@@ -188,6 +188,14 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                         </tr>
                     ))}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan="3" className="text-end font-bold">
+                            Total
+                        </td>
+                        <td className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</td>
+                    </tr>
+                </tfoot>
             </table>
             {totalPages > 1 && (
                 <Pagination
