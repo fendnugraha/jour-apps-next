@@ -67,7 +67,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     const summarizeTotal = (warehouseStock) => {
         let total = 0;
         warehouseStock.forEach((item) => {
-            total += item.average_cost * item.total_quantity;
+            total += item.average_cost * item.total_quantity_all;
         });
         return total;
     };
@@ -122,9 +122,9 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     {currentItems?.map((item, index) => (
                         <tr key={index} className="text-xs">
                             <td>{item.product_name}</td>
-                            <td className="text-end">{formatNumber(item.total_quantity)}</td>
+                            <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
                             <td className="text-end">{formatNumber(item.average_cost)}</td>
-                            <td className="text-end">{formatNumber(item.average_cost * item.total_quantity)}</td>
+                            <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
                         </tr>
                     ))}
                 </tbody>
