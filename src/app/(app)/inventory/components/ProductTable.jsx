@@ -190,10 +190,10 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan="3" className="text-end font-bold">
+                        <th colSpan="3" className="text-end font-bold">
                             Total
-                        </td>
-                        <td className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</td>
+                        </th>
+                        <th className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</th>
                     </tr>
                 </tfoot>
             </table>
