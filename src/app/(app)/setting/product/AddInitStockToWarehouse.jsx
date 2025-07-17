@@ -2,11 +2,12 @@ import axios from "@/libs/axios";
 import { set } from "date-fns";
 import { useEffect, useState } from "react";
 
-const AddInitStockToWarehouse = ({ selectedProductById, notification }) => {
+const AddInitStockToWarehouse = ({ isModalOpen, selectedProductById, notification }) => {
     const [formData, setFormData] = useState({
         product_id: selectedProductById?.id,
         warehouse_id: "",
         init_stock: "",
+        cost: "",
     });
     const [loading, setLoading] = useState(false);
     const [warehouses, setWarehouses] = useState([]);
@@ -34,7 +35,9 @@ const AddInitStockToWarehouse = ({ selectedProductById, notification }) => {
                 product_id: selectedProductById?.id,
                 warehouse_id: "",
                 init_stock: "",
+                cost: "",
             });
+            isModalOpen(false);
         } catch (error) {
             notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
@@ -71,7 +74,21 @@ const AddInitStockToWarehouse = ({ selectedProductById, notification }) => {
                         className="w-full border border-slate-300 rounded-md p-2 bg-slate-100"
                     />
                 </div>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl disabled:opacity-50" disabled={loading}>
+                <div className="mb-4">
+                    <label>Harga Modal</label>
+                    <input
+                        type="number"
+                        value={formData.cost}
+                        onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                        placeholder="Rp"
+                        className="w-full border border-slate-300 rounded-md p-2 bg-slate-100"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl disabled:opacity-50"
+                    disabled={loading}
+                >
                     {loading ? "Loading..." : "Simpan"}
                 </button>
             </form>

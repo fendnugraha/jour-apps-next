@@ -16,7 +16,7 @@ const EditProduct = ({ isModalOpen, notification, fetchProducts, selectedProduct
             notification("success", response.data.message);
             isModalOpen(false);
             fetchProducts();
-            setSelectedProductId(null);
+            setSelectedProductId("");
             setFormData({});
         } catch (error) {
             notification("error", error.response?.data?.message || "Something went wrong.");

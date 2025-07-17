@@ -131,7 +131,7 @@ const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
     return (
         <div className="p-4">
             <div className="mb-4 flex justify-between">
-                <h1 className="text-lg font-bold">Inventory Stock</h1>
+                <h1 className="text-lg font-bold">Inventory</h1>
                 <div>
                     <button
                         onClick={() => fetchWarehouseStock()}

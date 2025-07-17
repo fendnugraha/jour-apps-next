@@ -52,7 +52,6 @@ const ProductHistory = ({ params }) => {
         }, warehouseInitStock);
     };
 
-    console.log(product);
     return (
         <>
             <Header title="Product History" />

@@ -14,6 +14,7 @@ import EditProduct from "./EditProduct";
 import AddInitStockToWarehouse from "./AddInitStockToWarehouse";
 import Notification from "@/components/notification";
 import Link from "next/link";
+import Button from "@/components/Button";
 
 export default function Product() {
     const [product, setProduct] = useState(null);
@@ -183,18 +184,23 @@ export default function Product() {
                                     />
                                 </Modal>
                             </div>
-                            <div className="relative w-full sm:max-w-sm">
-                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <SearchIcon className="w-6 h-6 text-gray-500" />
+                            <div className="flex justify-between mb-4">
+                                <div className="relative w-full sm:max-w-sm">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <SearchIcon className="w-6 h-6 text-gray-500" />
+                                    </div>
+                                    <input
+                                        type="search"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        placeholder="Search..."
+                                        className="block w-full text-sm pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                        autoComplete="off"
+                                    />
                                 </div>
-                                <input
-                                    type="search"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Search..."
-                                    className="block w-full text-sm mb-2 pl-10 pr-4 py-2 text-gray-900 placeholder-gray-400 bg-white border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                    autoComplete="off"
-                                />
+                                <Button type="button" className={`cursor-pointer`} onClick={() => fetchProducts("/api/products")}>
+                                    Refresh
+                                </Button>
                             </div>
                             <div className="overflow-x-auto bg-white rounded-2xl relative">
                                 {loading && (
@@ -280,6 +286,7 @@ export default function Product() {
                         </div>
                         <Modal isOpen={isModalAddInitStockOpen} onClose={closeModal} modalTitle="Add Initial Stock" maxWidth="max-w-md">
                             <AddInitStockToWarehouse
+                                isModalOpen={setIsModalAddInitStockOpen}
                                 selectedProductById={selectedProductById}
                                 notification={(type, message) => setNotification({ type, message })}
                             />

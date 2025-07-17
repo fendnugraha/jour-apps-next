@@ -18,7 +18,10 @@ export default function Account() {
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(false);
     const [selectedAccountID, setselectedAccountID] = useState(null);
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState({
+        type: "",
+        message: "",
+    });
     const [errors, setErrors] = useState([]); // Store validation errors
     const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] = useState(false);
     const [isModalUpdateAccountOpen, setIsModalUpdateAccountOpen] = useState(false);
@@ -43,11 +46,11 @@ export default function Account() {
     const handleDeleteAccount = async (id) => {
         try {
             const response = await axios.delete(`api/accounts/${id}`);
-            setNotification(response.data.message);
+            setNotification("success", response.data.message);
             fetchAccount();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
-            setNotification(error.response.data.message);
+            setNotification("error", error.response.data.message);
         }
     };
 
@@ -94,7 +97,7 @@ export default function Account() {
     const handleDeleteSelectedAccounts = async () => {
         try {
             const response = await axios.delete(`api/delete-selected-account`, { data: { ids: selectedAccount } });
-            setNotification(response.data.message);
+            setNotification("success", response.data.message);
             fetchAccount();
             setSelectedAccount([]);
         } catch (error) {
@@ -122,10 +125,11 @@ export default function Account() {
 
         try {
             const response = await axios.put(`api/accounts/${selectedUpdateAccount.id}`, selectedUpdateAccount);
-            setNotification(response.data.message);
+            setNotification("success", response.data.message);
             fetchAccount();
             closeModal();
         } catch (error) {
+            setNotification("error", error.response.data.message);
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
         }
     };
@@ -135,9 +139,13 @@ export default function Account() {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden">
-                        <div className="fixed top-0 right-0 px-6 py-4 sm:block" onClick={() => setNotification("")}>
-                            {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
-                        </div>
+                        {notification.message && (
+                            <Notification
+                                type={notification.type}
+                                notification={notification.message}
+                                onClose={() => setNotification({ type: "", message: "" })}
+                            />
+                        )}
                         {errors.length > 0 && (
                             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                                 <ul>

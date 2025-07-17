@@ -13,6 +13,7 @@ import Input from "@/components/Input";
 import { useAuth } from "@/libs/auth";
 import WarehouseStock from "./components/WarehouseStock";
 import Notification from "@/components/notification";
+import ProductTable from "./components/ProductTable";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -109,7 +110,7 @@ const InventoryPage = () => {
                 <Header title={"Inventory Management"} />
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
                             <div className="bg-white shadow-sm sm:rounded-2xl cols-span-1 sm:col-span-3">
                                 <div className="p-4 flex justify-between sm:flex-row flex-col">
                                     <h1 className="text-2xl font-bold mb-4">
@@ -191,9 +192,9 @@ const InventoryPage = () => {
                                     </div>
                                 </div>
                                 <div className="px-4 mb-2 flex">
-                                    <Input
+                                    <input
                                         type="search"
-                                        value={search}
+                                        value={search || ""}
                                         onChange={(e) => setSearch(e.target.value)}
                                         placeholder="Cari barang..."
                                         className="w-full text-sm rounded-l-lg rounded-r-none border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -307,6 +308,11 @@ const InventoryPage = () => {
                                 </div>
                             </Modal>
                         </div>
+                        <ProductTable
+                            warehouse={warehouse}
+                            warehouseName={warehouseName}
+                            notification={(type, message) => setNotification({ type, message })}
+                        />
                     </div>
                 </div>
             </div>
