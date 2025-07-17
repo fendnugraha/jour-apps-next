@@ -7,6 +7,7 @@ import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import { DownloadIcon, FilterIcon, RefreshCcwIcon } from "lucide-react";
+import Pagination from "@/components/PaginateList";
 
 const getCurrentDate = () => {
     const today = new Date();
