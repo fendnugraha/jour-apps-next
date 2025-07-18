@@ -183,6 +183,8 @@ const Purchase = () => {
                 paymentAccountID: 8,
                 feeCustomer: 0,
                 transaction_type: "Purchase",
+                contactId: "",
+                paymentMethod: "cash",
             });
             clearCart();
             setIsModalCheckOutOpen(false);
