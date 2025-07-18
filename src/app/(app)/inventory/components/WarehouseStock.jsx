@@ -152,7 +152,10 @@ const WarehouseStock = ({ warehouse, warehouseName, notification }) => {
                 <input
                     type="search"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setCurrentPage(1);
+                    }}
                     placeholder="Search"
                     className="w-full px-2 py-0.5 border border-gray-300 rounded-lg"
                 />

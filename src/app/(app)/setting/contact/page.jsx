@@ -9,7 +9,10 @@ import { MapPin, MapPinIcon, PencilIcon, PhoneIcon, PlusCircleIcon, SearchIcon, 
 import Paginator from "@/components/Paginator";
 
 const Contact = () => {
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState({
+        type: "",
+        message: "",
+    });
     const [contacts, setContacts] = useState([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
@@ -25,7 +28,7 @@ const Contact = () => {
                 });
                 setContacts(response.data.data);
             } catch (error) {
-                setNotification(error.response?.data?.message || "Something went wrong.");
+                setNotification("error", error.response?.data?.message || "Something went wrong.");
             } finally {
                 setLoading(false);
             }
@@ -54,7 +57,13 @@ const Contact = () => {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="overflow-hidden">
-                        {notification && <Notification notification={notification} onClose={() => setNotification("")} />}
+                        {notification.message && (
+                            <Notification
+                                type={notification.type}
+                                notification={notification.message}
+                                onClose={() => setNotification({ type: "", message: "" })}
+                            />
+                        )}
                         <div className="mb-2">
                             <button onClick={() => setIsModalCreateContactOpen(true)} className="bg-indigo-500 text-white py-2 px-6 rounded-lg">
                                 Tambah Contact <PlusCircleIcon className="size-4 inline" />
@@ -84,25 +93,25 @@ const Contact = () => {
                             <table className="table w-full text-xs">
                                 <thead>
                                     <tr>
-                                        <th className="border-b-2 p-4">Name</th>
-                                        <th className="border-b-2 p-4">Desctiption</th>
-                                        <th className="border-b-2 p-4">Action</th>
+                                        <th className="">Name</th>
+                                        <th className="">Desctiption</th>
+                                        <th className="">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {contacts?.data?.map((contact) => (
                                         <tr key={contact.id}>
-                                            <td className="border-b p-2">
+                                            <td className="">
                                                 <span className="font-bold">{contact.name}</span>
                                                 <span className="text-xs block mt-1">
                                                     <PhoneIcon className="size-4 inline" /> {contact.phone_number} <MapPinIcon className="size-4 inline" />{" "}
                                                     {contact.address}
                                                 </span>
                                             </td>
-                                            <td className="border-b p-2">
+                                            <td className="">
                                                 {contact.type}: {contact.description}
                                             </td>
-                                            <td className="border-b p-2">
+                                            <td className="">
                                                 <span className="flex gap-2 justify-center items-center">
                                                     <button className="bg-green-500 text-white py-2 px-6 rounded-lg">
                                                         <PencilIcon className="size-4" />

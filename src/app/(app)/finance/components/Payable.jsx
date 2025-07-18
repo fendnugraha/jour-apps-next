@@ -35,7 +35,7 @@ const Payable = ({ notification }) => {
             const response = await axios.get(url);
             setFinance(response.data.data);
         } catch (error) {
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -84,10 +84,10 @@ const Payable = ({ notification }) => {
     const handleDeleteFinance = async (id) => {
         try {
             const response = await axios.delete(`/api/finance/${id}`);
-            notification(response.data.message);
+            notification("success", response.data.message);
             fetchFinance();
         } catch (error) {
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         }
     };
     const handleChangePage = (url) => {
@@ -153,14 +153,14 @@ const Payable = ({ notification }) => {
                             <Modal isOpen={isModalCreatePayableOpen} onClose={closeModal} modalTitle="Create Payable">
                                 <CreatePayable
                                     isModalOpen={setIsModalCreatePayableOpen}
-                                    notification={(message) => notification(message)}
+                                    notification={(type, message) => setNotification({ type, message })}
                                     fetchFinance={fetchFinance}
                                 />
                             </Modal>
                             <Modal isOpen={isModalCreateReceivableOpen} onClose={closeModal} modalTitle="Create Receivable">
                                 <CreateReceivable
                                     isModalOpen={setIsModalCreateReceivableOpen}
-                                    notification={(message) => notification(message)}
+                                    notification={(type, message) => setNotification({ type, message })}
                                     fetchFinance={fetchFinance}
                                 />
                             </Modal>
@@ -168,7 +168,7 @@ const Payable = ({ notification }) => {
                                 <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Contact
                             </button>
                             <Modal isOpen={isModalCreateContactOpen} onClose={closeModal} modalTitle="Create Contact">
-                                <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(message) => notification(message)} />
+                                <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(type, message) => setNotification({ type, message })} />
                             </Modal>
                         </div>
                     </div>
@@ -359,7 +359,7 @@ const Payable = ({ notification }) => {
                 <Modal isOpen={isModalPaymentOpen} onClose={closeModal} modalTitle="Form Pembayaran" maxWidth="max-w-2xl">
                     <PaymentForm
                         contactId={selectedContactIdPayment}
-                        notification={(message) => notification(message)}
+                        notification={(type, message) => setNotification({ type, message })}
                         isModalOpen={setIsModalPaymentOpen}
                         fetchFinance={fetchFinance}
                         onClose={closeModal}

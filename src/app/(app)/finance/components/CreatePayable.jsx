@@ -30,7 +30,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
             const response = await axios.get(url);
             setContacts(response.data.data);
         } catch (error) {
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -46,7 +46,7 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
             const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
             setAccounts(response.data.data);
         } catch (error) {
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -65,12 +65,12 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
         setLoading(true);
         try {
             const response = await axios.post("/api/finance", formData);
-            notification(response.data.message);
+            notification("success", response.data.message);
             isModalOpen(false);
             fetchFinance();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }

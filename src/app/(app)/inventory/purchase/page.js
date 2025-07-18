@@ -32,6 +32,7 @@ const Purchase = () => {
     const [loading, setLoading] = useState(false);
 
     const [productList, setProductList] = useState([]);
+    const [contacts, setContacts] = useState([]);
     const [accounts, setAccounts] = useState([]);
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 500); // Apply debounce with 500ms delay
@@ -42,14 +43,35 @@ const Purchase = () => {
     const [formData, setFormData] = useState({
         dateIssued: today,
         paymentAccountID: "",
+        paymentMethod: "cash",
         feeCustomer: 0,
         transaction_type: "Purchase",
+        contactId: "",
     });
     const [isModalCheckOutOpen, setIsModalCheckOutOpen] = useState(false);
     const [showCartMobile, setShowCartMobile] = useState(false);
     const closeModal = () => {
         setIsModalCheckOutOpen(false);
     };
+
+    const fetchContacts = useCallback(async (type = "Supplier") => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`/api/get-all-contacts-by-type/${type}`);
+            setContacts(response.data.data);
+        } catch (error) {
+            setNotification({
+                type: "error",
+                message: error.response?.data?.message || "Something went wrong.",
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchContacts();
+    }, [fetchContacts]);
 
     const fetchAccountByIds = useCallback(async ({ account_ids }) => {
         setLoading(true);
@@ -67,7 +89,7 @@ const Purchase = () => {
     }, []);
 
     useEffect(() => {
-        fetchAccountByIds({ account_ids: [1, 2, 23] });
+        fetchAccountByIds({ account_ids: [1, 2] });
     }, [fetchAccountByIds]);
 
     const fetchProduct = useCallback(async () => {
@@ -192,7 +214,7 @@ const Purchase = () => {
                                 )}
                             </div>
                         </div>
-                        <div className="bg-white shadow-sm sm:rounded-lg flex-1 flex flex-col h-full">
+                        <div className="bg-white shadow-sm sm:rounded-xl flex-1 flex flex-col h-full">
                             {/* Header */}
                             <div className="p-2 border-b border-gray-200">
                                 <h1 className="font-bold">Items ({cartPo.length})</h1>
@@ -236,7 +258,7 @@ const Purchase = () => {
                                     ))}
                                 </div>
                             </div>
-                            <div className="h-24 flex flex-col justify-center bg-blue-500 px-4">
+                            <div className="h-24 flex flex-col justify-center rounded-b-xl bg-blue-500 px-4">
                                 <h1 className="text-white font-semibold">Total: {formatNumber(total)}</h1>
                                 <div className="flex justify-end w-1/2">
                                     <button
@@ -272,21 +294,61 @@ const Purchase = () => {
                                 onChange={(e) => setFormData({ ...formData, dateIssued: e.target.value })}
                             />
                         </div>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-900">Account Pembayaran</label>
-                            <select
-                                className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.paymentAccountID}
-                                onChange={(e) => setFormData({ ...formData, paymentAccountID: e.target.value })}
+                        <div className="flex bg-indigo-400 w-fit rounded-xl mb-2">
+                            <button
+                                className={`${
+                                    formData.paymentMethod === "cash" ? "bg-indigo-600 text-white" : "text-white/50"
+                                } py-0.5 px-3 cursor-pointer disabled:bg-slate-300 disabled:cursor-wait rounded-xl`}
+                                disabled={loading}
+                                onClick={() => setFormData({ ...formData, paymentMethod: "cash", paymentAccountID: "" })}
                             >
-                                <option value="">Pilih Account Pembayaran</option>
-                                {accounts?.map((account) => (
-                                    <option key={account.id} value={account.id}>
-                                        {account.acc_name}
-                                    </option>
-                                ))}
-                            </select>
+                                Cash
+                            </button>
+                            <button
+                                className={`${
+                                    formData.paymentMethod === "credit" ? "bg-indigo-600 text-white" : "text-white/50"
+                                } text-white py-0.5 px-3 cursor-pointer disabled:bg-slate-300 disabled:cursor-wait rounded-xl`}
+                                disabled={loading}
+                                onClick={() => setFormData({ ...formData, paymentMethod: "credit", paymentAccountID: 7 })}
+                            >
+                                Credit
+                            </button>
                         </div>
+                        {formData.paymentMethod === "cash" ? (
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-900">Account Pembayaran</label>
+                                <select
+                                    className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                                    value={formData.paymentAccountID}
+                                    onChange={(e) => setFormData({ ...formData, paymentAccountID: e.target.value })}
+                                    disabled={loading || formData.paymentMethod === "credit"}
+                                >
+                                    <option value="">Pilih Account Pembayaran</option>
+                                    {accounts?.map((account) => (
+                                        <option key={account.id} value={account.id}>
+                                            {account.acc_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : (
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-900">Contact</label>
+                                <select
+                                    className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                                    value={formData.contactId}
+                                    onChange={(e) => setFormData({ ...formData, contactId: e.target.value })}
+                                    disabled={loading}
+                                >
+                                    <option value="">Pilih Contact</option>
+                                    {contacts?.map((contact) => (
+                                        <option key={contact.id} value={contact.id}>
+                                            {contact.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                     </div>
                     <button
                         onClick={handleCheckout}

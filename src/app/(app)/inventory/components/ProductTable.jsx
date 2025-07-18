@@ -109,7 +109,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
         <div className="bg-white rounded-3xl p-4">
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h1 className="text-lg font-bold">Inventory by {warehouseName}</h1>
+                    <h1 className="text-lg font-bold">Inventory: {warehouseName}</h1>
                     <span className="text-sm text-gray-500">
                         {endDate}, Total: {formatNumber(summarizeTotal(warehouseStock))}
                     </span>
@@ -151,7 +151,10 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     type="search"
                     placeholder="Search"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setCurrentPage(1);
+                    }}
                     className="w-full sm:w-1/2 rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
                 <select

@@ -1,7 +1,7 @@
 "use client";
 import Header from "../Header";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowBigDown, ArrowBigUp, FilterIcon, MessageCircleWarningIcon, PlusCircleIcon, SearchIcon, XCircleIcon } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp, FilterIcon, MessageCircleWarningIcon, PencilIcon, PlusCircleIcon, SearchIcon, XCircleIcon } from "lucide-react";
 import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
 import formatDateTime from "@/libs/formatDateTime";
@@ -14,6 +14,7 @@ import { useAuth } from "@/libs/auth";
 import WarehouseStock from "./components/WarehouseStock";
 import Notification from "@/components/notification";
 import ProductTable from "./components/ProductTable";
+import EditTransaction from "./components/EditTransaction";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -40,11 +41,13 @@ const InventoryPage = () => {
     const [isModalFilterJournalOpen, setIsModalFilterJournalOpen] = useState(false);
     const [selectedWarehouse, setSelectedWarehouse] = useState(warehouse);
     const [warehouses, setWarehouses] = useState([]);
+    const [isModalUpdateTrxOpen, setIsModalUpdateTrxOpen] = useState(false);
     const [isModalDeleteTrxOpen, setIsModalDeleteTrxOpen] = useState(false);
     const [selectedTrxId, setSelectedTrxId] = useState(null);
     const [search, setSearch] = useState("");
     const closeModal = () => {
         setIsModalFilterJournalOpen(false);
+        setIsModalUpdateTrxOpen(false);
         setIsModalDeleteTrxOpen(false);
     };
 
@@ -100,6 +103,7 @@ const InventoryPage = () => {
         }
     };
 
+    const filteredByTrxId = transactions.data?.find((trx) => trx.id === selectedTrxId);
     return (
         <>
             {notification.message && (
@@ -260,6 +264,14 @@ const InventoryPage = () => {
                                                             <button
                                                                 onClick={() => {
                                                                     setSelectedTrxId(transaction.id);
+                                                                    setIsModalUpdateTrxOpen(true);
+                                                                }}
+                                                            >
+                                                                <PencilIcon className="w-4 h-4 text-green-500 mr-2 inline hover:scale-125 transition-transform duration-300" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSelectedTrxId(transaction.id);
                                                                     setIsModalDeleteTrxOpen(true);
                                                                 }}
                                                                 disabled={true}
@@ -284,6 +296,16 @@ const InventoryPage = () => {
                                     notification={(type, message) => setNotification({ type, message })}
                                 />
                             </div>
+                            <Modal isOpen={isModalUpdateTrxOpen} onClose={closeModal} modalTitle="Update Transaksi" maxWidth="max-w-md">
+                                <EditTransaction
+                                    isModalOpen={setIsModalUpdateTrxOpen}
+                                    transaction={filteredByTrxId}
+                                    warehouse={warehouse}
+                                    warehouseName={warehouseName}
+                                    notification={(type, message) => setNotification({ type, message })}
+                                    fetchTransaction={fetchTransaction}
+                                />
+                            </Modal>
                             <Modal isOpen={isModalDeleteTrxOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
                                 <div className="flex flex-col items-center justify-center gap-3 mb-4">
                                     <MessageCircleWarningIcon size={72} className="text-red-600" />

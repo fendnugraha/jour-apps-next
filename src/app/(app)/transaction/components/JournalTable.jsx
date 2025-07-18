@@ -73,7 +73,7 @@ const JournalTable = ({
             notification("success", response.data.message);
             fetchJournalsByWarehouse();
         } catch (error) {
-            notification(error.response?.data?.message || "Something went wrong.");
+            notification("error", error.response?.data?.message || "Something went wrong.");
         }
     };
 
