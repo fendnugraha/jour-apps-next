@@ -1,6 +1,5 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import Header from "../../Header";
 import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
 import Label from "@/components/Label";
@@ -146,27 +145,32 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     </button>
                 </Modal>
             </div>
-            <div>
-                <input
-                    type="search"
-                    placeholder="Search"
-                    value={search}
-                    onChange={(e) => {
-                        setSearch(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                    className="w-full sm:w-1/2 rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-                <select
-                    value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                    className="rounded-lg border text-sm border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                >
-                    <option value="10">10</option>
-                    <option value="20">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 mb-4">
+                <div className="flex items-center">
+                    <input
+                        type="search"
+                        placeholder="Search"
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="w-full rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    />
+                    <select
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                        className="rounded-lg border text-sm border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    >
+                        <option value="10">10</option>
+                        <option value="20">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div className="flex justify-end">
+                    <button className="btn-primary text-sm">Stok Adjusment</button>
+                </div>
             </div>
             <table className="w-full table text-sm">
                 <thead>

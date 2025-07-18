@@ -47,6 +47,20 @@ const Sales = () => {
     });
     const [isModalCheckOutOpen, setIsModalCheckOutOpen] = useState(false);
     const [showCartMobile, setShowCartMobile] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+    useEffect(() => {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+            setCart(JSON.parse(storedCart));
+        }
+        setLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (loaded) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+    }, [cart, loaded]);
 
     const closeModal = () => {
         setIsModalCheckOutOpen(false);
@@ -102,10 +116,6 @@ const Sales = () => {
         });
     };
 
-    useEffect(() => {
-        localStorage.setItem("cart", JSON.stringify(cart));
-    }, [cart]);
-
     const removeFromCart = (product) => {
         setCart((prevCart) => {
             return prevCart.filter((item) => item.id !== product.id);
@@ -138,13 +148,6 @@ const Sales = () => {
     const clearCart = () => {
         setCart([]);
     };
-
-    useEffect(() => {
-        const cartData = localStorage.getItem("cart");
-        if (cartData) {
-            setCart(JSON.parse(cartData));
-        }
-    }, []);
 
     const handleCheckout = async () => {
         const payload = {

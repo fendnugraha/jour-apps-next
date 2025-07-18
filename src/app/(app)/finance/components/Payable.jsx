@@ -359,7 +359,7 @@ const Payable = ({ notification }) => {
                 <Modal isOpen={isModalPaymentOpen} onClose={closeModal} modalTitle="Form Pembayaran" maxWidth="max-w-2xl">
                     <PaymentForm
                         contactId={selectedContactIdPayment}
-                        notification={(type, message) => setNotification({ type, message })}
+                        notification={(type, message) => notification({ type, message })}
                         isModalOpen={setIsModalPaymentOpen}
                         fetchFinance={fetchFinance}
                         onClose={closeModal}

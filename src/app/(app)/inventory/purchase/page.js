@@ -50,6 +50,8 @@ const Purchase = () => {
     });
     const [isModalCheckOutOpen, setIsModalCheckOutOpen] = useState(false);
     const [showCartMobile, setShowCartMobile] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+
     const closeModal = () => {
         setIsModalCheckOutOpen(false);
     };
@@ -124,8 +126,18 @@ const Purchase = () => {
     };
 
     useEffect(() => {
-        localStorage.setItem("cartPo", JSON.stringify(cartPo));
-    }, [cartPo]);
+        const storedCart = localStorage.getItem("cartPo");
+        if (storedCart) {
+            setCartPo(JSON.parse(storedCart));
+        }
+        setLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (loaded) {
+            localStorage.setItem("cartPo", JSON.stringify(cartPo));
+        }
+    }, [cartPo, loaded]);
 
     const removeFromCart = (product) => {
         setCartPo((prevCart) => {
@@ -156,13 +168,6 @@ const Purchase = () => {
     const clearCart = () => {
         setCartPo([]);
     };
-
-    useEffect(() => {
-        const cartData = localStorage.getItem("cartPo");
-        if (cartData) {
-            setCartPo(JSON.parse(cartData));
-        }
-    }, []);
 
     const handleCheckout = async () => {
         const payload = {
