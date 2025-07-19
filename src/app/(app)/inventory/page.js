@@ -351,7 +351,6 @@ const InventoryPage = () => {
                                                                     setSelectedTrxId(transaction.id);
                                                                     setIsModalDeleteTrxOpen(true);
                                                                 }}
-                                                                disabled={true}
                                                             >
                                                                 <XCircleIcon className="w-4 h-4 text-red-500 inline hover:scale-125 transition-transform duration-300" />
                                                             </button>
