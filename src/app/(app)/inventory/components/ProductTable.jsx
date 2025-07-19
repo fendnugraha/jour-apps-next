@@ -239,6 +239,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     warehouse={warehouse}
                     notification={notification}
                     date={getCurrentDate()}
+                    fetchWarehouseStock={fetchWarehouseStock}
                 />
             </Modal>
         </>

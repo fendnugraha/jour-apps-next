@@ -3,7 +3,7 @@ import formatNumber from "@/libs/formatNumber";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, date }) => {
+const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, date, fetchWarehouseStock }) => {
     const now = new Date();
     const pad = (n) => n.toString().padStart(2, "0");
 
@@ -51,6 +51,7 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
             const response = await axios.post("/api/stock-adjustment", formData);
             notification("success", response.data.message);
             isModalOpen(false);
+            fetchWarehouseStock();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
             notification("error", error.response?.data?.message || "Something went wrong.");
@@ -60,6 +61,7 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
     };
     return (
         <>
+            <h1 className="text-sm font-bold mb-4">{product?.product_name}</h1>
             <div className="flex rounded-full bg-slate-300 p-0.5 w-fit mb-2 text-sm">
                 <button
                     className={`px-3 py-0.5 rounded-full ${
