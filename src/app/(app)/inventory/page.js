@@ -1,7 +1,18 @@
 "use client";
 import Header from "../Header";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowBigDown, ArrowBigUp, FilterIcon, MessageCircleWarningIcon, PencilIcon, PlusCircleIcon, SearchIcon, XCircleIcon } from "lucide-react";
+import {
+    ArrowBigDown,
+    ArrowBigUp,
+    Download,
+    DownloadIcon,
+    FilterIcon,
+    MessageCircleWarningIcon,
+    PencilIcon,
+    PlusCircleIcon,
+    SearchIcon,
+    XCircleIcon,
+} from "lucide-react";
 import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
 import formatDateTime from "@/libs/formatDateTime";
@@ -15,6 +26,7 @@ import WarehouseStock from "./components/WarehouseStock";
 import Notification from "@/components/notification";
 import ProductTable from "./components/ProductTable";
 import EditTransaction from "./components/EditTransaction";
+import exportToExcel from "@/libs/exportToExcel";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -31,6 +43,7 @@ const InventoryPage = () => {
     const warehouseName = user?.role?.warehouse?.name;
     const userRole = user.role?.role;
     const [transactions, setTransactions] = useState([]);
+    const [trxByDate, setTrxByDate] = useState([]);
     const [notification, setNotification] = useState({
         type: "",
         message: "",
@@ -104,6 +117,57 @@ const InventoryPage = () => {
     };
 
     const filteredByTrxId = transactions.data?.find((trx) => trx.id === selectedTrxId);
+
+    const fetchTrxByDate = useCallback(
+        async (url = `/api/get-trx-by-date/${startDate}/${endDate}`) => {
+            setLoading(true);
+            try {
+                const response = await axios.get(url);
+                setTrxByDate(response.data.data);
+            } catch (error) {
+                setNotification({ type: "error", message: error.response?.data?.message || "Something went wrong." });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [startDate, endDate]
+    );
+
+    useEffect(() => {
+        fetchTrxByDate();
+    }, [fetchTrxByDate]);
+
+    const exportTransactionToExcel = async () => {
+        const headers = [
+            { key: "transaction_type", label: "Transaksi" },
+            { key: "date", label: "Tanggal" },
+            { key: "invoice", label: "Invoice" },
+            { key: "product_name", label: "Produk" },
+            { key: "quantity", label: "Qty" },
+            { key: "price", label: "Harga" },
+            { key: "total", label: "Total" },
+        ];
+
+        const data = [
+            ...trxByDate.map((item) => ({
+                transaction_type: item.transaction_type,
+                date: formatDateTime(item.date_issued),
+                invoice: item.invoice,
+                product_name: item.product?.name,
+                quantity: formatNumber(item.quantity),
+                price: formatNumber(item.transaction_type === "Sales" ? item.price : item.cost),
+                total: formatNumber(item.transaction_type === "Sales" ? item.price * item.quantity : item.cost * item.quantity),
+            })),
+        ];
+
+        exportToExcel(
+            data,
+            headers,
+            `Laporan Transaksi Gudang ${warehouseName} ${startDate} s/d ${endDate}.xlsx`,
+            `Laporan Transaksi Gudang ${warehouseName} ${startDate} s/d ${endDate}`
+        );
+    };
+
     return (
         <>
             {notification.message && (
@@ -123,7 +187,7 @@ const InventoryPage = () => {
                                             Cabang: {warehouses.find((w) => w.id === Number(selectedWarehouse))?.name}, Periode: {startDate} - {endDate}
                                         </span>
                                     </h1>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <Link href="/inventory/sales" className="btn-primary text-sm font-normal">
                                             <PlusCircleIcon className="w-4 h-4 inline" /> Penjualan
                                         </Link>
@@ -137,10 +201,16 @@ const InventoryPage = () => {
                                             <PlusCircleIcon className="w-4 h-4 inline" /> Pembelian
                                         </button> */}
                                         <button
-                                            onClick={() => setIsModalFilterJournalOpen(true)}
-                                            className="bg-white font-bold p-2 rounded-lg border border-gray-500 hover:border-gray-400"
+                                            onClick={() => exportTransactionToExcel()}
+                                            className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
                                         >
-                                            <FilterIcon className="size-5" />
+                                            <DownloadIcon size={20} />
+                                        </button>
+                                        <button
+                                            onClick={() => setIsModalFilterJournalOpen(true)}
+                                            className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
+                                        >
+                                            <FilterIcon size={20} />
                                         </button>
                                         <Modal isOpen={isModalFilterJournalOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
                                             {userRole === "Administrator" && (
@@ -266,6 +336,7 @@ const InventoryPage = () => {
                                                                     setSelectedTrxId(transaction.id);
                                                                     setIsModalUpdateTrxOpen(true);
                                                                 }}
+                                                                disabled={["Initial Stock", "Stock Adjustment"].includes(transaction.transaction_type)}
                                                             >
                                                                 <PencilIcon className="w-4 h-4 text-green-500 mr-2 inline hover:scale-125 transition-transform duration-300" />
                                                             </button>

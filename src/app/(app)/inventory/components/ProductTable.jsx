@@ -5,11 +5,13 @@ import formatNumber from "@/libs/formatNumber";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
-import { DownloadIcon, FilterIcon, RefreshCcwIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, MinusIcon, PencilRulerIcon, PlusIcon, RefreshCcwIcon } from "lucide-react";
 import Pagination from "@/components/PaginateList";
 import Link from "next/link";
 import exportToExcel from "@/libs/exportToExcel";
 import formatDateTime from "@/libs/formatDateTime";
+import CreateStockAdjustment from "./CreateStockAdjustment";
+import { set } from "date-fns";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -24,13 +26,16 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     const [endDate, setEndDate] = useState(getCurrentDate());
     const [errors, setErrors] = useState([]); // Store validation errors
     const [loading, setLoading] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [isModalFilterDataOpen, setIsModalFilterDataOpen] = useState(false);
+    const [isModalAdjustmentOpen, setIsModalAdjustmentOpen] = useState(false);
     const [warehouseStock, setWarehouseStock] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const closeModal = () => {
         setIsModalFilterDataOpen(false);
+        setIsModalAdjustmentOpen(false);
     };
 
     const fetchWarehouseStock = useCallback(
@@ -104,116 +109,139 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
             `Laporan Stok Gudang ${warehouseName} ${formatDateTime(new Date())}`
         );
     };
+
+    const findProduct = warehouseStock.find((item) => item.product_id === selectedProduct);
     return (
-        <div className="bg-white rounded-3xl p-4">
-            <div className="flex justify-between items-start mb-4">
-                <div>
-                    <h1 className="text-lg font-bold">Inventory: {warehouseName}</h1>
-                    <span className="text-sm text-gray-500">
-                        {endDate}, Total: {formatNumber(summarizeTotal(warehouseStock))}
-                    </span>
-                </div>
-                <div>
-                    <button
-                        onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
-                        className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
-                    >
-                        <RefreshCcwIcon className="size-4" />
-                    </button>
-                    <button onClick={exportStockToExcel} className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400">
-                        <DownloadIcon className="size-4" />
-                    </button>
-                    <button
-                        onClick={() => setIsModalFilterDataOpen(true)}
-                        className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
-                    >
-                        <FilterIcon className="size-4" />
-                    </button>
-                </div>
-                <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
-                    <div className="mb-4">
-                        <Label className="font-bold">Pilih tanggal</Label>
-                        <Input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        />
+        <>
+            <div className="bg-white rounded-3xl p-4">
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <h1 className="text-lg font-bold">Inventory: {warehouseName}</h1>
+                        <span className="text-sm text-gray-500">
+                            {endDate}, Total: {formatNumber(summarizeTotal(warehouseStock))}
+                        </span>
                     </div>
-                    <button onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)} className="btn-primary">
-                        Submit
-                    </button>
-                </Modal>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 mb-4">
-                <div className="flex items-center">
-                    <input
-                        type="search"
-                        placeholder="Search"
-                        value={search}
-                        onChange={(e) => {
-                            setSearch(e.target.value);
-                            setCurrentPage(1);
-                        }}
-                        className="w-full rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    />
-                    <select
-                        value={itemsPerPage}
-                        onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                        className="rounded-lg border text-sm border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                    >
-                        <option value="10">10</option>
-                        <option value="20">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
+                    <div>
+                        <button
+                            onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
+                            className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
+                        >
+                            <RefreshCcwIcon className="size-4" />
+                        </button>
+                        <button onClick={exportStockToExcel} className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400">
+                            <DownloadIcon className="size-4" />
+                        </button>
+                        <button
+                            onClick={() => setIsModalFilterDataOpen(true)}
+                            className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
+                        >
+                            <FilterIcon className="size-4" />
+                        </button>
+                    </div>
+                    <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
+                        <div className="mb-4">
+                            <Label className="font-bold">Pilih tanggal</Label>
+                            <Input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            />
+                        </div>
+                        <button onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)} className="btn-primary">
+                            Submit
+                        </button>
+                    </Modal>
                 </div>
-                <div className="flex justify-end">
-                    <button className="btn-primary text-sm">Stok Adjusment</button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 mb-4">
+                    <div className="flex items-center">
+                        <input
+                            type="search"
+                            placeholder="Search"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="w-full rounded-lg text-sm mr-1 border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        />
+                        <select
+                            value={itemsPerPage}
+                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                            className="rounded-lg border text-sm border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        >
+                            <option value="10">10</option>
+                            <option value="20">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <table className="w-full table text-sm">
-                <thead>
-                    <tr>
-                        <th className="">Product Name</th>
-                        <th className="">Quantity</th>
-                        <th className="">Price</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentItems?.map((item, index) => (
-                        <tr key={index} className="text-xs">
-                            <td>
-                                <Link className="hover:underline" href={`/setting/product/history/${item.product_id}`}>
-                                    {item.product_name}
-                                </Link>
-                            </td>
-                            <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
-                            <td className="text-end">{formatNumber(item.average_cost)}</td>
-                            <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
+                <table className="w-full table text-sm">
+                    <thead>
+                        <tr>
+                            <th className="">Product Name</th>
+                            <th className="">Quantity</th>
+                            <th className="">Price</th>
+                            <th>Total</th>
+                            <th></th>
                         </tr>
-                    ))}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colSpan="3" className="text-end font-bold">
-                            Total
-                        </th>
-                        <th className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</th>
-                    </tr>
-                </tfoot>
-            </table>
-            {totalPages > 1 && (
-                <Pagination
-                    className="w-full px-4"
-                    totalItems={totalItems}
-                    itemsPerPage={itemsPerPage}
-                    currentPage={currentPage}
-                    onPageChange={handlePageChange}
+                    </thead>
+                    <tbody>
+                        {currentItems?.map((item, index) => (
+                            <tr key={index} className="text-xs">
+                                <td>
+                                    <Link className="hover:underline" href={`/setting/product/history/${item.product_id}`}>
+                                        {item.product_name}
+                                    </Link>
+                                </td>
+                                <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
+                                <td className="text-end">{formatNumber(item.average_cost)}</td>
+                                <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
+                                <td className="text-center w-fit">
+                                    <button
+                                        onClick={() => {
+                                            setIsModalAdjustmentOpen(true);
+                                            setSelectedProduct(item.product_id);
+                                        }}
+                                        className="cursor-pointer flex items-center gap-2 text-cyan-600"
+                                    >
+                                        <PencilRulerIcon size={20} /> Stock Adjusment
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colSpan="3" className="text-end font-bold">
+                                Total
+                            </th>
+                            <th className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+                {totalPages > 1 && (
+                    <Pagination
+                        className="w-full px-4"
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={handlePageChange}
+                    />
+                )}
+            </div>
+            <Modal isOpen={isModalAdjustmentOpen} onClose={closeModal} modalTitle="Stock Adjusment" maxWidth="max-w-md">
+                <CreateStockAdjustment
+                    isModalOpen={setIsModalAdjustmentOpen}
+                    product={findProduct}
+                    warehouse={warehouse}
+                    notification={notification}
+                    date={getCurrentDate()}
                 />
-            )}
-        </div>
+            </Modal>
+        </>
     );
 };
 
