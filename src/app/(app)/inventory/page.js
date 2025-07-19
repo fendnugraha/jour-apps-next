@@ -136,16 +136,19 @@ const InventoryPage = () => {
     useEffect(() => {
         fetchTrxByDate();
     }, [fetchTrxByDate]);
-
+    console.log(trxByDate);
     const exportTransactionToExcel = async () => {
         const headers = [
             { key: "transaction_type", label: "Transaksi" },
             { key: "date", label: "Tanggal" },
             { key: "invoice", label: "Invoice" },
             { key: "product_name", label: "Produk" },
+            { key: "category", label: "Kategori" },
             { key: "quantity", label: "Qty" },
-            { key: "price", label: "Harga" },
-            { key: "total", label: "Total" },
+            { key: "price", label: "Jual" },
+            { key: "cost", label: "Modal" },
+            { key: "total_price", label: "Total Jual" },
+            { key: "total_cost", label: "Total Modal" },
         ];
 
         const data = [
@@ -154,9 +157,12 @@ const InventoryPage = () => {
                 date: formatDateTime(item.date_issued),
                 invoice: item.invoice,
                 product_name: item.product?.name,
+                category: item.product?.category,
                 quantity: formatNumber(item.quantity),
-                price: formatNumber(item.transaction_type === "Sales" ? item.price : item.cost),
-                total: formatNumber(item.transaction_type === "Sales" ? item.price * item.quantity : item.cost * item.quantity),
+                price: formatNumber(item.price),
+                cost: formatNumber(item.cost),
+                total_price: formatNumber(item.price * item.quantity),
+                total_cost: formatNumber(item.quantity * (item.product?.category === "Deposit" ? 1 : item.cost)),
             })),
         ];
 

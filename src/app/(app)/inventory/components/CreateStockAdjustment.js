@@ -38,10 +38,10 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
     };
 
     useEffect(() => {
-        fetchAccountByIds({ account_ids: [27, 28, 29, 30, 42, 43] });
+        fetchAccountByIds({ account_ids: [1, 2, 19, 27, 28, 29, 30, 42, 43] });
     }, []);
 
-    const accountsByType = formData.adjustmentType == "in" ? [27, 28, 29, 30] : [42, 43];
+    const accountsByType = formData.adjustmentType == "in" ? [27, 28, 29, 30] : [1, 2, 19, 42, 43];
     const filterAccountByType = accounts.filter((account) => accountsByType.includes(account.account_id));
 
     const handleSubmit = async (e) => {
