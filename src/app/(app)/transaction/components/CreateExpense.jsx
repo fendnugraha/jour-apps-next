@@ -56,6 +56,15 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
             setLoading(false);
         }
     };
+
+    const cashBankInv = [
+        ...filteredCashBankByWarehouse,
+        {
+            id: 6,
+            acc_name: "Persediaan Barang",
+        },
+    ];
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="mb-2 grid grid-cols-1 sm:grid-cols-3 sm:gap-4 items-center">
@@ -80,7 +89,7 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
                         className="w-full rounded-md border p-2 shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
                         <option value="">--Pilih Rekening--</option>
-                        {filteredCashBankByWarehouse.map((expense) => (
+                        {cashBankInv.map((expense) => (
                             <option key={expense.id} value={expense.id}>
                                 {expense.acc_name}
                             </option>
