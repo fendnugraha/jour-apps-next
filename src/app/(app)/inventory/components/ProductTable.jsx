@@ -5,13 +5,14 @@ import formatNumber from "@/libs/formatNumber";
 import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
-import { DownloadIcon, FilterIcon, MinusIcon, PencilRulerIcon, PlusIcon, RefreshCcwIcon } from "lucide-react";
+import { DownloadIcon, FilterIcon, MinusIcon, PencilRulerIcon, PlusIcon, RefreshCcwIcon, UndoIcon } from "lucide-react";
 import Pagination from "@/components/PaginateList";
 import Link from "next/link";
 import exportToExcel from "@/libs/exportToExcel";
 import formatDateTime from "@/libs/formatDateTime";
 import CreateStockAdjustment from "./CreateStockAdjustment";
 import { set } from "date-fns";
+import CreateReversal from "./CreateReversal";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -29,6 +30,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isModalFilterDataOpen, setIsModalFilterDataOpen] = useState(false);
     const [isModalAdjustmentOpen, setIsModalAdjustmentOpen] = useState(false);
+    const [isModalReversalOpen, setIsModalReversalOpen] = useState(false);
     const [warehouseStock, setWarehouseStock] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -36,6 +38,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     const closeModal = () => {
         setIsModalFilterDataOpen(false);
         setIsModalAdjustmentOpen(false);
+        setIsModalReversalOpen(false);
     };
 
     const fetchWarehouseStock = useCallback(
@@ -190,7 +193,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     <tbody>
                         {currentItems?.map((item, index) => (
                             <tr key={index} className="text-xs">
-                                <td>
+                                <td className="text-start w-1/2">
                                     <Link className="hover:underline" href={`/setting/product/history/${item.product_id}`}>
                                         {item.product_name}
                                     </Link>
@@ -198,15 +201,24 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                                 <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
                                 <td className="text-end">{formatNumber(item.average_cost)}</td>
                                 <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
-                                <td className="text-center w-fit">
+                                <td className="flex justify-center gap-2">
                                     <button
                                         onClick={() => {
                                             setIsModalAdjustmentOpen(true);
                                             setSelectedProduct(item.product_id);
                                         }}
-                                        className="cursor-pointer flex items-center gap-2 text-cyan-600"
+                                        className="cursor-pointer flex items-center gap-1 hover:underline text-cyan-600"
                                     >
-                                        <PencilRulerIcon size={20} /> Stock Adjusment
+                                        <PencilRulerIcon size={20} /> Stock Adjustment
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsModalReversalOpen(true);
+                                            setSelectedProduct(item.product_id);
+                                        }}
+                                        className="cursor-pointer flex items-center gap-1 hover:underline text-red-600"
+                                    >
+                                        <UndoIcon size={20} /> Reversal
                                     </button>
                                 </td>
                             </tr>
@@ -232,9 +244,19 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     />
                 )}
             </div>
-            <Modal isOpen={isModalAdjustmentOpen} onClose={closeModal} modalTitle="Stock Adjusment" maxWidth="max-w-md">
+            <Modal isOpen={isModalAdjustmentOpen} onClose={closeModal} modalTitle="Stock Adjustment" maxWidth="max-w-md">
                 <CreateStockAdjustment
                     isModalOpen={setIsModalAdjustmentOpen}
+                    product={findProduct}
+                    warehouse={warehouse}
+                    notification={notification}
+                    date={getCurrentDate()}
+                    fetchWarehouseStock={fetchWarehouseStock}
+                />
+            </Modal>
+            <Modal isOpen={isModalReversalOpen} onClose={closeModal} modalTitle="Reversal" maxWidth="max-w-md">
+                <CreateReversal
+                    isModalOpen={setIsModalReversalOpen}
                     product={findProduct}
                     warehouse={warehouse}
                     notification={notification}
