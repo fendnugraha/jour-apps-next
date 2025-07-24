@@ -136,7 +136,6 @@ const InventoryPage = () => {
     useEffect(() => {
         fetchTrxByDate();
     }, [fetchTrxByDate]);
-    console.log(trxByDate);
     const exportTransactionToExcel = async () => {
         const headers = [
             { key: "transaction_type", label: "Transaksi" },
@@ -184,8 +183,8 @@ const InventoryPage = () => {
                 <Header title={"Inventory Management"} />
                 <div className="py-8">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-                            <div className="bg-white shadow-sm sm:rounded-2xl cols-span-1 sm:col-span-3">
+                        <div className="overflow-hidden mb-4">
+                            <div className="bg-white shadow-sm sm:rounded-2xl">
                                 <div className="p-4 flex justify-between sm:flex-row flex-col">
                                     <h1 className="text-2xl font-bold mb-4">
                                         Transaksi Barang
@@ -364,13 +363,6 @@ const InventoryPage = () => {
                                 <div className="px-4">
                                     {transactions.last_page > 1 && <Paginator links={transactions} handleChangePage={handleChangePage} />}
                                 </div>
-                            </div>
-                            <div className="bg-white shadow-sm sm:rounded-2xl">
-                                <WarehouseStock
-                                    warehouse={warehouse}
-                                    warehouseName={warehouseName}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                />
                             </div>
                             <Modal isOpen={isModalUpdateTrxOpen} onClose={closeModal} modalTitle="Update Transaksi" maxWidth="max-w-md">
                                 <EditTransaction

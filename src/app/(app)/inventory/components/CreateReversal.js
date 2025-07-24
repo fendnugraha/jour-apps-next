@@ -57,7 +57,6 @@ const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, f
             setLoading(false);
         }
     };
-    console.log(product);
     return (
         <>
             <h1 className="text-sm font-bold mb-4">{product?.product_name}</h1>
