@@ -22,7 +22,7 @@ const getCurrentDate = () => {
     return `${year}-${month}-${day}`;
 };
 
-const ProductTable = ({ warehouse, warehouseName, notification }) => {
+const ProductTable = ({ warehouse, warehouseName, warehouses, notification, onShowNotification }) => {
     const [search, setSearch] = useState("");
     const [endDate, setEndDate] = useState(getCurrentDate());
     const [errors, setErrors] = useState([]); // Store validation errors
@@ -42,7 +42,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     };
 
     const fetchWarehouseStock = useCallback(
-        async (url = `/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`) => {
+        async (url = `/api/get-all-products-by-warehouse/${warehouse}/${endDate}`) => {
             setLoading(true);
             try {
                 const response = await axios.get(url);
@@ -54,7 +54,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                 setLoading(false);
             }
         },
-        [endDate]
+        [endDate, notification, warehouse]
     );
 
     useEffect(() => {
@@ -62,7 +62,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     }, [fetchWarehouseStock]);
 
     const filteredBySearch = warehouseStock.filter((item) => {
-        return item.product_name.toLowerCase().includes(search.toLowerCase());
+        return item.name?.toLowerCase().includes(search.toLowerCase());
     });
 
     const totalItems = filteredBySearch?.length || 0;
@@ -77,30 +77,30 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
     const summarizeTotal = (warehouseStock) => {
         let total = 0;
         warehouseStock.forEach((item) => {
-            total += item.average_cost * item.total_quantity_all;
+            total += item.current_cost * item.current_stock;
         });
         return total;
     };
 
     const exportStockToExcel = () => {
         const headers = [
-            { key: "product_name", label: "Nama Barang" },
-            { key: "total_quantity_all", label: "Qty" },
-            { key: "average_cost", label: "Harga" },
+            { key: "name", label: "Nama Barang" },
+            { key: "current_stock", label: "Qty" },
+            { key: "current_cost", label: "Harga" },
             { key: "total", label: "Qty" },
         ];
 
         const data = [
             ...warehouseStock.map((item) => ({
-                product_name: item.product_name,
-                total_quantity_all: formatNumber(item.total_quantity_all),
-                average_cost: formatNumber(item.average_cost),
-                total: formatNumber(item.average_cost * item.total_quantity_all),
+                name: item.name,
+                current_stock: formatNumber(item.current_stock),
+                current_cost: formatNumber(item.current_cost),
+                total: formatNumber(item.current_cost * item.current_stock),
             })),
             {
-                product_name: "Total",
-                total_quantity_all: "",
-                average_cost: "",
+                name: "Total",
+                current_stock: "",
+                current_cost: "",
                 total: formatNumber(summarizeTotal(warehouseStock)),
             },
         ];
@@ -113,7 +113,8 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
         );
     };
 
-    const findProduct = warehouseStock.find((item) => item.product_id === selectedProduct);
+    const findProduct = warehouseStock.find((item) => item.id === selectedProduct);
+
     return (
         <>
             <div className="bg-white rounded-3xl p-4">
@@ -126,7 +127,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     </div>
                     <div>
                         <button
-                            onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)}
+                            onClick={() => fetchWarehouseStock(`/api/get-all-products-by-warehouse/${warehouse}/${endDate}`)}
                             className="bg-white font-bold p-3 mr-1 rounded-lg border border-gray-300 hover:border-gray-400"
                         >
                             <RefreshCcwIcon className="size-4" />
@@ -151,7 +152,7 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             />
                         </div>
-                        <button onClick={() => fetchWarehouseStock(`/api/get-trx-all-product-by-warehouse/${warehouse}/${endDate}`)} className="btn-primary">
+                        <button onClick={() => fetchWarehouseStock(`/api/get-all-product-by-warehouse/${warehouse}/${endDate}`)} className="btn-primary">
                             Submit
                         </button>
                     </Modal>
@@ -180,60 +181,62 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                         </select>
                     </div>
                 </div>
-                <table className="w-full table text-sm">
-                    <thead>
-                        <tr>
-                            <th className="">Product Name</th>
-                            <th className="">Quantity</th>
-                            <th className="">Price</th>
-                            <th>Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentItems?.map((item, index) => (
-                            <tr key={index} className="text-xs">
-                                <td className="text-start w-1/2">
-                                    <Link className="hover:underline" href={`/setting/product/history/${item.product_id}`}>
-                                        {item.product_name}
-                                    </Link>
-                                </td>
-                                <td className="text-end">{formatNumber(item.total_quantity_all)}</td>
-                                <td className="text-end">{formatNumber(item.average_cost)}</td>
-                                <td className="text-end">{formatNumber(item.average_cost * item.total_quantity_all)}</td>
-                                <td className="flex justify-center gap-2">
-                                    <button
-                                        onClick={() => {
-                                            setIsModalAdjustmentOpen(true);
-                                            setSelectedProduct(item.product_id);
-                                        }}
-                                        className="cursor-pointer flex items-center gap-1 hover:underline text-cyan-600"
-                                    >
-                                        <PencilRulerIcon size={20} /> Stock Adjustment
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsModalReversalOpen(true);
-                                            setSelectedProduct(item.product_id);
-                                        }}
-                                        className="cursor-pointer flex items-center gap-1 hover:underline text-red-600"
-                                    >
-                                        <UndoIcon size={20} /> Reversal
-                                    </button>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="w-full table text-sm">
+                        <thead>
+                            <tr>
+                                <th className="">Product Name</th>
+                                <th className="">Quantity</th>
+                                <th className="">Price</th>
+                                <th>Total</th>
+                                <th></th>
                             </tr>
-                        ))}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colSpan="3" className="text-end font-bold">
-                                Total
-                            </th>
-                            <th className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            {currentItems?.map((item, index) => (
+                                <tr key={index} className="text-xs">
+                                    <td className="text-start w-1/2">
+                                        <Link className="hover:underline" href={`/setting/product/history/${item.id}`}>
+                                            {item.name}
+                                        </Link>
+                                    </td>
+                                    <td className="text-end">{formatNumber(item.current_stock)}</td>
+                                    <td className="text-end">{formatNumber(item.current_cost)}</td>
+                                    <td className="text-end">{formatNumber(item.current_cost * item.current_stock)}</td>
+                                    <td className="flex justify-center gap-2">
+                                        <button
+                                            onClick={() => {
+                                                setIsModalAdjustmentOpen(true);
+                                                setSelectedProduct(item.id);
+                                            }}
+                                            className="cursor-pointer flex items-center gap-1 hover:underline text-cyan-600"
+                                        >
+                                            <PencilRulerIcon size={20} /> Stock Adjustment
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsModalReversalOpen(true);
+                                                setSelectedProduct(item.id);
+                                            }}
+                                            className="cursor-pointer flex items-center gap-1 hover:underline text-red-600"
+                                        >
+                                            <UndoIcon size={20} /> Reversal
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colSpan="3" className="text-end font-bold">
+                                    Total
+                                </th>
+                                <th className="text-end font-bold">{formatNumber(summarizeTotal(warehouseStock))}</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
                 {totalPages > 1 && (
                     <Pagination
                         className="w-full px-4"
@@ -249,7 +252,8 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     isModalOpen={setIsModalAdjustmentOpen}
                     product={findProduct}
                     warehouse={warehouse}
-                    notification={notification}
+                    warehouses={warehouses}
+                    onShowNotification={onShowNotification}
                     date={getCurrentDate()}
                     fetchWarehouseStock={fetchWarehouseStock}
                 />
@@ -259,7 +263,8 @@ const ProductTable = ({ warehouse, warehouseName, notification }) => {
                     isModalOpen={setIsModalReversalOpen}
                     product={findProduct}
                     warehouse={warehouse}
-                    notification={notification}
+                    warehouses={warehouses}
+                    onShowNotification={onShowNotification}
                     date={getCurrentDate()}
                     fetchWarehouseStock={fetchWarehouseStock}
                 />

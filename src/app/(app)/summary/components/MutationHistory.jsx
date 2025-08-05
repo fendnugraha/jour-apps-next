@@ -72,6 +72,7 @@ const MutationHistory = ({ account, notification, user }) => {
             notification(error.response?.data?.message || "Something went wrong.");
         }
     };
+    console.log(mutation);
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4">
@@ -168,25 +169,22 @@ const MutationHistory = ({ account, notification, user }) => {
                                 <td colSpan={2}>Loading...</td>
                             </tr>
                         ) : selectedAccount > 0 ? (
-                            mutation.journals?.data?.length > 0 ? (
-                                mutation.journals?.data?.map((item, index) => (
+                            mutation.journals?.length > 0 ? (
+                                mutation.journals?.map((item, index) => (
                                     <tr key={index}>
                                         <td className="whitespace-normal break-words max-w-xs">
                                             <span className="text-xs text-slate-500 block">
                                                 #{item.id} {item.invoice} | {formatDateTime(item.date_issued)}
                                             </span>
                                             Note: {item.description}
-                                            <span className="block font-bold text-xs">
-                                                {item.cred.acc_name} <ArrowRightIcon className="size-4 inline" /> {item.debt.acc_name}
-                                            </span>
                                         </td>
                                         <td className="font-bold">
                                             <span
-                                                className={`${Number(item.debt_code) === Number(selectedAccount) ? "text-green-500" : ""}
-                                            ${Number(item.cred_code) === Number(selectedAccount) ? "text-red-500" : ""}
+                                                className={`${item.debit > 0 ? "text-green-500" : ""}
+                                            ${item.credit > 0 ? "text-red-500" : ""}
                                                 text-sm md:text-base sm:text-lg`}
                                             >
-                                                {formatNumber(item.amount)}
+                                                {formatNumber(item.debit > 0 ? item.debit : item.credit)}
                                             </span>
                                         </td>
                                         <td className="text-center">

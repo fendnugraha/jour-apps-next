@@ -3,7 +3,7 @@ import formatNumber from "@/libs/formatNumber";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, date, fetchWarehouseStock }) => {
+const CreateStockAdjustment = ({ isModalOpen, product, warehouse, warehouses, notification, onShowNotification, fetchWarehouseStock }) => {
     const now = new Date();
     const pad = (n) => n.toString().padStart(2, "0");
 
@@ -12,7 +12,7 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
     const [errors, setErrors] = useState([]);
     const [accounts, setAccounts] = useState([]);
     const [formData, setFormData] = useState({
-        product_id: product?.product_id,
+        product_id: product?.id,
         quantity: "",
         cost: "",
         description: "",
@@ -20,26 +20,30 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
         warehouse_id: warehouse,
         adjustmentType: "in",
         account_id: "",
+        is_initial: false,
     });
 
-    const fetchAccountByIds = async ({ account_ids }) => {
-        setLoading(true);
-        try {
-            const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
-            setAccounts(response.data.data);
-        } catch (error) {
-            notification({
-                type: "error",
-                message: error.response?.data?.message || "Something went wrong.",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fetchAccountByIds = useCallback(
+        async ({ account_ids }) => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
+                setAccounts(response.data.data);
+            } catch (error) {
+                onShowNotification({
+                    type: "error",
+                    message: error.response?.data?.message || "Something went wrong.",
+                });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [onShowNotification]
+    );
 
     useEffect(() => {
         fetchAccountByIds({ account_ids: [1, 2, 19, 27, 28, 29, 30, 42, 43] });
-    }, []);
+    }, [fetchAccountByIds]);
 
     const accountsByType = formData.adjustmentType == "in" ? [27, 28, 29, 30] : [1, 2, 19, 42, 43];
     const filterAccountByType = accounts.filter((account) => accountsByType.includes(account.account_id));
@@ -49,19 +53,20 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
         setLoading(true);
         try {
             const response = await axios.post("/api/stock-adjustment", formData);
-            notification("success", response.data.message);
+            onShowNotification("success", response.data.message);
             isModalOpen(false);
             fetchWarehouseStock();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
-            notification("error", error.response?.data?.message || "Something went wrong.");
+            onShowNotification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
     };
+
     return (
         <>
-            <h1 className="text-sm font-bold mb-4">{product?.product_name}</h1>
+            <h1 className="text-sm font-bold mb-4">{product?.name}</h1>
             <div className="flex rounded-full bg-slate-300 p-0.5 w-fit mb-2 text-sm">
                 <button
                     className={`px-3 py-0.5 rounded-full ${
@@ -118,20 +123,58 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
                         />
                     </div>
                 </div>
+                <div className="flex items-center mb-4">
+                    <input
+                        type="checkbox"
+                        id="is_initial"
+                        checked={formData.is_initial}
+                        disabled={formData.adjustmentType == "out"}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                is_initial: e.target.checked,
+                                account_id: e.target.checked ? 10 : "",
+                            })
+                        }
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="is_service" className="ml-2 text-sm font-medium text-gray-900">
+                        Sesuaikan sebagai stok awal persediaan
+                    </label>
+                </div>
                 <div className="mb-2">
                     <label className="text-sm" htmlFor="description">
                         Account Penyesuaian
                     </label>
                     <select
-                        className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-200"
                         onChange={(e) => setFormData({ ...formData, account_id: e.target.value })}
                         value={formData.account_id}
-                        required
+                        disabled={formData.is_initial}
+                        required={!formData.is_initial}
                     >
-                        <option value="">Pilih Akun</option>
+                        <option value="">{formData.is_initial ? "Stok Awal Persediaan" : "Pilih Account Penyesuaian"}</option>
                         {filterAccountByType.map((account) => (
                             <option key={account.id} value={account.id}>
                                 {account.acc_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="mb-2">
+                    <label className="text-sm" htmlFor="description">
+                        Gudang/Cabang
+                    </label>
+                    <select
+                        className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        onChange={(e) => setFormData({ ...formData, warehouse_id: e.target.value })}
+                        value={formData.warehouse_id}
+                        required
+                    >
+                        <option value="">Pilih Cabang</option>
+                        {warehouses?.map((w) => (
+                            <option key={w.id} value={w.id}>
+                                {w.name}
                             </option>
                         ))}
                     </select>
@@ -148,10 +191,10 @@ const CreateStockAdjustment = ({ isModalOpen, product, warehouse, notification, 
                     />
                 </div>
                 <h1 className="text-xs">
-                    Stock: {formatNumber(product?.total_quantity_all)} {" -> "}
+                    Stock: {formatNumber(product?.current_stock)} {" -> "}
                     <span className={formData.adjustmentType == "in" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
                         {formatNumber(
-                            Number(product?.total_quantity_all) + (formData.adjustmentType == "in" ? Number(formData.quantity) : Number(formData.quantity) * -1)
+                            Number(product?.current_stock) + (formData.adjustmentType == "in" ? Number(formData.quantity) : Number(formData.quantity) * -1)
                         )}
                     </span>
                 </h1>

@@ -171,7 +171,7 @@ export default function Product() {
                                 <Modal isOpen={isModalCreateProductOpen} onClose={closeModal} modalTitle="Create account">
                                     <CreateProduct
                                         isModalOpen={setIsModalCreateProductOpen}
-                                        notification={(message) => setNotification(message)}
+                                        notification={(type, message) => setNotification({ type, message })}
                                         fetchProducts={fetchProducts}
                                         productCategories={productCategories}
                                     />
@@ -179,7 +179,7 @@ export default function Product() {
                                 <Modal isOpen={isModalCreateCategoryProductOpen} onClose={closeModal} modalTitle="Create account">
                                     <CreateCategoryProduct
                                         isModalOpen={setIsModalCreateCategoryProductOpen}
-                                        notification={(message) => setNotification(message)}
+                                        notification={(type, message) => setNotification({ type, message })}
                                         fetchProducts={fetchProducts}
                                     />
                                 </Modal>
@@ -202,12 +202,7 @@ export default function Product() {
                                     Refresh
                                 </Button>
                             </div>
-                            <div className="overflow-x-auto bg-white rounded-2xl relative">
-                                {loading && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 backdrop-blur-sm">
-                                        <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-                                    </div>
-                                )}
+                            <div className="overflow-x-auto bg-white rounded-2xl w-full sm:w-3/4 drop-shadow-sm">
                                 <table className="table w-full text-xs">
                                     <thead>
                                         <tr>
@@ -236,32 +231,21 @@ export default function Product() {
                                                         />
                                                     </td>
                                                     <td>
-                                                        <Link className="hover:underline" href={`/setting/product/history/${product.id}`}>
-                                                            {product.name}
-                                                        </Link>
+                                                        {product.name}
                                                         <span className="block text-xs text-slate-400">
-                                                            {product.category} {formatNumber(product.sold)} terjual
+                                                            {product.code} {product.category?.name}
                                                         </span>
                                                     </td>
                                                     <td>{formatNumber(product.price)}</td>
-                                                    <td>{formatNumber(product.cost)}</td>
+                                                    <td>{formatNumber(product.current_cost)}</td>
                                                     <td className="">
-                                                        <span className="flex justify-center">
-                                                            <button
-                                                                onClick={() => {
-                                                                    setSelectedProductId(product.id);
-                                                                    setIsModalAddInitStockOpen(true);
-                                                                }}
-                                                                className="bg-green-500 py-2 px-4 rounded-lg text-white mr-2"
-                                                            >
-                                                                <PlusIcon className="size-4" />
-                                                            </button>
+                                                        <span className="flex gap-2 justify-center">
                                                             <button
                                                                 onClick={() => {
                                                                     setSelectedProductId(product.id);
                                                                     setIsModalUpdateProductOpen(true);
                                                                 }}
-                                                                className="bg-indigo-500 py-2 px-4 rounded-lg text-white mr-2"
+                                                                className="cursor-pointer hover:scale-125 transition transform ease-in"
                                                             >
                                                                 <PencilIcon className="size-4" />
                                                             </button>
@@ -270,7 +254,7 @@ export default function Product() {
                                                                     setSelectedProductId(product.id);
                                                                     setIsModalDeleteProductOpen(true);
                                                                 }}
-                                                                className="bg-red-600 py-2 px-4 rounded-lg text-white"
+                                                                className="cursor-pointer hover:scale-125 transition transform ease-in"
                                                             >
                                                                 <TrashIcon className="size-4" />
                                                             </button>
@@ -294,7 +278,7 @@ export default function Product() {
                         <Modal isOpen={isModalUpdateProductOpen} onClose={closeModal} modalTitle="Edit Product" maxWidth="max-w-md">
                             <EditProduct
                                 isModalOpen={setIsModalUpdateProductOpen}
-                                notification={(message) => setNotification(message)}
+                                notification={(type, message) => setNotification({ type, message })}
                                 fetchProducts={fetchProducts}
                                 selectedProductId={selectedProductId}
                                 products={product}

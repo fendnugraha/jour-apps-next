@@ -37,7 +37,7 @@ const SummaryPage = () => {
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <DailyProfit />
                         <MutationHistory account={account} notification={(message) => setNotification(message)} user={user} />
-                        <LogActivity />
+                        {/* <LogActivity /> */}
                     </div>
                 </div>
             </div>

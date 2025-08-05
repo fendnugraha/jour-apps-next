@@ -7,11 +7,11 @@ import formatNumber from "@/libs/formatNumber";
 import Input from "@/components/Input";
 import formatDateTime from "@/libs/formatDateTime";
 
-const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => {
+const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen, financeType }) => {
     const [formData, setFormData] = useState({
         contact_id: contactId,
         invoice: "",
-        account_id: "",
+        chart_of_account_id: "",
         amount: "",
         notes: "",
     });
@@ -65,13 +65,16 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
         } catch (error) {
             notification("error", error.response?.data?.message || "Something went wrong.");
             setErrors(error.response?.data?.errors);
+            console.log(error);
         } finally {
             setLoading(false);
         }
     };
 
     const contactName = financeData[0]?.contact.name;
+    const financeDataByType = financeData.filter((finance) => finance.finance_type === financeType);
     const filterDataByInvoice = financeData.filter((finance) => finance.invoice === selectedInvoice);
+    console.log(filterDataByInvoice);
 
     return (
         <div>
@@ -88,7 +91,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                         className="w-full border border-slate-300 rounded-lg p-2"
                     >
                         <option value="">Select Invoice</option>
-                        {financeData.map((finance, index) => (
+                        {financeDataByType.map((finance, index) => (
                             <option key={index} value={finance.invoice} hidden={finance.sisa <= 0}>
                                 {finance.invoice} | Tgl: {finance.date_issued} | Rp : {formatNumber(finance.sisa)}
                             </option>
@@ -104,11 +107,11 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                         <input
                             id="deposit_customer"
                             type="checkbox"
-                            checked={formData.account_id === 8}
+                            checked={formData.chart_of_account_id === 8}
                             onChange={(e) =>
                                 setFormData({
                                     ...formData,
-                                    account_id: e.target.checked ? 8 : "",
+                                    chart_of_account_id: e.target.checked ? 8 : "",
                                 })
                             }
                         />
@@ -120,10 +123,10 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                 <div className="mb-4">
                     <Label>Rekening</Label>
                     <select
-                        onChange={(e) => setFormData({ ...formData, account_id: e.target.value })}
-                        value={formData.account_id}
+                        onChange={(e) => setFormData({ ...formData, chart_of_account_id: e.target.value })}
+                        value={formData.chart_of_account_id}
                         className="w-full border border-slate-300 rounded-lg p-2 disabled:bg-slate-300 disabled:text-white disabled:cursor-not-allowed"
-                        disabled={formData.account_id === 8}
+                        disabled={formData.chart_of_account_id === 8}
                     >
                         <option value="">Select account</option>
                         {accounts.map((account) => (
@@ -132,7 +135,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                             </option>
                         ))}
                     </select>
-                    {errors.account_id && <span className="text-red-500 text-sm">{errors.account_id}</span>}
+                    {errors.chart_of_account_id && <span className="text-red-500 text-sm">{errors.chart_of_account_id}</span>}
                 </div>
                 <div className="mb-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -178,7 +181,7 @@ const PaymentForm = ({ contactId, notification, fetchFinance, isModalOpen }) => 
                     disabled={
                         loading ||
                         !formData.invoice ||
-                        !formData.account_id ||
+                        !formData.chart_of_account_id ||
                         !formData.amount ||
                         filterDataByInvoice[0]?.sisa - formData.amount < 0 ||
                         formData.amount < 0

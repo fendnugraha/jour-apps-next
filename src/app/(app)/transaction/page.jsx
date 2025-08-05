@@ -148,22 +148,20 @@ const TransactionPage = () => {
     useEffect(() => {
         fetchJournalsByWarehouse();
     }, []); // Include startDate and endDate in the dependency array
-
     useEffect(() => {
         mutate(`/api/get-cash-bank-balance/${selectedWarehouseId}/${endDate}`);
     }, [journalsByWarehouse]);
-
-    const fetchCashBank = async () => {
+    const fetchCashBank = async ({ account_ids = [1, 2] }) => {
         try {
-            const response = await axios.get(`/api/get-cash-and-bank`);
+            const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
             setCashBank(response.data.data); // Commented out as it's not used
         } catch (error) {
-            setNotification(error.response?.data?.message || "Something went wrong.");
+            setNotification({ type: "error", message: error.response?.data?.message || "Something went wrong." });
         }
     };
 
     useEffect(() => {
-        fetchCashBank();
+        fetchCashBank({ account_ids: [1, 2] });
     }, []);
 
     const filteredCashBankByWarehouse = cashBank.filter((cashBank) => cashBank.warehouse_id === warehouse || Number(cashBank.account_id) === 6);
@@ -446,8 +444,8 @@ const TransactionPage = () => {
                                 today={today}
                             />
                         </Modal>
-                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-20 sm:mb-0">
-                            <div className="relative col-span-1 sm:col-span-3 bg-white py-6 rounded-2xl order-2 sm:order-1">
+                        <div className="mb-20 sm:mb-0">
+                            <div className="relative bg-white py-6 rounded-2xl order-2 sm:order-1">
                                 {journalLoading && <LoaderCircleIcon size={20} className="absolute top-1 left-1 animate-spin text-slate-300" />}
                                 <JournalTable
                                     cashBank={cashBank}

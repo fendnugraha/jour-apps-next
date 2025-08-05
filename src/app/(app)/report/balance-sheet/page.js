@@ -178,7 +178,7 @@ const BalanceSheet = () => {
                                     </table>
                                     <h1 className="mt-5 text-lg font-bold">Equity (Modal)</h1>
                                     <span className="block text-slate-500 text-sm mb-2 font-bold">
-                                        {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitloss)}{" "}
+                                        {loading ? "Loading.." : formatNumber(balanceSheet?.equity?.total + balanceSheet?.profitLoss)}{" "}
                                         {typeof balanceSheet?.equityGrowthRate?.rate === "number" && (
                                             <span
                                                 className={balanceSheet?.equityGrowthRate?.rate > 0 ? "font-normal text-green-600" : "font-normal text-red-600"}
@@ -200,7 +200,7 @@ const BalanceSheet = () => {
                                                         <td colSpan={2} className="py-2 font-bold text-start">
                                                             {account.acc_name}
                                                         </td>
-                                                        <td className="py-1 font-bold text-end">{formatNumber(account.balance + balanceSheet?.profitloss)}</td>
+                                                        <td className="py-1 font-bold text-end">{formatNumber(account.balance + balanceSheet?.profitLoss)}</td>
                                                     </tr>
                                                     {account?.coa?.map((coa, index) => (
                                                         <tr key={index} className="text-xs" hidden={coa.balance === 0}>
@@ -215,7 +215,7 @@ const BalanceSheet = () => {
                                                 <tr className="text-xs">
                                                     <td className="text-start">-</td>
                                                     <td className="py-1 text-start">Laba Rugi Berjalan</td>
-                                                    <td className="py-1 text-end">{formatNumber(balanceSheet?.profitloss)}</td>
+                                                    <td className="py-1 text-end">{formatNumber(balanceSheet?.profitLoss)}</td>
                                                 </tr>
                                             )}
                                         </tbody>

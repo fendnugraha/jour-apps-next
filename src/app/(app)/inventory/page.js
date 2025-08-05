@@ -136,6 +136,7 @@ const InventoryPage = () => {
     useEffect(() => {
         fetchTrxByDate();
     }, [fetchTrxByDate]);
+
     const exportTransactionToExcel = async () => {
         const headers = [
             { key: "transaction_type", label: "Transaksi" },
@@ -291,12 +292,11 @@ const InventoryPage = () => {
                                     <table className="table w-full text-xs">
                                         <thead>
                                             <tr>
-                                                <th>Type</th>
-                                                <th>Product</th>
-                                                <th>Qty</th>
-                                                <th>Jual</th>
-                                                <th>Modal</th>
-                                                <th>Action</th>
+                                                <th>Tanggal</th>
+                                                <th>Invoice</th>
+                                                <th>Contact</th>
+                                                <th>Cabang</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -313,8 +313,8 @@ const InventoryPage = () => {
                                                     </td>
                                                 </tr>
                                             ) : (
-                                                transactions.data?.map((transaction) => (
-                                                    <tr key={transaction.id}>
+                                                transactions.data?.map((transaction, index) => (
+                                                    <tr key={index}>
                                                         <td className="text-center">
                                                             {transaction.transaction_type === "Purchase" ? (
                                                                 <ArrowBigDown size={24} className="text-green-500 inline" />
@@ -325,35 +325,15 @@ const InventoryPage = () => {
                                                         </td>
                                                         <td className="font-bold">
                                                             <span className="text-xs font-normal block text-slate-500">
-                                                                {formatDateTime(transaction.date_issued)} {transaction.invoice}
+                                                                {formatDateTime(transaction.date_issued)}
                                                             </span>
-
-                                                            {transaction.product.name}
+                                                            <Link className="hover:underline" href={`/inventory/detail/${transaction.invoice}`}>
+                                                                {transaction.invoice}
+                                                            </Link>
                                                         </td>
-                                                        <td className="text-center">
-                                                            {formatNumber(transaction.quantity < 0 ? transaction.quantity * -1 : transaction.quantity)}
-                                                        </td>
-                                                        <td className="text-end">{formatNumber(transaction.price)}</td>
-                                                        <td className="text-end">{formatNumber(transaction.cost)}</td>
-                                                        <td className="text-center">
-                                                            <button
-                                                                onClick={() => {
-                                                                    setSelectedTrxId(transaction.id);
-                                                                    setIsModalUpdateTrxOpen(true);
-                                                                }}
-                                                                disabled={["Initial Stock", "Stock Adjustment"].includes(transaction.transaction_type)}
-                                                            >
-                                                                <PencilIcon className="w-4 h-4 text-green-500 mr-2 inline hover:scale-125 transition-transform duration-300" />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => {
-                                                                    setSelectedTrxId(transaction.id);
-                                                                    setIsModalDeleteTrxOpen(true);
-                                                                }}
-                                                            >
-                                                                <XCircleIcon className="w-4 h-4 text-red-500 inline hover:scale-125 transition-transform duration-300" />
-                                                            </button>
-                                                        </td>
+                                                        <td className="">{transaction.contact?.name}</td>
+                                                        <td className="text-center">{transaction.warehouse?.name}</td>
+                                                        <td className="text-center">{transaction.status}</td>
                                                     </tr>
                                                 ))
                                             )}
@@ -400,8 +380,10 @@ const InventoryPage = () => {
                         </div>
                         <ProductTable
                             warehouse={warehouse}
+                            warehouses={warehouses}
                             warehouseName={warehouseName}
-                            notification={(type, message) => setNotification({ type, message })}
+                            notification={(type, message) => setNotification(type, message)}
+                            onShowNotification={setNotification}
                         />
                     </div>
                 </div>

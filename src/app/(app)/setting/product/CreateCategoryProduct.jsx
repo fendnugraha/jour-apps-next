@@ -7,7 +7,7 @@ const CreateCategoryProduct = ({ isModalOpen, notification, fetchProducts }) => 
     const [errors, setErrors] = useState([]);
     const [newCategoryProduct, setNewCategoryProduct] = useState({
         name: "",
-        prefix: "",
+        code_prefix: "",
     });
 
     const handleCreateCategoryProduct = async (e) => {
@@ -19,7 +19,7 @@ const CreateCategoryProduct = ({ isModalOpen, notification, fetchProducts }) => 
                 // Reset form fields and close modal on success
                 setNewCategoryProduct({
                     name: "",
-                    prefix: "",
+                    code_prefix: "",
                 });
                 isModalOpen(false);
             }
@@ -55,25 +55,25 @@ const CreateCategoryProduct = ({ isModalOpen, notification, fetchProducts }) => 
             </div>
 
             <div className="mb-4">
-                <label htmlFor="prefix" className="block mb-2 text-sm font-medium text-gray-900">
-                    Prefix
+                <label htmlFor="code_prefix" className="block mb-2 text-sm font-medium text-gray-900">
+                    Kode Prefix
                 </label>
                 <Input
                     type="text"
-                    id="prefix"
-                    value={newCategoryProduct.prefix}
+                    id="code_prefix"
+                    value={newCategoryProduct.code_prefix}
                     onChange={(e) =>
                         setNewCategoryProduct({
                             ...newCategoryProduct,
-                            prefix: e.target.value,
+                            code_prefix: e.target.value,
                         })
                     }
                     className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 ${
-                        errors.prefix ? "border-red-500" : ""
+                        errors.code_prefix ? "border-red-500" : ""
                     }`}
-                    placeholder="Enter prefix"
+                    placeholder="Contoh:KPR"
                 />
-                {errors.prefix && <p className="text-red-500 text-xs">{errors.prefix}</p>}
+                {errors.code_prefix && <p className="text-red-500 text-xs">{errors.code_prefix}</p>}
             </div>
             <div>
                 <Button

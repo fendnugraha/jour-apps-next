@@ -18,9 +18,9 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchExpense = async () => {
+    const fetchExpense = async ({ account_ids }) => {
         try {
-            const response = await axios.get(`/api/get-expense-accounts`);
+            const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
             setExpense(response.data.data); // Commented out as it's not used
         } catch (error) {
             notification(error.response?.data?.message || "Something went wrong.");
@@ -28,14 +28,14 @@ const CreateExpense = ({ filteredCashBankByWarehouse, isModalOpen, notification,
     };
 
     useEffect(() => {
-        fetchExpense();
+        fetchExpense({ account_ids: [33, 45] });
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post("/api/create-mutation", formData);
+            const response = await axios.post("/api/create-transfer", formData);
             notification("success", "Pengeluaran biaya operasional berhasil");
             fetchJournalsByWarehouse();
             setFormData({

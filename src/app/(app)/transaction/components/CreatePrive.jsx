@@ -21,7 +21,7 @@ const CreatePrive = ({ filteredCashBankByWarehouse, isModalOpen, notification, f
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post("/api/create-mutation", formData);
+            const response = await axios.post("/api/create-transfer", formData);
             notification("success", "Pentarikan modal berhasil");
             fetchJournalsByWarehouse();
             setFormData({

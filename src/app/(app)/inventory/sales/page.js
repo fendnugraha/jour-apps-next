@@ -40,8 +40,9 @@ const Sales = () => {
     const pad = (n) => n.toString().padStart(2, "0");
     const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const [formData, setFormData] = useState({
-        dateIssued: today,
+        date_issued: today,
         paymentAccountID: 8,
+        paymentMethod: "cash",
         feeCustomer: 0,
         transaction_type: "Sales",
     });
@@ -123,7 +124,7 @@ const Sales = () => {
     };
 
     const updateQuantity = (product, newQuantity) => {
-        if (product.category === "Deposit") {
+        if (product.is_digital === 1) {
             return;
         }
         setCart((prevCart) => {
@@ -141,7 +142,7 @@ const Sales = () => {
 
     const updateCost = (product, newCost) => {
         setCart((prevCart) => {
-            return prevCart.map((item) => (item.id === product.id ? { ...item, cost: newCost } : item));
+            return prevCart.map((item) => (item.id === product.id ? { ...item, current_cost: newCost } : item));
         });
     };
 
@@ -156,11 +157,12 @@ const Sales = () => {
         };
         setLoading(true);
         try {
-            const response = await axios.post("/api/store-with-deposit", payload);
+            const response = await axios.post("/api/sales-order", payload);
             setNotification({ type: "success", message: response.data.message });
             setFormData({
-                dateIssued: today,
+                date_issued: today,
                 paymentAccountID: 8,
+                paymentMethod: "cash",
                 feeCustomer: 0,
                 transaction_type: "Sales",
             });
@@ -223,7 +225,7 @@ const Sales = () => {
                                                         value={product.quantity}
                                                         onChange={(e) => updateQuantity(product, e.target.value)}
                                                         min={1}
-                                                        disabled={product.category === "Deposit"}
+                                                        disabled={product.is_digital === 1}
                                                     />
                                                 </small>
                                                 <small className="text-xs text-gray-500">
@@ -235,13 +237,13 @@ const Sales = () => {
                                                         onChange={(e) => updatePrice(product, e.target.value)}
                                                     />
                                                 </small>
-                                                {product.category === "Deposit" && (
+                                                {product.is_digital === 1 && (
                                                     <small className="text-xs text-gray-500">
                                                         HPP:{" "}
                                                         <input
                                                             type="number"
                                                             className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                            value={product.cost}
+                                                            value={product.current_cost}
                                                             onChange={(e) => updateCost(product, e.target.value)}
                                                         />
                                                     </small>
@@ -287,8 +289,8 @@ const Sales = () => {
                             <input
                                 type="datetime-local"
                                 className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.dateIssued}
-                                onChange={(e) => setFormData({ ...formData, dateIssued: e.target.value })}
+                                value={formData.date_issued}
+                                onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
                             />
                         </div>
                         <div>

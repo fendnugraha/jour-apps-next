@@ -6,8 +6,12 @@ import axios from "@/libs/axios";
 import formatNumber from "@/libs/formatNumber";
 
 const CreateReceivable = ({ isModalOpen, fetchFinance, notification }) => {
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const [formData, setFormData] = useState({
-        date_issued: "",
+        date_issued: today,
         contact_id: "",
         amount: "",
         description: "",
@@ -77,7 +81,13 @@ const CreateReceivable = ({ isModalOpen, fetchFinance, notification }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
                     <Label htmlFor="date_issued">Tanggal</Label>
                     <div className="col-span-2">
-                        <Input type="datetime-local" className="w-1/2 border border-slate-300 rounded-lg p-2" />
+                        <Input
+                            type="datetime-local"
+                            id="date_issued"
+                            value={formData.date_issued}
+                            onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
+                            className="w-1/2 border border-slate-300 rounded-lg p-2"
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">

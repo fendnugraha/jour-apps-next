@@ -82,7 +82,7 @@ const DailyProfit = () => {
 
         return formatted;
     };
-
+    console.log(dailyProfit);
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4 flex justify-between">

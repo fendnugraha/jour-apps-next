@@ -25,10 +25,11 @@ const CreateContact = ({ isModalOpen, notification, fetchContacts }) => {
                 address,
                 type,
             });
-            notification(response.data.message);
-            fetchContacts();
+            notification("success", response.data.message);
+            // fetchContacts();
             isModalOpen(false);
         } catch (error) {
+            notification("error", error.response?.data?.message || "Something went wrong.");
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
         } finally {
             setLoading(false);

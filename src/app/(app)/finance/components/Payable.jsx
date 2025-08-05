@@ -1,5 +1,5 @@
 "use client";
-import { ArrowBigDown, ArrowBigUp, DownloadIcon, MessageCircleWarningIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp, DownloadIcon, MessageCircleWarningIcon, PlusCircleIcon, PlusIcon, XCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "@/libs/axios";
 import Modal from "@/components/Modal";
@@ -15,6 +15,7 @@ import Pagination from "@/components/PaginateList";
 import Input from "@/components/Input";
 import FinanceYearlyTable from "./FinanceYearlyTable";
 import exportToExcel from "@/libs/exportToExcel";
+import Dropdown from "@/components/Dropdown";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -118,60 +119,58 @@ const Payable = ({ notification }) => {
             `Laporan ${financeType === "Payable" ? "Hutang Usaha" : "Piutang Usaha"} ${formatDateTime(new Date())}`
         );
     };
+
     return (
         <>
-            <div className="bg-slate-400 rounded-2xl mb-4 p-1">
-                <div className="flex">
-                    <button
-                        onClick={() => setFinanceType("Payable")}
-                        className={`px-4 ${financeType === "Payable" ? "bg-white text-slate-600 rounded-2xl" : "text-white text-sm"}`}
-                    >
-                        Hutang
-                    </button>
-                    <button
-                        onClick={() => setFinanceType("Receivable")}
-                        className={`px-4 ${financeType === "Receivable" ? "bg-white text-slate-600 rounded-2xl" : "text-white text-sm"}`}
-                    >
-                        Piutang
-                    </button>
-                </div>
-            </div>
             <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="bg-white shadow-sm sm:rounded-2xl sm:order-1 order-2">
-                    <div className="p-4 flex justify-between flex-col sm:flex-row">
-                        <h1 className="text-2xl font-bold mb-4">{financeType === "Payable" ? "Hutang" : "Piutang"}</h1>
-                        <div>
-                            <button onClick={() => setIsModalCreatePayableOpen(true)} className="btn-primary text-xs mr-2">
-                                <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Hutang
-                            </button>
-                            <button
-                                onClick={() => setIsModalCreateReceivableOpen(true)}
-                                className="btn-primary text-xs mr-2 disabled:bg-slate-400 disabled:cursor-not-allowed"
-                            >
-                                <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Piutang
-                            </button>
-                            <Modal isOpen={isModalCreatePayableOpen} onClose={closeModal} modalTitle="Create Payable">
-                                <CreatePayable
-                                    isModalOpen={setIsModalCreatePayableOpen}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchFinance={fetchFinance}
-                                />
-                            </Modal>
-                            <Modal isOpen={isModalCreateReceivableOpen} onClose={closeModal} modalTitle="Create Receivable">
-                                <CreateReceivable
-                                    isModalOpen={setIsModalCreateReceivableOpen}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchFinance={fetchFinance}
-                                />
-                            </Modal>
-                            <button onClick={() => setIsModalCreateContactOpen(true)} className="btn-primary text-xs">
-                                <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Contact
-                            </button>
-                            <Modal isOpen={isModalCreateContactOpen} onClose={closeModal} modalTitle="Create Contact">
-                                <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(type, message) => setNotification({ type, message })} />
-                            </Modal>
-                        </div>
+                    <div className="flex justify-between items-center px-4 pt-4">
+                        <select
+                            value={financeType}
+                            onChange={(e) => setFinanceType(e.target.value)}
+                            className="p-1 px-4 bg-blue-500 text-white drop-shadow-sm rounded-xl"
+                        >
+                            <option value="Payable">Hutang Usaha</option>
+                            <option value="Receivable">Piutang Usaha</option>
+                        </select>
+                        <Dropdown
+                            trigger={
+                                <button className="w-8 h-8 bg-red-400 text-white rounded-full hover:bg-red-500">
+                                    <PlusIcon size={16} className="inline" />
+                                </button>
+                            }
+                            align="right"
+                        >
+                            <ul className="min-w-max outline-none text-sm">
+                                <li className="border-b border-slate-200 px-3 py-2 hover:bg-slate-100 ">
+                                    <button onClick={() => setIsModalCreateContactOpen(true)}>Kontak baru</button>
+                                </li>
+                                <li className="border-b border-slate-200 px-3 py-2 hover:bg-slate-100 ">
+                                    <button onClick={() => setIsModalCreatePayableOpen(true)}>Hutang Usaha</button>
+                                </li>
+                                <li className="px-3 py-2 hover:bg-slate-100 ">
+                                    <button onClick={() => setIsModalCreateReceivableOpen(true)}>Piutang Usaha</button>
+                                </li>
+                            </ul>
+                        </Dropdown>
                     </div>
+                    <Modal isOpen={isModalCreatePayableOpen} onClose={closeModal} modalTitle="Create Payable">
+                        <CreatePayable
+                            isModalOpen={setIsModalCreatePayableOpen}
+                            notification={(type, message) => notification({ type, message })}
+                            fetchFinance={fetchFinance}
+                        />
+                    </Modal>
+                    <Modal isOpen={isModalCreateReceivableOpen} onClose={closeModal} modalTitle="Create Receivable">
+                        <CreateReceivable
+                            isModalOpen={setIsModalCreateReceivableOpen}
+                            notification={(type, message) => notification({ type, message })}
+                            fetchFinance={fetchFinance}
+                        />
+                    </Modal>
+                    <Modal isOpen={isModalCreateContactOpen} onClose={closeModal} modalTitle="Create Contact">
+                        <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(type, message) => notification({ type, message })} />
+                    </Modal>
                     <div className="p-4 w-full flex justify-between gap-1">
                         <Input
                             type="search"
@@ -222,7 +221,7 @@ const Payable = ({ notification }) => {
                                     <tr key={index} className="hover:bg-slate-700 hover:text-white">
                                         <td>
                                             <button onClick={() => setSelectedContactId(item.contact_id)} className="hover:underline cursor-pointer">
-                                                {item.contact.name}
+                                                {item.contact?.name}
                                             </button>
                                         </td>
                                         <td className="text-end">{formatNumber(item.sisa)}</td>
@@ -303,7 +302,7 @@ const Payable = ({ notification }) => {
                                             <td className={`text-end font-bold ${item.bill_amount > 0 ? "text-green-600" : "text-red-600"}`}>
                                                 {formatNumber(item.bill_amount > 0 ? item.bill_amount : item.payment_amount)}
                                             </td>
-                                            <td className="">{item.account.acc_name}</td>
+                                            <td className="">{item.chart_of_account?.acc_name}</td>
                                             <td className="whitespace-normal break-words max-w-xs">
                                                 <span className="font-bold text-xs text-slate-400 block">
                                                     {formatDateTime(item.created_at)} | {item.invoice}
@@ -359,9 +358,10 @@ const Payable = ({ notification }) => {
                 <Modal isOpen={isModalPaymentOpen} onClose={closeModal} modalTitle="Form Pembayaran" maxWidth="max-w-2xl">
                     <PaymentForm
                         contactId={selectedContactIdPayment}
-                        notification={(type, message) => notification({ type, message })}
+                        notification={notification}
                         isModalOpen={setIsModalPaymentOpen}
                         fetchFinance={fetchFinance}
+                        financeType={financeType}
                         onClose={closeModal}
                     />
                 </Modal>

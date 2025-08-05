@@ -61,7 +61,7 @@ const CashFlow = () => {
 
         return formatted;
     };
-
+    console.log(cashflow);
     return (
         <>
             <Header title="Arus Kas (Cashflow Statement)" />

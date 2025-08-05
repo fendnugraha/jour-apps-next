@@ -9,7 +9,7 @@ const ProductCard = ({ product, onAddToCart }) => {
                     <h1 className="text-xs text-nowrap font-bold group-hover:translate-x-1 transition-transform duration-300 ease-out ">{product.name}</h1>
                     <small className="text-xs text-gray-500">Harga: {formatNumber(product.price)}</small>{" "}
                     <small className="text-xs text-gray-500">Stock: {product.end_stock}</small>
-                    <small className="text-xs text-gray-500 ml-2">{product.category}</small>
+                    <small className="text-xs text-gray-500 ml-2">{product.category?.name}</small>
                 </div>
                 <button onClick={() => onAddToCart(product)} className="group-hover:scale-105 hover:text-blue-500 transition-transform duration-300 ease-out">
                     <PlusCircleIcon className="w-8 h-8" />

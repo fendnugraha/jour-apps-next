@@ -3,7 +3,7 @@ import formatNumber from "@/libs/formatNumber";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
-const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, fetchWarehouseStock }) => {
+const CreateReversal = ({ isModalOpen, product, warehouse, onShowNotification, date, fetchWarehouseStock }) => {
     const now = new Date();
     const pad = (n) => n.toString().padStart(2, "0");
 
@@ -12,7 +12,7 @@ const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, f
     const [errors, setErrors] = useState([]);
     const [accounts, setAccounts] = useState([]);
     const [formData, setFormData] = useState({
-        product_id: product?.product_id,
+        product_id: product?.id,
         quantity: "",
         cost: "",
         price: "",
@@ -29,10 +29,7 @@ const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, f
             const response = await axios.get(`/api/get-account-by-account-id`, { params: { account_ids } });
             setAccounts(response.data.data);
         } catch (error) {
-            notification({
-                type: "error",
-                message: error.response?.data?.message || "Something went wrong.",
-            });
+            onShowNotification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -46,20 +43,20 @@ const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, f
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post("/api/reverse-stock-transaction", formData);
-            notification("success", response.data.message);
+            const response = await axios.post("/api/reversal-transaction", formData);
+            onShowNotification("success", response.data.message);
             isModalOpen(false);
             fetchWarehouseStock();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
-            notification("error", error.response?.data?.message || "Something went wrong.");
+            onShowNotification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
     };
     return (
         <>
-            <h1 className="text-sm font-bold mb-4">{product?.product_name}</h1>
+            <h1 className="text-sm font-bold mb-4">{product?.name}</h1>
             <div className="flex rounded-full bg-slate-300 p-0.5 w-fit mb-2 text-sm">
                 <button
                     className={`px-3 py-0.5 rounded-full ${
@@ -157,11 +154,10 @@ const CreateReversal = ({ isModalOpen, product, warehouse, notification, date, f
                     />
                 </div>
                 <h1 className="text-xs">
-                    Stock: {formatNumber(product?.total_quantity_all)} {" -> "}
+                    Stock: {formatNumber(product?.current_stock)} {" -> "}
                     <span className={formData.transaction_type == "Sales" ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
                         {formatNumber(
-                            Number(product?.total_quantity_all) +
-                                (formData.transaction_type == "Sales" ? Number(formData.quantity) : Number(formData.quantity) * -1)
+                            Number(product?.current_stock) + (formData.transaction_type == "Sales" ? Number(formData.quantity) : Number(formData.quantity) * -1)
                         )}
                     </span>
                 </h1>

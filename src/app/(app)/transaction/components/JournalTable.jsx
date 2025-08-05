@@ -3,7 +3,7 @@
 import formatNumber from "@/libs/formatNumber";
 import formatDateTime from "@/libs/formatDateTime";
 import axios from "@/libs/axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import Pagination from "@/components/PaginateList";
 import {
     ArrowRightIcon,
@@ -22,6 +22,7 @@ import Input from "@/components/Input";
 import EditJournal from "./EditJournal";
 import TimeAgo from "@/libs/formatDateDistance";
 import EditMutationJournal from "./EditMutationJournal";
+import { format } from "date-fns";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -249,13 +250,6 @@ const JournalTable = ({
             </div>
             <div className="overflow-x-auto">
                 <table className="table w-full text-xs">
-                    <thead>
-                        <tr>
-                            <th>Keterangan</th>
-                            <th>Jumlah</th>
-                            <th className="hidden sm:table-cell">Action</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {currentItems.length === 0 ? (
                             <tr>
@@ -264,81 +258,34 @@ const JournalTable = ({
                                 </td>
                             </tr>
                         ) : (
-                            currentItems.map((journal, index) => (
-                                <tr key={index} className="group hover:bg-slate-600 hover:text-white">
-                                    <td className="whitespace-normal">
-                                        <span className="text-xs text-slate-500 group-hover:text-orange-300 block">
-                                            #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
-                                            {formatDateTime(journal.date_issued)}
-                                        </span>
-                                        <span
-                                            className="font-semibold text-teal-600 group-hover:text-yellow-300 text-xs block"
-                                            hidden={!journal.finance[0]?.contact?.name}
-                                        >
-                                            Contact: {journal.finance[0]?.contact?.name}
-                                        </span>
-                                        {journal.trx_type} Note: {journal.description}.
-                                        <span className="font-bold text-xs block text-slate-700 group-hover:text-white">
-                                            {journal.trx_type === "Voucher & SP" || journal.trx_type === "Accessories" ? (
-                                                <ul className="list-disc font-normal scale-95">
-                                                    {journal.transaction.map((trx) => (
-                                                        <li key={trx.id}>
-                                                            {trx.product.name} x {trx.quantity * -1}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                journal.cred?.acc_name + " -> " + journal.debt?.acc_name
-                                            )}
-                                        </span>
-                                        <span className="text-xs block text-slate-500 group-hover:text-white">
-                                            Last update at <TimeAgo timestamp={journal.updated_at} /> by {journal.user.name}
-                                        </span>
-                                    </td>
-                                    <td className="font-bold text-end text-slate-700 ">
-                                        <span
-                                            className={`${Number(journal.debt_code) === Number(selectedAccount) ? "text-green-500" : ""}
-                                    ${Number(journal.cred_code) === Number(selectedAccount) ? "text-red-500" : ""}
-                                        text-sm group-hover:text-yellow-400 sm:text-base xl:text-lg`}
-                                        >
-                                            {formatNumber(journal.amount)}
-                                        </span>
-                                    </td>
-                                    <td className="">
-                                        <div className="flex justify-center gap-3">
-                                            <button
-                                                className=" hover:scale-125 transtition-all duration-200"
-                                                hidden={!["Jurnal Umum", "Deposit Customer"].includes(journal.trx_type)}
-                                                onClick={() => {
-                                                    setSelectedJournalId(journal.id);
-                                                    setIsModalEditJournalOpen(true);
-                                                }}
-                                            >
-                                                <PencilIcon className="size-4 text-indigo-700 group-hover:text-white" />
-                                            </button>
-                                            <button
-                                                className=" hover:scale-125 transtition-all duration-200"
-                                                hidden={!["Mutasi Kas"].includes(journal.trx_type)}
-                                                onClick={() => {
-                                                    setSelectedJournalId(journal.id);
-                                                    setIsModalEditMutationJournalOpen(true);
-                                                }}
-                                            >
-                                                <PencilIcon className="size-4 text-indigo-700 group-hover:text-white" />
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedJournalId(journal.id);
-                                                    setIsModalDeleteJournalOpen(true);
-                                                }}
-                                                disabled={["Voucher & SP", "Accessories", null].includes(journal.trx_type) || userRole !== "Administrator"}
-                                                className="disabled:text-slate-300 disabled:cursor-not-allowed text-red-600 hover:scale-125 transition-all group-hover:text-white duration-200"
-                                            >
-                                                <TrashIcon className="size-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            currentItems.map((journal) => (
+                                <React.Fragment key={journal.id}>
+                                    <tr className="group">
+                                        <td rowSpan={journal.entries?.length + 1} className="whitespace-normal">
+                                            <span className="text-xs text-slate-500 block">
+                                                #{journal.id} <span className="font-bold hidden sm:inline">{journal.invoice}</span>{" "}
+                                                {formatDateTime(journal.date_issued)}
+                                            </span>
+                                            <span className="text-xs block">{journal.finance?.contact?.name}</span>
+                                            <span className="text-xs block">{journal.trx_type}</span>{" "}
+                                            <span className="text-xs block">{journal.description}</span>
+                                            <span className="text-xs block text-slate-500">
+                                                Last update at <TimeAgo timestamp={journal.updated_at} /> by {journal.user.name}
+                                            </span>
+                                        </td>
+                                        <td className="font-bold">Akun</td>
+                                        <td className="font-bold">Debet</td>
+                                        <td className="font-bold">Credit</td>
+                                    </tr>
+                                    {journal.entries?.map((entry) => (
+                                        <tr key={entry.id}>
+                                            <td>{entry.chart_of_account?.acc_name}</td>
+                                            <td>{entry.debit > 0 ? formatNumber(entry.debit) : ""}</td>
+                                            <td>{entry.credit > 0 ? formatNumber(entry.credit) : ""}</td>
+                                        </tr>
+                                    ))}
+                                    <tr></tr>
+                                </React.Fragment>
                             ))
                         )}
                     </tbody>

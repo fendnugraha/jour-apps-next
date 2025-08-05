@@ -17,7 +17,7 @@ const EditProduct = ({ isModalOpen, notification, fetchProducts, selectedProduct
             isModalOpen(false);
             fetchProducts();
             setSelectedProductId("");
-            setFormData({});
+            setFormData(product);
         } catch (error) {
             notification("error", error.response?.data?.message || "Something went wrong.");
         } finally {
@@ -35,12 +35,12 @@ const EditProduct = ({ isModalOpen, notification, fetchProducts, selectedProduct
                 <div className="mb-4">
                     <Label htmlFor="category">Category:</Label>
                     <select
-                        value={formData?.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        value={formData?.category_id}
+                        onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                         className="border border-gray-300 rounded-md p-2 w-full"
                     >
                         {productCategories.map((category) => (
-                            <option key={category.id} value={category.name}>
+                            <option key={category.id} value={category.id}>
                                 {category.name}
                             </option>
                         ))}
@@ -58,7 +58,12 @@ const EditProduct = ({ isModalOpen, notification, fetchProducts, selectedProduct
                     </div>
                     <div className="">
                         <Label htmlFor="stock">Cost (Harga Beli):</Label>
-                        <Input type="number" className={"w-full"} value={formData?.cost} onChange={(e) => setFormData({ ...formData, cost: e.target.value })} />
+                        <Input
+                            type="number"
+                            className={"w-full"}
+                            value={formData?.current_cost}
+                            onChange={(e) => setFormData({ ...formData, current_cost: e.target.value })}
+                        />
                     </div>
                 </div>
 

@@ -33,7 +33,7 @@ const Contact = () => {
                 setLoading(false);
             }
         },
-        [search]
+        [search, notification]
     );
 
     useEffect(() => {
@@ -71,7 +71,7 @@ const Contact = () => {
                             <Modal isOpen={isModalCreateContactOpen} onClose={closeModal} modalTitle="Create Contact">
                                 <CreateContact
                                     isModalOpen={setIsModalCreateContactOpen}
-                                    notification={(message) => setNotification(message)}
+                                    notification={(type, message) => setNotification({ type, message })}
                                     fetchContacts={fetchContacts}
                                 />
                             </Modal>

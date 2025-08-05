@@ -41,12 +41,12 @@ const Purchase = () => {
     const pad = (n) => n.toString().padStart(2, "0");
     const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
     const [formData, setFormData] = useState({
-        dateIssued: today,
+        date_issued: today,
         paymentAccountID: "",
         paymentMethod: "cash",
         feeCustomer: 0,
         transaction_type: "Purchase",
-        contactId: "",
+        contact_id: "",
     });
     const [isModalCheckOutOpen, setIsModalCheckOutOpen] = useState(false);
     const [showCartMobile, setShowCartMobile] = useState(false);
@@ -151,11 +151,11 @@ const Purchase = () => {
         });
     };
 
-    const total = cartPo.reduce((total, item) => total + item.price * item.quantity, 0);
+    const total = cartPo.reduce((total, item) => total + item.current_cost * item.quantity, 0);
 
     const updatePrice = (product, newPrice) => {
         setCartPo((prevCart) => {
-            return prevCart.map((item) => (item.id === product.id ? { ...item, price: newPrice } : item));
+            return prevCart.map((item) => (item.id === product.id ? { ...item, current_cost: newPrice } : item));
         });
     };
 
@@ -176,14 +176,14 @@ const Purchase = () => {
         };
         setLoading(true);
         try {
-            const response = await axios.post("/api/store-with-deposit", payload);
+            const response = await axios.post("/api/purchase-order", payload);
             setNotification({ type: "success", message: response.data.message });
             setFormData({
-                dateIssued: today,
+                date_issued: today,
                 paymentAccountID: 8,
                 feeCustomer: 0,
                 transaction_type: "Purchase",
-                contactId: "",
+                contact_id: "",
                 paymentMethod: "cash",
             });
             clearCart();
@@ -194,6 +194,7 @@ const Purchase = () => {
             setLoading(false);
         }
     };
+    console.log(accounts);
     return (
         <>
             {notification.message && (
@@ -252,13 +253,13 @@ const Purchase = () => {
                                                     <input
                                                         type="number"
                                                         className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                        value={product.price}
+                                                        value={product.current_cost}
                                                         onChange={(e) => updatePrice(product, e.target.value)}
                                                     />
                                                 </small>
 
                                                 <small className="text-xs text-gray-500 font-bold">
-                                                    Total: {formatNumber(product.price * product.quantity)}
+                                                    Total: {formatNumber(product.current_cost * product.quantity)}
                                                 </small>
                                             </div>
                                         </div>
@@ -297,8 +298,8 @@ const Purchase = () => {
                             <input
                                 type="datetime-local"
                                 className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.dateIssued}
-                                onChange={(e) => setFormData({ ...formData, dateIssued: e.target.value })}
+                                value={formData.date_issued}
+                                onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
                             />
                         </div>
                         <div className="flex bg-indigo-400 w-fit rounded-xl mb-2">
@@ -343,8 +344,8 @@ const Purchase = () => {
                                 <label className="block mb-1 text-sm font-medium text-gray-900">Contact</label>
                                 <select
                                     className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                                    value={formData.contactId}
-                                    onChange={(e) => setFormData({ ...formData, contactId: e.target.value })}
+                                    value={formData.contact_id}
+                                    onChange={(e) => setFormData({ ...formData, contact_id: e.target.value })}
                                     disabled={loading}
                                 >
                                     <option value="">Pilih Contact</option>
