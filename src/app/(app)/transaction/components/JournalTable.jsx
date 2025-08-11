@@ -128,6 +128,7 @@ const JournalTable = ({
 
         return formatted;
     };
+    console.log(currentItems);
     return (
         <div className="">
             <div className="px-4 flex gap-2">
@@ -273,9 +274,9 @@ const JournalTable = ({
                                         </span>
                                         <span
                                             className="font-semibold text-teal-600 group-hover:text-yellow-300 text-xs block"
-                                            hidden={!journal.finance[0]?.contact?.name}
+                                            hidden={!journal.finance?.[0]?.contact?.name}
                                         >
-                                            Contact: {journal.finance[0]?.contact?.name}
+                                            Contact: {journal.finance?.[0]?.contact?.name}
                                         </span>
                                         {journal.trx_type} Note: {journal.description}.
                                         <span className="font-bold text-xs block text-slate-700 group-hover:text-white">
