@@ -8,6 +8,7 @@ import Input from "@/components/Input";
 import Header from "../../Header";
 import { useGetDailyDashboard } from "@/libs/getDailyDashboard";
 import { useAuth } from "@/libs/auth";
+import MainPage from "../../main";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -239,145 +240,140 @@ const FinancialRatio = () => {
     }
 
     return (
-        <>
-            <Header title="Financial Ratio Analysis" />
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 bg-white border-b border-gray-200">
-                            <div className="mb-5 flex justify-between items-start">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-blue-600">Financial Ratio Analysis</h1>
-                                    <span className="block text-sm text-slate-400">Periode : {endDate}</span>
-                                </div>
-                                <div>
-                                    <button
-                                        onClick={() => mutate(`/api/daily-dashboard/${selectedWarehouse}/${endDate}`)}
-                                        className="bg-white mr-1 font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
-                                    >
-                                        <RefreshCcwIcon className={`size-4 ${loading ? "animate-spin" : ""}`} />
-                                    </button>
-                                    <button
-                                        onClick={() => setIsModalFilterDataOpen(true)}
-                                        className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
-                                    >
-                                        <FilterIcon className="size-4" />
-                                    </button>
-                                </div>
-                                <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
-                                    <div className="mb-4">
-                                        <Label className="font-bold">Tanggal</Label>
-                                        <Input
-                                            type="date"
-                                            value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                        />
-                                    </div>
-                                </Modal>
-                            </div>
-
-                            <div className="mb-5">
-                                <h1 className="text-sm text-slate-500">
-                                    Overall Rating (<span className="font-bold">{getFinalRating(calculateOverallRating()).rating}</span>){" "}
-                                </h1>
-                                <h1 className="text-5xl font-bold">
-                                    {calculateOverallRating()}
-                                    <span className="text-sm text-slate-500">/10</span>
-                                </h1>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Likuiditas</h1>
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead>
-                                        <tr className="text-sm text-gray-700 uppercase bg-gray-50">
-                                            <th className="px-6 py-3 w-44">Rasio</th>
-                                            <th className="w-32">Hasil</th>
-                                            <th className="w-30">Ideal</th>
-                                            <th>Analisis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4 whitespace-nowrap">Current Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.currentRatio.toFixed(2)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">1.5 - 2.5</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("currentRatio", rasioInput.currentRatio).message}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4">Quick Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.quickRatio.toFixed(2)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("quickRatio", rasioInput.quickRatio).message}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4">Cash Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.cashRatio.toFixed(2)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("cashRatio", rasioInput.cashRatio).message}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="overflow-x-auto mt-5">
-                                <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Solvabilitas</h1>
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead>
-                                        <tr className="text-sm text-gray-700 uppercase bg-gray-50">
-                                            <th className="px-6 py-3 w-44">Rasio</th>
-                                            <th className="w-32">Hasil</th>
-                                            <th className="w-30">Ideal</th>
-                                            <th>Analisis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4 whitespace-nowrap">Debt Ratio</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtRatio.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">40% – 60%</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("debtRatio", rasioInput.debtRatio).message}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtToEquity.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("debtToEquity", rasioInput.debtToEquity).message}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="overflow-x-auto mt-5">
-                                <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Profitabilitas</h1>
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <thead>
-                                        <tr className="text-sm text-gray-700 uppercase bg-gray-50">
-                                            <th className="px-6 py-3 w-44">Rasio</th>
-                                            <th className="w-32">Hasil</th>
-                                            <th className="w-30">Ideal</th>
-                                            <th>Analisis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4 whitespace-nowrap">Return to Equity</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.roe.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">5% - 15%</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("roe", rasioInput.roe).message}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-300 border-dashed text-slate-500">
-                                            <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.netProfitMargin.toFixed(2)}%</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">1% – 5%</td>
-                                            <td className="px-6 py-4 whitespace-normal">{evaluate("netProfitMargin", rasioInput.netProfitMargin).message}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+        <MainPage headerTitle="Financial Ratio Analysis">
+            <div className="bg-white overflow-hidden shadow-sm sm:rounded-3xl">
+                <div className="p-6 bg-white border-b border-gray-200">
+                    <div className="mb-5 flex justify-between items-start">
+                        <div>
+                            <h1 className="text-2xl font-bold text-blue-600">Financial Ratio Analysis</h1>
+                            <span className="block text-sm text-slate-400">Periode : {endDate}</span>
                         </div>
+                        <div>
+                            <button
+                                onClick={() => mutate(`/api/daily-dashboard/${selectedWarehouse}/${endDate}`)}
+                                className="bg-white mr-1 font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                            >
+                                <RefreshCcwIcon className={`size-4 ${loading ? "animate-spin" : ""}`} />
+                            </button>
+                            <button
+                                onClick={() => setIsModalFilterDataOpen(true)}
+                                className="bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400"
+                            >
+                                <FilterIcon className="size-4" />
+                            </button>
+                        </div>
+                        <Modal isOpen={isModalFilterDataOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
+                            <div className="mb-4">
+                                <Label className="font-bold">Tanggal</Label>
+                                <Input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                />
+                            </div>
+                        </Modal>
+                    </div>
+
+                    <div className="mb-5">
+                        <h1 className="text-sm text-slate-500">
+                            Overall Rating (<span className="font-bold">{getFinalRating(calculateOverallRating()).rating}</span>){" "}
+                        </h1>
+                        <h1 className="text-5xl font-bold">
+                            {calculateOverallRating()}
+                            <span className="text-sm text-slate-500">/10</span>
+                        </h1>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Likuiditas</h1>
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead>
+                                <tr className="text-sm text-gray-700 uppercase bg-gray-50">
+                                    <th className="px-6 py-3 w-44">Rasio</th>
+                                    <th className="w-32">Hasil</th>
+                                    <th className="w-30">Ideal</th>
+                                    <th>Analisis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4 whitespace-nowrap">Current Ratio</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.currentRatio.toFixed(2)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">1.5 - 2.5</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("currentRatio", rasioInput.currentRatio).message}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4">Quick Ratio</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.quickRatio.toFixed(2)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("quickRatio", rasioInput.quickRatio).message}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4">Cash Ratio</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.cashRatio.toFixed(2)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">1 - 2</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("cashRatio", rasioInput.cashRatio).message}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="overflow-x-auto mt-5">
+                        <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Solvabilitas</h1>
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead>
+                                <tr className="text-sm text-gray-700 uppercase bg-gray-50">
+                                    <th className="px-6 py-3 w-44">Rasio</th>
+                                    <th className="w-32">Hasil</th>
+                                    <th className="w-30">Ideal</th>
+                                    <th>Analisis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4 whitespace-nowrap">Debt Ratio</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtRatio.toFixed(2)}%</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">40% – 60%</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("debtRatio", rasioInput.debtRatio).message}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4 whitespace-nowrap">Debt to Equity</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.debtToEquity.toFixed(2)}%</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">50% – 150%</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("debtToEquity", rasioInput.debtToEquity).message}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="overflow-x-auto mt-5">
+                        <h1 className="text-xl font-bold text-slate-600 mb-5">Rasio Profitabilitas</h1>
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead>
+                                <tr className="text-sm text-gray-700 uppercase bg-gray-50">
+                                    <th className="px-6 py-3 w-44">Rasio</th>
+                                    <th className="w-32">Hasil</th>
+                                    <th className="w-30">Ideal</th>
+                                    <th>Analisis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4 whitespace-nowrap">Return to Equity</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.roe.toFixed(2)}%</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">5% - 15%</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("roe", rasioInput.roe).message}</td>
+                                </tr>
+                                <tr className="border-b border-slate-300 border-dashed text-slate-500">
+                                    <td className="px-6 py-4 whitespace-nowrap">Net Profit Margin</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{isLoading ? "..." : rasioInput.netProfitMargin.toFixed(2)}%</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">1% – 5%</td>
+                                    <td className="px-6 py-4 whitespace-normal">{evaluate("netProfitMargin", rasioInput.netProfitMargin).message}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </>
+        </MainPage>
     );
 };
 export default FinancialRatio;

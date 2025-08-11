@@ -37,6 +37,7 @@ import CreatePrive from "./components/CreatePrive";
 import CreateEquity from "./components/CreateEquity";
 import CreateIncome from "./components/CreateIncome";
 import { set } from "date-fns";
+import MainPage from "../main";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -186,288 +187,277 @@ const TransactionPage = () => {
     const summarizeBalance = accountBalance?.data?.reduce((total, account) => total + account.balance, 0);
 
     return (
-        <>
-            <Header title="Transaction" />
-            <div className="py-8 relative">
-                <div ref={menuRef} className="fixed sm:hidden bottom-0 w-full z-[999]">
-                    <div className={`text-white shadow-xl ${!isJournalMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
-                        <button onClick={() => setIsModalCreateJournalOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Jurnal Umum
-                        </button>
-                        <button onClick={() => setIsModalCreateIncomeOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Kas Masuk (Income)
-                        </button>
-                        <button onClick={() => setIsModalCreateDepositOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Deposit Customer
-                        </button>
-                        <button
-                            onClick={() => setIsModalCreateSalesByValueOpen(true)}
-                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
-                        >
-                            Penjualan (By Value)
-                        </button>
-                        <button onClick={() => setIsModalCreateEquityOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Penambahan Modal (Equity)
-                        </button>
-                    </div>
-                    <div className={`text-white ${!isExpenseMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
-                        <button onClick={() => setIsModalCreateExpenseOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Biaya Operasional
-                        </button>
-                        <button
-                            onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
-                            className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200"
-                        >
-                            Biaya Admin Bank
-                        </button>
-                        <button onClick={() => setIsModalCreatePriveOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
-                            Penarikan Modal (prive)
-                        </button>
-                    </div>
-                    <div className="text-white flex justify-between items-center">
-                        <button
-                            onClick={() => {
-                                setIsJournalMenuOpen(!isJournalMenuOpen);
-                                setIsExpenseMenuOpen(false);
-                                setIsDailyReportOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <BuildingIcon className="w-7 h-7" /> Journal
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsExpenseMenuOpen(!isExpenseMenuOpen);
-                                setIsJournalMenuOpen(false);
-                                setIsDailyReportOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <HandCoinsIcon className="w-7 h-7" /> Biaya
-                        </button>
-                        <button
-                            onClick={() => {
-                                setIsDailyReportOpen(!isDailyReportOpen);
-                                setIsJournalMenuOpen(false);
-                                setIsExpenseMenuOpen(false);
-                            }}
-                            className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
-                        >
-                            <LayoutDashboardIcon className="w-7 h-7" /> Kas Bank
-                        </button>
-                    </div>
+        <MainPage headerTitle="Transaction">
+            <div ref={menuRef} className="fixed sm:hidden bottom-0 w-full z-[999]">
+                <div className={`text-white shadow-xl ${!isJournalMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
+                    <button onClick={() => setIsModalCreateJournalOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Jurnal Umum
+                    </button>
+                    <button onClick={() => setIsModalCreateIncomeOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Kas Masuk (Income)
+                    </button>
+                    <button onClick={() => setIsModalCreateDepositOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Deposit Customer
+                    </button>
+                    <button onClick={() => setIsModalCreateSalesByValueOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Penjualan (By Value)
+                    </button>
+                    <button onClick={() => setIsModalCreateEquityOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Penambahan Modal (Equity)
+                    </button>
                 </div>
-                <div className="max-w-7xl mx-auto sm:px-6">
-                    {notification.message && (
-                        <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
-                    )}
-                    <div className=" sm:rounded-lg">
-                        <div className="mb-2 hidden sm:flex justify-start gap-2">
-                            <button
-                                className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group"
-                                onClick={() => setIsModalCreateDepositOpen(true)}
-                            >
-                                Input Deposit
+                <div className={`text-white ${!isExpenseMenuOpen ? "hidden" : "flex flex-col justify-between items-center"}`}>
+                    <button onClick={() => setIsModalCreateExpenseOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Biaya Operasional
+                    </button>
+                    <button onClick={() => setIsModalCreateBankAdminFeeOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Biaya Admin Bank
+                    </button>
+                    <button onClick={() => setIsModalCreatePriveOpen(true)} className="bg-amber-500 w-full text-white p-4 border-t hover:bg-slate-200">
+                        Penarikan Modal (prive)
+                    </button>
+                </div>
+                <div className="text-white flex justify-between items-center">
+                    <button
+                        onClick={() => {
+                            setIsJournalMenuOpen(!isJournalMenuOpen);
+                            setIsExpenseMenuOpen(false);
+                            setIsDailyReportOpen(false);
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                    >
+                        <BuildingIcon className="w-7 h-7" /> Journal
+                    </button>
+                    <button
+                        onClick={() => {
+                            setIsExpenseMenuOpen(!isExpenseMenuOpen);
+                            setIsJournalMenuOpen(false);
+                            setIsDailyReportOpen(false);
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                    >
+                        <HandCoinsIcon className="w-7 h-7" /> Biaya
+                    </button>
+                    <button
+                        onClick={() => {
+                            setIsDailyReportOpen(!isDailyReportOpen);
+                            setIsJournalMenuOpen(false);
+                            setIsExpenseMenuOpen(false);
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-500 w-full flex flex-col items-center justify-center py-2 text-xs gap-1 focus:bg-amber-500"
+                    >
+                        <LayoutDashboardIcon className="w-7 h-7" /> Kas Bank
+                    </button>
+                </div>
+            </div>
+            {notification.message && (
+                <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
+            )}
+            <div className=" sm:rounded-lg">
+                <div className="mb-2 hidden sm:flex justify-start gap-2">
+                    <button
+                        className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group"
+                        onClick={() => setIsModalCreateDepositOpen(true)}
+                    >
+                        Input Deposit
+                    </button>
+                    <Dropdown
+                        trigger={
+                            <button className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
+                                Input Journal
+                                <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
                             </button>
-                            <Dropdown
-                                trigger={
-                                    <button className="bg-green-600 min-w-40 text-sm hover:bg-green-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
-                                        Input Journal
-                                        <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
+                        }
+                        align="left"
+                    >
+                        <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full min-w-40 text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateJournalOpen(true)}
+                                    >
+                                        Journal Umum
                                     </button>
-                                }
-                                align="left"
-                            >
-                                <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full min-w-40 text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateJournalOpen(true)}
-                                            >
-                                                Journal Umum
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateIncomeOpen(true)}
-                                            >
-                                                Kas Masuk (income)
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateSalesByValueOpen(true)}
-                                            >
-                                                Penjualan (Value)
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateEquityOpen(true)}
-                                            >
-                                                Penambahan Modal (Equity)
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                </Menu.Items>
-                            </Dropdown>
-                            <Dropdown
-                                trigger={
-                                    <button className="bg-red-600 text-sm hover:bg-red-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
-                                        Biaya (Pengeluaran)
-                                        <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateIncomeOpen(true)}
+                                    >
+                                        Kas Masuk (income)
                                     </button>
-                                }
-                                align="left"
-                            >
-                                <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateExpenseOpen(true)}
-                                            >
-                                                Biaya Operasional
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
-                                            >
-                                                Biaya Administrasi Bank
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <button
-                                                className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
-                                                onClick={() => setIsModalCreatePriveOpen(true)}
-                                            >
-                                                Penarikan Modal (Prive)
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                </Menu.Items>
-                            </Dropdown>
-                        </div>
-                        <Modal isOpen={isModalCreateJournalOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Jurnal Umum">
-                            <CreateJournal
-                                today={today}
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateJournalOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
-                            />
-                        </Modal>
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateSalesByValueOpen(true)}
+                                    >
+                                        Penjualan (Value)
+                                    </button>
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateEquityOpen(true)}
+                                    >
+                                        Penambahan Modal (Equity)
+                                    </button>
+                                )}
+                            </Menu.Item>
+                        </Menu.Items>
+                    </Dropdown>
+                    <Dropdown
+                        trigger={
+                            <button className="bg-red-600 text-sm hover:bg-red-500 text-white hover:scale-105 transition-transform duration-200 ease-in py-2 px-6 rounded-lg group">
+                                Biaya (Pengeluaran)
+                                <ChevronRightIcon size={18} className="inline group-hover:rotate-90 transition-transform delay-300 duration-200" />
+                            </button>
+                        }
+                        align="left"
+                    >
+                        <Menu.Items className="min-w-max flex flex-col gap-y-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateExpenseOpen(true)}
+                                    >
+                                        Biaya Operasional
+                                    </button>
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreateBankAdminFeeOpen(true)}
+                                    >
+                                        Biaya Administrasi Bank
+                                    </button>
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`w-full text-sm text-left py-2 px-4 ${active ? "bg-slate-100" : ""}`}
+                                        onClick={() => setIsModalCreatePriveOpen(true)}
+                                    >
+                                        Penarikan Modal (Prive)
+                                    </button>
+                                )}
+                            </Menu.Item>
+                        </Menu.Items>
+                    </Dropdown>
+                </div>
+                <Modal isOpen={isModalCreateJournalOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Jurnal Umum">
+                    <CreateJournal
+                        today={today}
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateJournalOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        user={user}
+                    />
+                </Modal>
 
-                        <Modal isOpen={isModalCreateSalesByValueOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penjualan Barang & Jasa (Value)">
-                            <CreateSalesByValue
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateSalesByValueOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                today={today}
-                                user={user}
-                            />
-                        </Modal>
-                        <Modal isOpen={isModalCreateDepositOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penjualan Deposit">
-                            <CreateDeposit
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateSalesByValueOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
-                                today={today}
-                            />
-                        </Modal>
-                        {/* Expenses */}
-                        <Modal isOpen={isModalCreateBankAdminFeeOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Biaya Administrasi Bank">
-                            <CreateBankAdminFee
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateBankAdminFeeOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
-                                today={today}
-                            />
-                        </Modal>
-                        <Modal isOpen={isModalCreateExpenseOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Biaya Operasional">
-                            <CreateExpense
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateExpenseOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                today={today}
-                            />
-                        </Modal>
-                        <Modal isOpen={isModalCreateIncomeOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Pendapatan Lainnya">
-                            <CreateIncome
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateIncomeOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                today={today}
-                            />
-                        </Modal>
-                        <Modal isOpen={isModalCreatePriveOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penarikan Modal (Prive)">
-                            <CreatePrive
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreatePriveOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
-                                today={today}
-                            />
-                        </Modal>
-                        <Modal isOpen={isModalCreateEquityOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penambahan Modal (Equity)">
-                            <CreateEquity
-                                filteredCashBankByWarehouse={filteredCashBankByWarehouse}
-                                isModalOpen={setIsModalCreateEquityOpen}
-                                notification={(type, message) => setNotification({ type, message })}
-                                fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                user={user}
-                                today={today}
-                            />
-                        </Modal>
-                        <div className="mb-20 sm:mb-0">
-                            <div className="relative bg-white py-6 rounded-2xl order-2 sm:order-1">
-                                {journalLoading && <LoaderCircleIcon size={20} className="absolute top-1 left-1 animate-spin text-slate-300" />}
-                                <JournalTable
-                                    cashBank={cashBank}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchJournalsByWarehouse={fetchJournalsByWarehouse}
-                                    journalsByWarehouse={journalsByWarehouse}
-                                    warehouses={warehouses}
-                                    warehouse={warehouse}
-                                    warehouseId={(warehouseId) => setSelectedWarehouseId(warehouseId)}
-                                    user={user}
-                                    loading={journalLoading}
-                                    startDate={startDate}
-                                    endDate={endDate}
-                                    setStartDate={setStartDate}
-                                    setEndDate={setEndDate}
-                                />
-                            </div>
-                            {/* <div className="order-1 sm:order-2 px-2 sm:px-0">
+                <Modal isOpen={isModalCreateSalesByValueOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penjualan Barang & Jasa (Value)">
+                    <CreateSalesByValue
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateSalesByValueOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        today={today}
+                        user={user}
+                    />
+                </Modal>
+                <Modal isOpen={isModalCreateDepositOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penjualan Deposit">
+                    <CreateDeposit
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateSalesByValueOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        user={user}
+                        today={today}
+                    />
+                </Modal>
+                {/* Expenses */}
+                <Modal isOpen={isModalCreateBankAdminFeeOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Biaya Administrasi Bank">
+                    <CreateBankAdminFee
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateBankAdminFeeOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        user={user}
+                        today={today}
+                    />
+                </Modal>
+                <Modal isOpen={isModalCreateExpenseOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Biaya Operasional">
+                    <CreateExpense
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateExpenseOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        today={today}
+                    />
+                </Modal>
+                <Modal isOpen={isModalCreateIncomeOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Pendapatan Lainnya">
+                    <CreateIncome
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateIncomeOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        today={today}
+                    />
+                </Modal>
+                <Modal isOpen={isModalCreatePriveOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penarikan Modal (Prive)">
+                    <CreatePrive
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreatePriveOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        user={user}
+                        today={today}
+                    />
+                </Modal>
+                <Modal isOpen={isModalCreateEquityOpen} onClose={closeModal} maxWidth={"max-w-xl"} modalTitle="Penambahan Modal (Equity)">
+                    <CreateEquity
+                        filteredCashBankByWarehouse={filteredCashBankByWarehouse}
+                        isModalOpen={setIsModalCreateEquityOpen}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                        user={user}
+                        today={today}
+                    />
+                </Modal>
+                <div className="mb-20 sm:mb-0">
+                    <div className="relative bg-white py-6 rounded-2xl order-2 sm:order-1">
+                        {journalLoading && <LoaderCircleIcon size={20} className="absolute top-1 left-1 animate-spin text-slate-300" />}
+                        <JournalTable
+                            cashBank={cashBank}
+                            notification={(type, message) => setNotification({ type, message })}
+                            fetchJournalsByWarehouse={fetchJournalsByWarehouse}
+                            journalsByWarehouse={journalsByWarehouse}
+                            warehouses={warehouses}
+                            warehouse={warehouse}
+                            warehouseId={(warehouseId) => setSelectedWarehouseId(warehouseId)}
+                            user={user}
+                            loading={journalLoading}
+                            startDate={startDate}
+                            endDate={endDate}
+                            setStartDate={setStartDate}
+                            setEndDate={setEndDate}
+                        />
+                    </div>
+                    {/* <div className="order-1 sm:order-2 px-2 sm:px-0">
                                 <CashBankBalance warehouse={warehouse} accountBalance={accountBalance} isValidating={isValidating} />
                             </div> */}
-                        </div>
-                    </div>
                 </div>
             </div>
             {/* Daily report */}
@@ -565,7 +555,7 @@ const TransactionPage = () => {
                     </button>
                 </div>
             </div>
-        </>
+        </MainPage>
     );
 };
 

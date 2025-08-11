@@ -1,201 +1,187 @@
-import NavLink from "@/components/NavLink";
-import { useAuth } from "@/libs/auth";
+"use client";
 import {
-    ArrowRightLeftIcon,
+    ArrowLeftRightIcon,
     BoxesIcon,
     ChartAreaIcon,
-    CircleDollarSignIcon,
-    CirclePowerIcon,
     CogIcon,
+    DollarSignIcon,
     LayoutDashboardIcon,
-    MenuIcon,
+    Menu,
+    PowerIcon,
     ScaleIcon,
     StoreIcon,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
+import NavLink from "@/components/NavLink";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/libs/auth";
 
 const Navigation = ({ user }) => {
     const { logout } = useAuth();
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleNavbar = () => {
-        setIsOpen(!isOpen);
-    };
-    const pathname = usePathname();
-
-    const userRole = user.role?.role;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const pathName = usePathname();
+    const userRole = user?.role?.role;
     return (
-        <nav className={`bg-white text-gray-600 hidden sm:flex sm:flex-col sm:justify-between min-h-screen transition-all ${isOpen ? "w-64" : "w-16"}`}>
-            <div>
-                <div
-                    onClick={toggleNavbar}
-                    className={`h-[72px] px-4 text-gray-500 bg-blue-800 flex items-center ${
-                        isOpen ? "justify-start" : "justify-center"
-                    } gap-4 cursor-pointer border-b border-slate-200`}
-                >
-                    <div className="h-full flex items-center">
-                        <MenuIcon className="w-5 h-5 text-white" />
-                    </div>
-                    <div
-                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
-                        style={{ display: isOpen ? "inline" : "none" }}
+        <>
+            <nav className={`bg-white hidden sm:flex sm:flex-col ${isMenuOpen ? "w-64" : "w-16"} h-screen justify-between transition-all duration-200 ease-in`}>
+                {/* Header */}
+                <button className="flex items-center cursor-pointer text-white bg-blue-700" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    {/* Tombol Toggle */}
+                    <span className="w-16 h-20 flex items-center justify-center flex-shrink-0">
+                        <Menu size={32} />
+                    </span>
+
+                    {/* Logo Text */}
+                    <h1
+                        className={`text-xl text-nowrap font-bold transition-all duration-300 origin-left ${
+                            isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                        }`}
                     >
-                        <div className="flex flex-col">
-                            <h1 className="font-bold text-yellow-300">JOUR V.4</h1>
-                            <span className="text-xs text-white">{user.role?.warehouse?.name}</span>
-                        </div>
-                    </div>
-                </div>
-                <nav className="flex-1">
-                    <div className=" text-sm mt-4">
-                        <NavLink href="/dashboard" isOpen={isOpen} active={pathname === "/dashboard"}>
-                            <div className="">
-                                <LayoutDashboardIcon className="w-5 h-5" />
-                            </div>
-                            <span
-                                className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                    isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                }`}
-                                style={{ display: isOpen ? "inline" : "none" }}
-                            >
-                                Dashboard
-                            </span>
-                        </NavLink>
-                        <NavLink href="/transaction" isOpen={isOpen} active={pathname === "/transaction"}>
-                            <div>
-                                <ArrowRightLeftIcon className="w-5 h-5" />
-                            </div>
-                            <span
-                                className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                    isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                }`}
-                                style={{ display: isOpen ? "inline" : "none" }}
-                            >
-                                Transaction
-                            </span>
-                        </NavLink>
-                        {/* <NavLink href="/store" isOpen={isOpen} active={pathname === "/store"}>
-                            <div>
-                                <StoreIcon className="w-5 h-5" />
-                            </div>
-                            <span
-                                className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                    isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                }`}
-                                style={{ display: isOpen ? "inline" : "none" }}
-                            >
-                                Store
-                            </span>
-                        </NavLink> */}
-                        {userRole === "Administrator" && (
-                            <>
-                                <NavLink href="/inventory" isOpen={isOpen} active={pathname === "/inventory"}>
-                                    <div>
-                                        <BoxesIcon className="w-5 h-5" />
-                                    </div>
+                        Jo<span className="text-red-500">u</span>r Apps
+                    </h1>
+                </button>
+                {/* Middle Menu */}
+                <div className="">
+                    <div className="">
+                        <ul className="py-4">
+                            <li>
+                                <NavLink href="/dashboard" active={pathName.startsWith("/dashboard")}>
+                                    <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                        <LayoutDashboardIcon size={20} className="" />
+                                    </span>
                                     <span
-                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        className={`text-sm transition-all duration-300 origin-left ${
+                                            isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
                                         }`}
-                                        style={{ display: isOpen ? "inline" : "none" }}
+                                    >
+                                        Dashboard
+                                    </span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink href="/transaction" active={pathName.startsWith("/transaction")}>
+                                    <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                        <ArrowLeftRightIcon size={20} className="" />
+                                    </span>
+                                    <span
+                                        className={`text-sm transition-all duration-300 origin-left ${
+                                            isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        }`}
+                                    >
+                                        Transaction
+                                    </span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink href="/inventory" active={pathName.startsWith("/inventory")}>
+                                    <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                        <BoxesIcon size={20} className="" />
+                                    </span>
+                                    <span
+                                        className={`text-sm transition-all duration-300 origin-left ${
+                                            isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        }`}
                                     >
                                         Inventory
                                     </span>
                                 </NavLink>
-                                <NavLink href="/finance" isOpen={isOpen} active={pathname === "/finance"}>
-                                    <div>
-                                        <CircleDollarSignIcon className="w-5 h-5" />
-                                    </div>
-                                    <span
-                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                        }`}
-                                        style={{ display: isOpen ? "inline" : "none" }}
-                                    >
-                                        Finance
-                                    </span>
-                                </NavLink>
-                                <NavLink href="/summary" isOpen={isOpen} active={pathname === "/summary"}>
-                                    <div>
-                                        <ChartAreaIcon className="w-5 h-5" />
-                                    </div>
-                                    <span
-                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                        }`}
-                                        style={{ display: isOpen ? "inline" : "none" }}
-                                    >
-                                        Summary
-                                    </span>
-                                </NavLink>
-                                <NavLink href="/report" isOpen={isOpen} active={pathname.startsWith("/report")}>
-                                    <div>
-                                        <ScaleIcon className="w-5 h-5" />
-                                    </div>
-                                    <span
-                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                        }`}
-                                        style={{ display: isOpen ? "inline" : "none" }}
-                                    >
-                                        Report
-                                    </span>
-                                </NavLink>
-                                {/* <NavLink href="/report" isOpen={isOpen} active={pathname === "/report"}>
-                        <div>
-                            <DockIcon className="w-5 h-5" />
-                        </div>
-                        <span
-                            className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                            }`}
-                            style={{ display: isOpen ? "inline" : "none" }}
-                        >
-                            Reports
-                        </span>
-                    </NavLink> */}
-                            </>
+                            </li>
+                            {userRole === "Administrator" && (
+                                <>
+                                    <li>
+                                        <NavLink href="/finance" active={pathName.startsWith("/finance")}>
+                                            <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                                <DollarSignIcon size={20} className="" />
+                                            </span>
+                                            <span
+                                                className={`text-sm transition-all duration-300 origin-left ${
+                                                    isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                                }`}
+                                            >
+                                                Finance
+                                            </span>
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink href="/summary" active={pathName.startsWith("/summary")}>
+                                            <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                                <ChartAreaIcon size={20} className="" />
+                                            </span>
+                                            <span
+                                                className={`text-sm transition-all duration-300 origin-left ${
+                                                    isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                                }`}
+                                            >
+                                                Summary
+                                            </span>
+                                        </NavLink>
+                                        <NavLink href="/report" active={pathName.startsWith("/report")}>
+                                            <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                                <ScaleIcon size={20} className="" />
+                                            </span>
+                                            <span
+                                                className={`text-sm transition-all duration-300 origin-left ${
+                                                    isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                                }`}
+                                            >
+                                                Report
+                                            </span>
+                                        </NavLink>
+                                    </li>
+                                </>
+                            )}
+                        </ul>
+                        {userRole === "Administrator" && (
+                            <ul className="mt-4 border-t border-slate-300 py-4">
+                                <li>
+                                    <NavLink href="/setting" active={pathName.startsWith("/setting")}>
+                                        <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                                            <CogIcon size={20} className="" />
+                                        </span>
+                                        <span
+                                            className={`text-sm transition-all duration-300 origin-left ${
+                                                isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                            }`}
+                                        >
+                                            Setting
+                                        </span>
+                                    </NavLink>
+                                </li>
+                            </ul>
                         )}
                     </div>
-                    {userRole === "Administrator" && (
-                        <>
-                            <hr className="my-4 border-slate-200" />
-                            <ul className="mt-4 text-sm">
-                                <NavLink href="/setting" isOpen={isOpen} active={pathname.startsWith("/setting")}>
-                                    <div>
-                                        <CogIcon className="w-5 h-5" />
-                                    </div>
-                                    <span
-                                        className={`transition-all duration-300 ease-in-out transform text-nowrap ${
-                                            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                        }`}
-                                        style={{ display: isOpen ? "inline" : "none" }}
-                                    >
-                                        Settings
-                                    </span>
-                                </NavLink>
-                            </ul>
-                        </>
-                    )}
-                </nav>
-            </div>
-            <button
-                onClick={logout}
-                className="px-4 py-4 w-full bg-gray-600 hover:bg-gray-500 border-t border-slate-200 text-white cursor-pointer flex items-center gap-4 justify-center"
-            >
-                <div>
-                    <CirclePowerIcon className="w-5 h-5" />
                 </div>
-                <span
-                    className={`text-sm transition-all duration-300 ease-in-out transform text-nowrap ${
-                        isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                    }`}
-                    style={{ display: isOpen ? "inline" : "none" }}
-                >
-                    Logout
-                </span>
-            </button>
-        </nav>
+
+                {/* Footer */}
+                {/* <NavLink href="/user/profile" active={pathName.startsWith("/user/profile")}>
+                        <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-slate-500">
+                            <UserIcon size={20} className="" />
+                        </span>
+                        <span
+                            className={`text-sm text-nowrap transition-all duration-300 origin-left ${
+                                isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                            }`}
+                        >
+                            My Profile
+                        </span>
+                    </NavLink> */}
+                <button onClick={logout} className="flex items-center cursor-pointer">
+                    {/* Tombol Toggle */}
+                    <span className="w-16 h-14 flex items-center justify-center flex-shrink-0 text-red-500 hover:text-red-400">
+                        <PowerIcon size={24} strokeWidth={3} />
+                    </span>
+
+                    {/* Logo Text */}
+                    <h1
+                        className={`text-sm transition-all duration-300 text-red-500 hover:text-red-400 origin-left ${
+                            isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                        }`}
+                    >
+                        Logout
+                    </h1>
+                </button>
+            </nav>
+        </>
     );
 };
 

@@ -202,13 +202,13 @@ const DailyProfit = () => {
                             ))
                         )}
                     </tbody>
-                    <tfoot className="font-bold text-gray-800 bg-gray-100">
+                    <tfoot className="">
                         <tr>
-                            <td>Total</td>
-                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.revenue, 0))}</td>
-                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.cost, 0))}</td>
-                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.expense, 0))}</td>
-                            <td>{formatNumber(dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0))}</td>
+                            <th>Total</th>
+                            <th>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.revenue, 0))}</th>
+                            <th>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.cost, 0))}</th>
+                            <th>{formatNumber(dailyProfit?.reduce((sum, item) => sum + item.expense, 0))}</th>
+                            <th>{formatNumber(dailyProfit?.reduce((sum, item) => sum + (item.revenue - item.cost - item.expense), 0))}</th>
                         </tr>
                     </tfoot>
                 </table>

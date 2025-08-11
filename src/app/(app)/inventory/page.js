@@ -27,6 +27,7 @@ import Notification from "@/components/notification";
 import ProductTable from "./components/ProductTable";
 import EditTransaction from "./components/EditTransaction";
 import exportToExcel from "@/libs/exportToExcel";
+import MainPage from "../main";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -175,220 +176,208 @@ const InventoryPage = () => {
     };
 
     return (
-        <>
+        <MainPage headerTitle="Inventory Management">
             {notification.message && (
                 <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
             )}
-            <div className="">
-                {/* <h1 className="text-2xl font-bold mb-4">Point of Sales - Add to Cart</h1> */}
-                <Header title={"Inventory Management"} />
-                <div className="py-8">
-                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="overflow-hidden mb-4">
-                            <div className="bg-white shadow-sm sm:rounded-2xl">
-                                <div className="p-4 flex justify-between sm:flex-row flex-col">
-                                    <h1 className="text-2xl font-bold mb-4">
-                                        Transaksi Barang
-                                        <span className="text-xs block text-slate-500 font-normal">
-                                            Cabang: {warehouses.find((w) => w.id === Number(selectedWarehouse))?.name}, Periode: {startDate} - {endDate}
-                                        </span>
-                                    </h1>
-                                    <div className="flex items-center gap-1">
-                                        <Link href="/inventory/sales" className="btn-primary text-sm font-normal">
-                                            <PlusCircleIcon className="w-4 h-4 inline" /> Penjualan
-                                        </Link>
-                                        {userRole === "Administrator" && (
-                                            <Link href="/inventory/purchase" className="btn-primary text-sm font-normal">
-                                                <PlusCircleIcon className="w-4 h-4 inline" /> Pembelian
-                                            </Link>
-                                        )}
+            <div className="overflow-hidden mb-4">
+                <div className="bg-white shadow-sm sm:rounded-2xl">
+                    <div className="p-4 flex justify-between sm:flex-row flex-col">
+                        <h1 className="text-2xl font-bold mb-4">
+                            Transaksi Barang
+                            <span className="text-xs block text-slate-500 font-normal">
+                                Cabang: {warehouses.find((w) => w.id === Number(selectedWarehouse))?.name}, Periode: {startDate} - {endDate}
+                            </span>
+                        </h1>
+                        <div className="flex items-center gap-1">
+                            <Link href="/inventory/sales" className="btn-primary text-sm font-normal">
+                                <PlusCircleIcon className="w-4 h-4 inline" /> Penjualan
+                            </Link>
+                            {userRole === "Administrator" && (
+                                <Link href="/inventory/purchase" className="btn-primary text-sm font-normal">
+                                    <PlusCircleIcon className="w-4 h-4 inline" /> Pembelian
+                                </Link>
+                            )}
 
-                                        {/* <button className="btn-primary text-xs disabled:bg-slate-400 disabled:cursor-not-allowed" disabled={true}>
+                            {/* <button className="btn-primary text-xs disabled:bg-slate-400 disabled:cursor-not-allowed" disabled={true}>
                                             <PlusCircleIcon className="w-4 h-4 inline" /> Pembelian
                                         </button> */}
-                                        <button
-                                            onClick={() => exportTransactionToExcel()}
-                                            className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
+                            <button
+                                onClick={() => exportTransactionToExcel()}
+                                className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
+                            >
+                                <DownloadIcon size={20} />
+                            </button>
+                            <button
+                                onClick={() => setIsModalFilterJournalOpen(true)}
+                                className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
+                            >
+                                <FilterIcon size={20} />
+                            </button>
+                            <Modal isOpen={isModalFilterJournalOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
+                                {userRole === "Administrator" && (
+                                    <div className="mb-4">
+                                        <Label>Cabang</Label>
+                                        <select
+                                            onChange={(e) => {
+                                                setSelectedWarehouse(e.target.value);
+                                            }}
+                                            value={selectedWarehouse}
+                                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                         >
-                                            <DownloadIcon size={20} />
-                                        </button>
-                                        <button
-                                            onClick={() => setIsModalFilterJournalOpen(true)}
-                                            className="bg-white p-2 rounded-lg border border-slate-300 hover:border-slate-400"
-                                        >
-                                            <FilterIcon size={20} />
-                                        </button>
-                                        <Modal isOpen={isModalFilterJournalOpen} onClose={closeModal} modalTitle="Filter Tanggal" maxWidth="max-w-md">
-                                            {userRole === "Administrator" && (
-                                                <div className="mb-4">
-                                                    <Label>Cabang</Label>
-                                                    <select
-                                                        onChange={(e) => {
-                                                            setSelectedWarehouse(e.target.value);
-                                                        }}
-                                                        value={selectedWarehouse}
-                                                        className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                    >
-                                                        <option value="all">Semua Akun</option>
-                                                        {warehouses.map((w) => (
-                                                            <option key={w.id} value={w.id}>
-                                                                {w.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            )}
-                                            <div className="grid grid-cols-2 gap-2 mb-4">
-                                                <div>
-                                                    <Label>Tanggal</Label>
-                                                    <Input
-                                                        type="date"
-                                                        value={startDate}
-                                                        onChange={(e) => setStartDate(e.target.value)}
-                                                        className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <Label>s/d</Label>
-                                                    <Input
-                                                        type="date"
-                                                        value={endDate}
-                                                        onChange={(e) => setEndDate(e.target.value)}
-                                                        className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                                        disabled={!startDate}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    fetchTransaction();
-                                                    setIsModalFilterJournalOpen(false);
-                                                }}
-                                                className="btn-primary"
-                                            >
-                                                Submit
-                                            </button>
-                                        </Modal>
+                                            <option value="all">Semua Akun</option>
+                                            {warehouses.map((w) => (
+                                                <option key={w.id} value={w.id}>
+                                                    {w.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-2 gap-2 mb-4">
+                                    <div>
+                                        <Label>Tanggal</Label>
+                                        <Input
+                                            type="date"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>s/d</Label>
+                                        <Input
+                                            type="date"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                            disabled={!startDate}
+                                        />
                                     </div>
                                 </div>
-                                <div className="px-4 mb-2 flex">
-                                    <input
-                                        type="search"
-                                        value={search || ""}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                        placeholder="Cari barang..."
-                                        className="w-full text-sm rounded-l-lg rounded-r-none border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    />
-                                    <button
-                                        onClick={() => {
-                                            fetchTransaction();
-                                        }}
-                                        className="bg-slate-500 text-sm text-white min-w-20 sm:min-w-32 p-2 rounded-r-lg border border-gray-500 hover:border-gray-400 w-fit"
-                                    >
-                                        <SearchIcon size={24} className="inline" /> <span className="hidden sm:inline">Search</span>
-                                    </button>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="table w-full text-xs">
-                                        <thead>
-                                            <tr>
-                                                <th>Tanggal</th>
-                                                <th>Invoice</th>
-                                                <th>Contact</th>
-                                                <th>Cabang</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {loading ? (
-                                                <tr>
-                                                    <td colSpan={7} className="text-center">
-                                                        Loading...
-                                                    </td>
-                                                </tr>
-                                            ) : transactions.data?.length === 0 ? (
-                                                <tr>
-                                                    <td colSpan={7} className="text-center">
-                                                        Tidak ada transaksi
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                transactions.data?.map((transaction, index) => (
-                                                    <tr key={index}>
-                                                        <td className="text-center">
-                                                            {transaction.transaction_type === "Purchase" ? (
-                                                                <ArrowBigDown size={24} className="text-green-500 inline" />
-                                                            ) : (
-                                                                <ArrowBigUp size={24} className="text-red-500 inline" />
-                                                            )}{" "}
-                                                            <span className="">{transaction.transaction_type}</span>
-                                                        </td>
-                                                        <td className="font-bold">
-                                                            <span className="text-xs font-normal block text-slate-500">
-                                                                {formatDateTime(transaction.date_issued)}
-                                                            </span>
-                                                            <Link className="hover:underline" href={`/inventory/detail/${transaction.invoice}`}>
-                                                                {transaction.invoice}
-                                                            </Link>
-                                                        </td>
-                                                        <td className="">{transaction.contact?.name}</td>
-                                                        <td className="text-center">{transaction.warehouse?.name}</td>
-                                                        <td className="text-center">{transaction.status}</td>
-                                                    </tr>
-                                                ))
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="px-4">
-                                    {transactions.last_page > 1 && <Paginator links={transactions} handleChangePage={handleChangePage} />}
-                                </div>
-                            </div>
-                            <Modal isOpen={isModalUpdateTrxOpen} onClose={closeModal} modalTitle="Update Transaksi" maxWidth="max-w-md">
-                                <EditTransaction
-                                    isModalOpen={setIsModalUpdateTrxOpen}
-                                    transaction={filteredByTrxId}
-                                    warehouse={warehouse}
-                                    warehouseName={warehouseName}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchTransaction={fetchTransaction}
-                                />
-                            </Modal>
-                            <Modal isOpen={isModalDeleteTrxOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
-                                <div className="flex flex-col items-center justify-center gap-3 mb-4">
-                                    <MessageCircleWarningIcon size={72} className="text-red-600" />
-                                    <p className="text-sm">Apakah anda yakin ingin menghapus transaksi ini (ID: {selectedTrxId})?</p>
-                                </div>
-                                <div className="flex justify-center gap-3">
-                                    <button
-                                        onClick={() => {
-                                            handleDeleteTrx(selectedTrxId);
-                                            setIsModalDeleteTrxOpen(false);
-                                        }}
-                                        className="btn-primary w-full"
-                                    >
-                                        Ya
-                                    </button>
-                                    <button
-                                        onClick={() => setIsModalDeleteTrxOpen(false)}
-                                        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                    >
-                                        Tidak
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={() => {
+                                        fetchTransaction();
+                                        setIsModalFilterJournalOpen(false);
+                                    }}
+                                    className="btn-primary"
+                                >
+                                    Submit
+                                </button>
                             </Modal>
                         </div>
-                        <ProductTable
-                            warehouse={warehouse}
-                            warehouses={warehouses}
-                            warehouseName={warehouseName}
-                            notification={(type, message) => setNotification(type, message)}
-                            onShowNotification={setNotification}
-                        />
                     </div>
+                    <div className="px-4 mb-2 flex">
+                        <input
+                            type="search"
+                            value={search || ""}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Cari barang..."
+                            className="w-full text-sm rounded-l-lg rounded-r-none border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        />
+                        <button
+                            onClick={() => {
+                                fetchTransaction();
+                            }}
+                            className="bg-slate-500 text-sm text-white min-w-20 sm:min-w-32 p-2 rounded-r-lg border border-gray-500 hover:border-gray-400 w-fit"
+                        >
+                            <SearchIcon size={24} className="inline" /> <span className="hidden sm:inline">Search</span>
+                        </button>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="table w-full text-xs">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Invoice</th>
+                                    <th>Contact</th>
+                                    <th>Cabang</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={7} className="text-center">
+                                            Loading...
+                                        </td>
+                                    </tr>
+                                ) : transactions.data?.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="text-center">
+                                            Tidak ada transaksi
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    transactions.data?.map((transaction, index) => (
+                                        <tr key={index}>
+                                            <td className="text-center">
+                                                {transaction.transaction_type === "Purchase" ? (
+                                                    <ArrowBigDown size={24} className="text-green-500 inline" />
+                                                ) : (
+                                                    <ArrowBigUp size={24} className="text-red-500 inline" />
+                                                )}{" "}
+                                                <span className="">{transaction.transaction_type}</span>
+                                            </td>
+                                            <td className="font-bold">
+                                                <span className="text-xs font-normal block text-slate-500">{formatDateTime(transaction.date_issued)}</span>
+                                                <Link className="hover:underline" href={`/inventory/detail/${transaction.invoice}`}>
+                                                    {transaction.invoice}
+                                                </Link>
+                                            </td>
+                                            <td className="">{transaction.contact?.name}</td>
+                                            <td className="text-center">{transaction.warehouse?.name}</td>
+                                            <td className="text-center">{transaction.status}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="px-4">{transactions.last_page > 1 && <Paginator links={transactions} handleChangePage={handleChangePage} />}</div>
                 </div>
+                <Modal isOpen={isModalUpdateTrxOpen} onClose={closeModal} modalTitle="Update Transaksi" maxWidth="max-w-md">
+                    <EditTransaction
+                        isModalOpen={setIsModalUpdateTrxOpen}
+                        transaction={filteredByTrxId}
+                        warehouse={warehouse}
+                        warehouseName={warehouseName}
+                        notification={(type, message) => setNotification({ type, message })}
+                        fetchTransaction={fetchTransaction}
+                    />
+                </Modal>
+                <Modal isOpen={isModalDeleteTrxOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
+                    <div className="flex flex-col items-center justify-center gap-3 mb-4">
+                        <MessageCircleWarningIcon size={72} className="text-red-600" />
+                        <p className="text-sm">Apakah anda yakin ingin menghapus transaksi ini (ID: {selectedTrxId})?</p>
+                    </div>
+                    <div className="flex justify-center gap-3">
+                        <button
+                            onClick={() => {
+                                handleDeleteTrx(selectedTrxId);
+                                setIsModalDeleteTrxOpen(false);
+                            }}
+                            className="btn-primary w-full"
+                        >
+                            Ya
+                        </button>
+                        <button
+                            onClick={() => setIsModalDeleteTrxOpen(false)}
+                            className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            Tidak
+                        </button>
+                    </div>
+                </Modal>
             </div>
-        </>
+            <ProductTable
+                warehouse={warehouse}
+                warehouses={warehouses}
+                warehouseName={warehouseName}
+                notification={(type, message) => setNotification(type, message)}
+                onShowNotification={setNotification}
+            />
+        </MainPage>
     );
 };
 

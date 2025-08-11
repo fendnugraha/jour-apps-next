@@ -1,5 +1,6 @@
 "use client";
 import Header from "@/app/(app)/Header";
+import MainPage from "@/app/(app)/main";
 import Paginator from "@/components/Paginator";
 import { useAuth } from "@/libs/auth";
 import axios from "@/libs/axios";
@@ -60,52 +61,47 @@ const ProductHistory = ({ params }) => {
         }, warehouseInitStock);
     };
     return (
-        <>
-            <Header title="Product History" />
-            <div className="py-8 relative">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <h1 className="text-2xl font-bold mb-4">
-                        <Link href="/setting/product">
-                            <ArrowBigLeft className="w-4 h-4 inline mr-2" />
-                        </Link>{" "}
-                        {product?.name}
-                    </h1>
-                    <div className="bg-white rounded-3xl">
-                        <div className="p-4 flex justify-end">
-                            <div>
-                                <span className="text-sm block text-slate-300">Total Stock</span>
-                                <h1 className="text-2xl font-bold ml-2">{calculateTotalStock()}</h1>
-                            </div>
-                        </div>
-                        <table className="table w-full text-sm">
-                            <thead>
-                                <tr>
-                                    <th>Transaction Type</th>
-                                    <th>Transaction Date</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transaction?.data?.map((transaction) => (
-                                    <tr key={transaction?.id} className={`hover:bg-orange-100`}>
-                                        <td>{transaction?.transaction_type === "Purchase" ? "Pembelian" : "Penjualan"}</td>
-                                        <td className="text-center">{formatDateTime(transaction?.date_issued)}</td>
-                                        <td className={`text-right  ${transaction?.transaction_type === "Purchase" ? "text-green-700" : "text-red-500"}`}>
-                                            {formatNumber(transaction?.quantity)}
-                                        </td>
-                                        <td className="text-right">
-                                            {formatNumber(transaction?.transaction_type === "Purchase" ? transaction?.cost : transaction?.price)}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="px-4">{transaction?.last_page > 1 && <Paginator links={transaction} handleChangePage={handleChangePage} />}</div>
+        <MainPage headerTitle="Product History">
+            <h1 className="text-2xl font-bold mb-4">
+                <Link href="/setting/product">
+                    <ArrowBigLeft className="w-4 h-4 inline mr-2" />
+                </Link>{" "}
+                {product?.name}
+            </h1>
+            <div className="bg-white rounded-3xl">
+                <div className="p-4 flex justify-end">
+                    <div>
+                        <span className="text-sm block text-slate-300">Total Stock</span>
+                        <h1 className="text-2xl font-bold ml-2">{calculateTotalStock()}</h1>
                     </div>
                 </div>
+                <table className="table w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Transaction Type</th>
+                            <th>Transaction Date</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {transaction?.data?.map((transaction) => (
+                            <tr key={transaction?.id} className={`hover:bg-orange-100`}>
+                                <td>{transaction?.transaction_type === "Purchase" ? "Pembelian" : "Penjualan"}</td>
+                                <td className="text-center">{formatDateTime(transaction?.date_issued)}</td>
+                                <td className={`text-right  ${transaction?.transaction_type === "Purchase" ? "text-green-700" : "text-red-500"}`}>
+                                    {formatNumber(transaction?.quantity)}
+                                </td>
+                                <td className="text-right">
+                                    {formatNumber(transaction?.transaction_type === "Purchase" ? transaction?.cost : transaction?.price)}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="px-4">{transaction?.last_page > 1 && <Paginator links={transaction} handleChangePage={handleChangePage} />}</div>
             </div>
-        </>
+        </MainPage>
     );
 };
 

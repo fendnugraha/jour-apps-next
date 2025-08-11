@@ -7,6 +7,7 @@ import formatNumber from "@/libs/formatNumber";
 import { LoaderCircleIcon, MinusCircleIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import Modal from "@/components/Modal";
 import Notification from "@/components/notification";
+import MainPage from "../../main";
 
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -175,159 +176,150 @@ const Sales = () => {
         }
     };
     return (
-        <>
+        <MainPage headerTitle="Sales Order">
             {notification.message && (
                 <Notification type={notification.type} notification={notification.message} onClose={() => setNotification({ type: "", message: "" })} />
             )}
-            <Header title={"Store - Sales"} />
-            <div className="py-8 relative">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="h-[calc(100vh-72px-63px)] flex gap-4">
-                        <div className="overflow-hidden w-96 flex flex-col">
-                            <input
-                                type={`search`}
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                placeholder="Cari barang..."
-                            />
-                            <div className="flex-1 overflow-y-auto flex flex-col gap-1">
-                                {productList?.data?.length === 0 ? (
-                                    <div className="text-center">Barang tidak ditemukan</div>
-                                ) : (
-                                    productList?.data?.map((product) => (
-                                        <ProductCard product={product} key={product.id} onAddToCart={() => addToCart(product)} />
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 flex flex-col justify-between">
-                            <div className="p-2 border-b border-gray-200">
-                                {" "}
-                                <h1 className="font-bold">Items ({cart.length})</h1>
-                            </div>
-                            <div className="flex-1 overflow-y-auto py-2 px-4 sm:px-6">
-                                <div className="flex flex-col gap-2">
-                                    {cart.map((product) => (
-                                        <div className="flex flex-col gap-1 border-b border-gray-200 border-dashed pb-2" key={product.id}>
-                                            <div className="flex justify-between items-center">
-                                                <h1 className="text-sm font-bold">{product.name}</h1>
-                                                <button onClick={() => removeFromCart(product)}>
-                                                    <MinusCircleIcon size={18} className="text-red-500" />
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <small className="text-xs text-gray-500">
-                                                    Qty:{" "}
-                                                    <input
-                                                        type="number"
-                                                        className="w-16 px-2 py-1 rounded-sm mr-4 border border-slate-300 disabled:bg-slate-300 disabled:cursor-not-allowed"
-                                                        value={product.quantity}
-                                                        onChange={(e) => updateQuantity(product, e.target.value)}
-                                                        min={1}
-                                                        disabled={product.is_digital === 1}
-                                                    />
-                                                </small>
-                                                <small className="text-xs text-gray-500">
-                                                    Harga:{" "}
-                                                    <input
-                                                        type="number"
-                                                        className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                        value={product.price}
-                                                        onChange={(e) => updatePrice(product, e.target.value)}
-                                                    />
-                                                </small>
-                                                {product.is_digital === 1 && (
-                                                    <small className="text-xs text-gray-500">
-                                                        HPP:{" "}
-                                                        <input
-                                                            type="number"
-                                                            className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
-                                                            value={product.current_cost}
-                                                            onChange={(e) => updateCost(product, e.target.value)}
-                                                        />
-                                                    </small>
-                                                )}
+            <div className="h-[calc(100vh-72px-63px)] flex gap-4">
+                <div className="overflow-hidden w-96 flex flex-col">
+                    <input
+                        type={`search`}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
+                        placeholder="Cari barang..."
+                    />
+                    <div className="flex-1 overflow-y-auto flex flex-col gap-1">
+                        {productList?.data?.length === 0 ? (
+                            <div className="text-center">Barang tidak ditemukan</div>
+                        ) : (
+                            productList?.data?.map((product) => <ProductCard product={product} key={product.id} onAddToCart={() => addToCart(product)} />)
+                        )}
+                    </div>
+                </div>
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 flex flex-col justify-between">
+                    <div className="p-2 border-b border-gray-200">
+                        {" "}
+                        <h1 className="font-bold">Items ({cart.length})</h1>
+                    </div>
+                    <div className="flex-1 overflow-y-auto py-2 px-4 sm:px-6">
+                        <div className="flex flex-col gap-2">
+                            {cart.map((product) => (
+                                <div className="flex flex-col gap-1 border-b border-gray-200 border-dashed pb-2" key={product.id}>
+                                    <div className="flex justify-between items-center">
+                                        <h1 className="text-sm font-bold">{product.name}</h1>
+                                        <button onClick={() => removeFromCart(product)}>
+                                            <MinusCircleIcon size={18} className="text-red-500" />
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <small className="text-xs text-gray-500">
+                                            Qty:{" "}
+                                            <input
+                                                type="number"
+                                                className="w-16 px-2 py-1 rounded-sm mr-4 border border-slate-300 disabled:bg-slate-300 disabled:cursor-not-allowed"
+                                                value={product.quantity}
+                                                onChange={(e) => updateQuantity(product, e.target.value)}
+                                                min={1}
+                                                disabled={product.is_digital === 1}
+                                            />
+                                        </small>
+                                        <small className="text-xs text-gray-500">
+                                            Harga:{" "}
+                                            <input
+                                                type="number"
+                                                className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
+                                                value={product.price}
+                                                onChange={(e) => updatePrice(product, e.target.value)}
+                                            />
+                                        </small>
+                                        {product.is_digital === 1 && (
+                                            <small className="text-xs text-gray-500">
+                                                HPP:{" "}
+                                                <input
+                                                    type="number"
+                                                    className="w-32 px-2 py-1 rounded-sm mr-4 border border-slate-300"
+                                                    value={product.current_cost}
+                                                    onChange={(e) => updateCost(product, e.target.value)}
+                                                />
+                                            </small>
+                                        )}
 
-                                                <small className="text-xs text-gray-500 font-bold">
-                                                    Total: {formatNumber(product.price * product.quantity)}
-                                                </small>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        <small className="text-xs text-gray-500 font-bold">Total: {formatNumber(product.price * product.quantity)}</small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="h-24 flex flex-col justify-center bg-blue-500 px-4">
-                                <h1 className="text-white font-semibold">Total: {formatNumber(total)}</h1>
-                                <div className="flex justify-end w-1/2">
-                                    <button
-                                        className="flex-grow bg-green-400 hover:bg-green-300 cursor-pointer hover:text-green-700 text-white font-semibold py-2 px-4 rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed disabled:text-white"
-                                        onClick={() => setIsModalCheckOutOpen(true)}
-                                        disabled={cart.length === 0}
-                                    >
-                                        Checkout
-                                    </button>
-                                    <button
-                                        className="bg-red-400 text-white font-semibold py-2 px-4 rounded-lg ml-2 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:text-white"
-                                        onClick={clearCart}
-                                        disabled={cart.length === 0}
-                                    >
-                                        <Trash2Icon size={18} />
-                                    </button>
-                                </div>
-                            </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="h-24 flex flex-col justify-center bg-blue-500 px-4">
+                        <h1 className="text-white font-semibold">Total: {formatNumber(total)}</h1>
+                        <div className="flex justify-end w-1/2">
+                            <button
+                                className="flex-grow bg-green-400 hover:bg-green-300 cursor-pointer hover:text-green-700 text-white font-semibold py-2 px-4 rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed disabled:text-white"
+                                onClick={() => setIsModalCheckOutOpen(true)}
+                                disabled={cart.length === 0}
+                            >
+                                Checkout
+                            </button>
+                            <button
+                                className="bg-red-400 text-white font-semibold py-2 px-4 rounded-lg ml-2 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:text-white"
+                                onClick={clearCart}
+                                disabled={cart.length === 0}
+                            >
+                                <Trash2Icon size={18} />
+                            </button>
                         </div>
                     </div>
                 </div>
-                <Modal isOpen={isModalCheckOutOpen} onClose={closeModal} modalTitle="Checkout Order" maxWidth={"max-w-lg"}>
-                    <div className="flex justify-center items-center border-b border-gray-300 border-dashed pb-2 mb-4">
-                        <h1 className="text-3xl">Rp {formatNumber(total)}</h1>
+            </div>
+            <Modal isOpen={isModalCheckOutOpen} onClose={closeModal} modalTitle="Checkout Order" maxWidth={"max-w-lg"}>
+                <div className="flex justify-center items-center border-b border-gray-300 border-dashed pb-2 mb-4">
+                    <h1 className="text-3xl">Rp {formatNumber(total)}</h1>
+                </div>
+                <div>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-900">Tanggal</label>
+                        <input
+                            type="datetime-local"
+                            className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
+                            value={formData.date_issued}
+                            onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
+                        />
                     </div>
                     <div>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-900">Tanggal</label>
-                            <input
-                                type="datetime-local"
-                                className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.date_issued}
-                                onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-900">Account Pembayaran</label>
-                            <select
-                                className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.paymentAccountID}
-                                onChange={(e) => setFormData({ ...formData, paymentAccountID: e.target.value })}
-                            >
-                                <option value="">Pilih Account Pembayaran</option>
-                                {accounts?.map((account) => (
-                                    <option key={account.id} value={account.id}>
-                                        {account.acc_name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-900">MarkUp Customer</label>
-                            <input
-                                type="number"
-                                className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
-                                value={formData.feeCustomer}
-                                onChange={(e) => setFormData({ ...formData, feeCustomer: e.target.value })}
-                            />
-                        </div>
+                        <label className="block mb-1 text-sm font-medium text-gray-900">Account Pembayaran</label>
+                        <select
+                            className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
+                            value={formData.paymentAccountID}
+                            onChange={(e) => setFormData({ ...formData, paymentAccountID: e.target.value })}
+                        >
+                            <option value="">Pilih Account Pembayaran</option>
+                            {accounts?.map((account) => (
+                                <option key={account.id} value={account.id}>
+                                    {account.acc_name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <button
-                        onClick={handleCheckout}
-                        className="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white py-2 px-6 disabled:bg-slate-300 disabled:cursor-wait rounded-xl"
-                        disabled={loading}
-                    >
-                        {loading ? <LoaderCircleIcon className="animate-spin" /> : "Simpan"}
-                    </button>
-                </Modal>
-            </div>
-        </>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-900">MarkUp Customer</label>
+                        <input
+                            type="number"
+                            className="w-full border bg-white border-slate-200 px-4 py-2 rounded-xl mb-4"
+                            value={formData.feeCustomer}
+                            onChange={(e) => setFormData({ ...formData, feeCustomer: e.target.value })}
+                        />
+                    </div>
+                </div>
+                <button
+                    onClick={handleCheckout}
+                    className="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white py-2 px-6 disabled:bg-slate-300 disabled:cursor-wait rounded-xl"
+                    disabled={loading}
+                >
+                    {loading ? <LoaderCircleIcon className="animate-spin" /> : "Simpan"}
+                </button>
+            </Modal>
+        </MainPage>
     );
 };
 
