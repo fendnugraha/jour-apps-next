@@ -158,11 +158,7 @@ const Payable = ({ notification }) => {
                                 />
                             </Modal>
                             <Modal isOpen={isModalCreateReceivableOpen} onClose={closeModal} modalTitle="Create Receivable">
-                                <CreateReceivable
-                                    isModalOpen={setIsModalCreateReceivableOpen}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchFinance={fetchFinance}
-                                />
+                                <CreateReceivable isModalOpen={setIsModalCreateReceivableOpen} notification={notification} fetchFinance={fetchFinance} />
                             </Modal>
                             <button onClick={() => setIsModalCreateContactOpen(true)} className="btn-primary text-xs">
                                 <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Contact
