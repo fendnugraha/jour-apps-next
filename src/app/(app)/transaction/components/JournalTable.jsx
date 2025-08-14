@@ -129,7 +129,6 @@ const JournalTable = ({
         return formatted;
     };
 
-    console.log(currentItems);
     return (
         <div className="">
             <div className="px-4 flex gap-2">
