@@ -37,6 +37,7 @@ import CreatePrive from "./components/CreatePrive";
 import CreateEquity from "./components/CreateEquity";
 import CreateIncome from "./components/CreateIncome";
 import { set } from "date-fns";
+import JournalSummary from "./components/JournalSummary";
 
 const getCurrentDate = () => {
     const today = new Date();
@@ -59,6 +60,7 @@ const TransactionPage = () => {
     const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
     const [journalsByWarehouse, setJournalsByWarehouse] = useState([]);
+    const [selectedAccount, setSelectedAccount] = useState("");
     const [loading, setLoading] = useState(false);
     const [journalLoading, setJournalLoading] = useState(false);
     const [cashBank, setCashBank] = useState([]);
@@ -463,11 +465,13 @@ const TransactionPage = () => {
                                     endDate={endDate}
                                     setStartDate={setStartDate}
                                     setEndDate={setEndDate}
+                                    selectedAccount={selectedAccount}
+                                    setSelectedAccount={setSelectedAccount}
                                 />
                             </div>
-                            {/* <div className="order-1 sm:order-2 px-2 sm:px-0">
-                                <CashBankBalance warehouse={warehouse} accountBalance={accountBalance} isValidating={isValidating} />
-                            </div> */}
+                            <div className="order-1 sm:order-2 px-2 sm:px-0">
+                                <JournalSummary journal={journalsByWarehouse} notification={setNotification} selectedAccount={selectedAccount} />
+                            </div>
                         </div>
                     </div>
                 </div>

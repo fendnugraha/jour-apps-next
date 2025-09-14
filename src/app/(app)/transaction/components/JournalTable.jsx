@@ -41,13 +41,8 @@ const JournalTable = ({
     fetchJournalsByWarehouse,
     user,
     loading,
-    hqCashBank,
-    startDate,
-    endDate,
-    setStartDate,
-    setEndDate,
+    ...props
 }) => {
-    const [selectedAccount, setSelectedAccount] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -65,7 +60,7 @@ const JournalTable = ({
         setIsModalEditMutationJournalOpen(false);
     };
 
-    const filterSelectedJournalId = journalsByWarehouse?.data?.find((journal) => journal.id === selectedJournalId);
+    const filterSelectedJournalId = journalsByWarehouse?.data?.details?.find((journal) => journal.id === selectedJournalId);
 
     const handleDeleteJournal = async (id) => {
         try {
@@ -79,9 +74,10 @@ const JournalTable = ({
 
     const branchAccount = cashBank.filter((cashBank) => cashBank.warehouse_id === Number(selectedWarehouse));
     const filteredJournals =
-        journalsByWarehouse?.data?.filter((journal) => {
+        journalsByWarehouse?.data?.details?.filter((journal) => {
             const matchAccount =
-                selectedAccount && (Number(journal.cred_code) === Number(selectedAccount) || Number(journal.debt_code) === Number(selectedAccount));
+                props.selectedAccount &&
+                (Number(journal.cred_code) === Number(props.selectedAccount) || Number(journal.debt_code) === Number(props.selectedAccount));
 
             const matchSearchTerm =
                 searchTerm &&
@@ -93,11 +89,11 @@ const JournalTable = ({
                     (journal.amount ?? "").toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
                     (journal.transaction ?? []).some((t) => (t.product?.name ?? "").toLowerCase().includes(searchTerm.toLowerCase())));
 
-            if (selectedAccount && searchTerm) {
+            if (props.selectedAccount && searchTerm) {
                 return matchAccount && matchSearchTerm;
             }
 
-            if (selectedAccount) {
+            if (props.selectedAccount) {
                 return matchAccount;
             }
 
@@ -128,7 +124,6 @@ const JournalTable = ({
 
         return formatted;
     };
-
     return (
         <div className="">
             <div className="px-4 flex gap-2">
@@ -147,10 +142,10 @@ const JournalTable = ({
                 </select>
                 <select
                     onChange={(e) => {
-                        setSelectedAccount(e.target.value);
+                        props.setSelectedAccount(e.target.value);
                         setCurrentPage(1);
                     }}
-                    value={selectedAccount}
+                    value={props.selectedAccount}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 >
                     <option value="">Semua Akun</option>
@@ -199,7 +194,7 @@ const JournalTable = ({
                             <Label>Tanggal</Label>
                             <Input
                                 type="date"
-                                value={startDate}
+                                value={props.startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             />
@@ -208,20 +203,20 @@ const JournalTable = ({
                             <Label>s/d</Label>
                             <Input
                                 type="date"
-                                value={endDate}
+                                value={props.endDate}
                                 onChange={(e) => setEndDate(e.target.value)}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                disabled={!startDate}
+                                disabled={!props.startDate}
                             />
                         </div>
                     </div>
                     <button
                         onClick={() => {
-                            fetchJournalsByWarehouse(selectedWarehouse, startDate, endDate);
+                            fetchJournalsByWarehouse(selectedWarehouse, props.startDate, props.endDate);
                             warehouseId(selectedWarehouse);
 
                             setIsModalFilterJournalOpen(false);
-                            setSelectedAccount("");
+                            props.setSelectedAccount("");
                             setCurrentPage(1);
                         }}
                         className="btn-primary"
@@ -245,7 +240,9 @@ const JournalTable = ({
             <div className="px-4 pt-1">
                 <h4 className="text-xs text-slate-500">
                     {warehouses?.data?.find((w) => w.id === Number(selectedWarehouse))?.name},{" "}
-                    {startDate === endDate ? formatLongDate(endDate) : `${formatLongDate(startDate)} s/d ${formatLongDate(endDate)}`}
+                    {props.startDate === props.endDate
+                        ? formatLongDate(props.endDate)
+                        : `${formatLongDate(props.startDate)} s/d ${formatLongDate(props.endDate)}`}
                 </h4>
             </div>
             <div className="overflow-x-auto">
@@ -298,8 +295,8 @@ const JournalTable = ({
                                     </td>
                                     <td className="font-bold text-end text-slate-700 ">
                                         <span
-                                            className={`${Number(journal.debt_code) === Number(selectedAccount) ? "text-green-500" : ""}
-                                    ${Number(journal.cred_code) === Number(selectedAccount) ? "text-red-500" : ""}
+                                            className={`${Number(journal.debt_code) === Number(props.selectedAccount) ? "text-green-500" : ""}
+                                    ${Number(journal.cred_code) === Number(props.selectedAccount) ? "text-red-500" : ""}
                                         text-sm group-hover:text-yellow-400 sm:text-base xl:text-lg`}
                                         >
                                             {formatNumber(journal.amount)}
