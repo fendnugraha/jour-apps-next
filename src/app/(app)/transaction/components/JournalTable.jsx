@@ -195,7 +195,7 @@ const JournalTable = ({
                             <Input
                                 type="date"
                                 value={props.startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                onChange={(e) => props.setStartDate(e.target.value)}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             />
                         </div>
@@ -204,7 +204,7 @@ const JournalTable = ({
                             <Input
                                 type="date"
                                 value={props.endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                onChange={(e) => props.setEndDate(e.target.value)}
                                 className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 disabled={!props.startDate}
                             />
