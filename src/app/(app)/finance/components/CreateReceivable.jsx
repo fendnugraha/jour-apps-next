@@ -78,7 +78,12 @@ const CreateReceivable = ({ isModalOpen, fetchFinance, notification }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
                     <Label htmlFor="date_issued">Tanggal</Label>
                     <div className="col-span-2">
-                        <Input type="datetime-local" className="w-1/2 border border-slate-300 rounded-lg p-2" />
+                        <Input
+                            type="datetime-local"
+                            value={formData.date_issued}
+                            onChange={(e) => setFormData({ ...formData, date_issued: e.target.value })}
+                            className="w-1/2 border border-slate-300 rounded-lg p-2"
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 mb-2 items-center">
