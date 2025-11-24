@@ -72,6 +72,7 @@ const MutationHistory = ({ account, notification, user }) => {
             notification(error.response?.data?.message || "Something went wrong.");
         }
     };
+    console.log(mutation);
     return (
         <div className="bg-white rounded-lg mb-3 relative">
             <div className="p-4">
@@ -153,97 +154,116 @@ const MutationHistory = ({ account, notification, user }) => {
                     </button>
                 </Modal>
             </div>
-            <div className="overflow-x-auto">
-                <table className="table w-full text-xs">
-                    <thead>
-                        <tr>
-                            <th>Keterangan</th>
-                            <th>Jumlah</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={2}>Loading...</td>
-                            </tr>
-                        ) : selectedAccount > 0 ? (
-                            mutation.journals?.data?.length > 0 ? (
-                                mutation.journals?.data?.map((item, index) => (
-                                    <tr key={index}>
-                                        <td className="whitespace-normal break-words max-w-xs">
-                                            <span className="text-xs text-slate-500 block">
-                                                #{item.id} {item.invoice} | {formatDateTime(item.date_issued)}
-                                            </span>
-                                            Note: {item.description}
-                                            <span className="block font-bold text-xs">
-                                                {item.cred.acc_name} <ArrowRightIcon className="size-4 inline" /> {item.debt.acc_name}
-                                            </span>
-                                        </td>
-                                        <td className="font-bold">
-                                            <span
-                                                className={`${Number(item.debt_code) === Number(selectedAccount) ? "text-green-500" : ""}
+            <div className="flex gap-2">
+                <div className="flex-1">
+                    <div className="overflow-x-auto">
+                        <table className="table w-full text-xs">
+                            <thead>
+                                <tr>
+                                    <th>Keterangan</th>
+                                    <th>Jumlah</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={2}>Loading...</td>
+                                    </tr>
+                                ) : selectedAccount > 0 ? (
+                                    mutation.journals?.data?.length > 0 ? (
+                                        mutation.journals?.data?.map((item, index) => (
+                                            <tr key={index}>
+                                                <td className="whitespace-normal break-words max-w-xs">
+                                                    <span className="text-xs text-slate-500 block">
+                                                        #{item.id} {item.invoice} | {formatDateTime(item.date_issued)}
+                                                    </span>
+                                                    {item.finance && (
+                                                        <span className="block text-cyan-600 font-bold">Contact : {item.finance?.contact?.name}</span>
+                                                    )}
+                                                    Note: {item.description}
+                                                    <span className="block font-bold text-xs">
+                                                        {item.cred.acc_name} <ArrowRightIcon className="size-4 inline" /> {item.debt.acc_name}
+                                                    </span>
+                                                </td>
+                                                <td className="font-bold">
+                                                    <span
+                                                        className={`${Number(item.debt_code) === Number(selectedAccount) ? "text-green-500" : ""}
                                             ${Number(item.cred_code) === Number(selectedAccount) ? "text-red-500" : ""}
                                                 text-sm md:text-base sm:text-lg`}
-                                            >
-                                                {formatNumber(item.amount)}
-                                            </span>
-                                        </td>
-                                        <td className="text-center">
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedJournalId(item.id);
-                                                    setIsModalDeleteJournalOpen(true);
-                                                }}
-                                                disabled={["Voucher & SP", "Accessories", null].includes(item.trx_type)}
-                                                className=" disabled:text-slate-300 disabled:cursor-not-allowed text-red-600 hover:scale-125 transtition-all duration-200"
-                                            >
-                                                <TrashIcon className="size-4" />
-                                            </button>
-                                        </td>
+                                                    >
+                                                        {formatNumber(item.amount)}
+                                                    </span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedJournalId(item.id);
+                                                            setIsModalDeleteJournalOpen(true);
+                                                        }}
+                                                        disabled={["Voucher & SP", "Accessories", null].includes(item.trx_type)}
+                                                        className=" disabled:text-slate-300 disabled:cursor-not-allowed text-red-600 hover:scale-125 transtition-all duration-200"
+                                                    >
+                                                        <TrashIcon className="size-4" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={2}>Tidak ada data.</td>
+                                        </tr>
+                                    )
+                                ) : (
+                                    <tr>
+                                        <td colSpan={2}>Silahkan pilih akun.</td>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={2}>Tidak ada data.</td>
-                                </tr>
-                            )
-                        ) : (
-                            <tr>
-                                <td colSpan={2}>Silahkan pilih akun.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <Modal isOpen={isModalDeleteJournalOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
-                    <div className="flex flex-col items-center justify-center gap-3 mb-4">
-                        <MessageCircleWarningIcon size={72} className="text-red-600" />
-                        <p className="text-sm">Apakah anda yakin ingin menghapus transaksi ini (ID: {selectedJournalId})?</p>
+                                )}
+                            </tbody>
+                        </table>
+                        <Modal isOpen={isModalDeleteJournalOpen} onClose={closeModal} modalTitle="Confirm Delete" maxWidth="max-w-md">
+                            <div className="flex flex-col items-center justify-center gap-3 mb-4">
+                                <MessageCircleWarningIcon size={72} className="text-red-600" />
+                                <p className="text-sm">Apakah anda yakin ingin menghapus transaksi ini (ID: {selectedJournalId})?</p>
+                            </div>
+                            <div className="flex justify-center gap-3">
+                                <button
+                                    onClick={() => {
+                                        handleDeleteJournal(selectedJournalId);
+                                        setIsModalDeleteJournalOpen(false);
+                                    }}
+                                    className="btn-primary w-full"
+                                >
+                                    Ya
+                                </button>
+                                <button
+                                    onClick={() => setIsModalDeleteJournalOpen(false)}
+                                    className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                >
+                                    Tidak
+                                </button>
+                            </div>
+                        </Modal>
                     </div>
-                    <div className="flex justify-center gap-3">
-                        <button
-                            onClick={() => {
-                                handleDeleteJournal(selectedJournalId);
-                                setIsModalDeleteJournalOpen(false);
-                            }}
-                            className="btn-primary w-full"
-                        >
-                            Ya
-                        </button>
-                        <button
-                            onClick={() => setIsModalDeleteJournalOpen(false)}
-                            className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Tidak
-                        </button>
-                    </div>
-                </Modal>
-            </div>
-            {mutation.journals?.last_page > 1 && (
-                <div className="px-4">
-                    <Paginator links={mutation.journals} handleChangePage={handleChangePage} />
+                    {mutation.journals?.last_page > 1 && (
+                        <div className="px-4">
+                            <Paginator links={mutation.journals} handleChangePage={handleChangePage} />
+                        </div>
+                    )}
                 </div>
-            )}
+                <div className="w-64 pe-4">
+                    <ul className="text-xs p-2 border border-slate-300 rounded-2xl">
+                        {mutation.counterTotals?.map((item, index) => (
+                            <li key={index} className="mb-2">
+                                <span>{item.counter_name}</span>
+                                <span className="font-semibold block">
+                                    Db: {formatNumber(item.debt_total)} / Cr: {formatNumber(item.credit_total)}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };
