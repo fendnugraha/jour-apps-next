@@ -15,6 +15,7 @@ import Pagination from "@/components/PaginateList";
 import Input from "@/components/Input";
 import FinanceYearlyTable from "./FinanceYearlyTable";
 import exportToExcel from "@/libs/exportToExcel";
+import { set } from "date-fns";
 const Payable = ({ notification }) => {
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
@@ -151,11 +152,7 @@ const Payable = ({ notification }) => {
                                 <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Piutang
                             </button>
                             <Modal isOpen={isModalCreatePayableOpen} onClose={closeModal} modalTitle="Create Payable">
-                                <CreatePayable
-                                    isModalOpen={setIsModalCreatePayableOpen}
-                                    notification={(type, message) => setNotification({ type, message })}
-                                    fetchFinance={fetchFinance}
-                                />
+                                <CreatePayable isModalOpen={setIsModalCreatePayableOpen} notification={notification} fetchFinance={fetchFinance} />
                             </Modal>
                             <Modal isOpen={isModalCreateReceivableOpen} onClose={closeModal} modalTitle="Create Receivable">
                                 <CreateReceivable isModalOpen={setIsModalCreateReceivableOpen} notification={notification} fetchFinance={fetchFinance} />
@@ -164,7 +161,7 @@ const Payable = ({ notification }) => {
                                 <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Contact
                             </button>
                             <Modal isOpen={isModalCreateContactOpen} onClose={closeModal} modalTitle="Create Contact">
-                                <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={(type, message) => setNotification({ type, message })} />
+                                <CreateContact isModalOpen={setIsModalCreateContactOpen} notification={notification} />
                             </Modal>
                         </div>
                     </div>
