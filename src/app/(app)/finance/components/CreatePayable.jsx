@@ -65,12 +65,12 @@ const CreatePayable = ({ isModalOpen, fetchFinance, notification }) => {
         setLoading(true);
         try {
             const response = await axios.post("/api/finance", formData);
-            notification("success", response.data.message);
+            notification({ type: "success", message: response.data.message });
             isModalOpen(false);
             fetchFinance();
         } catch (error) {
             setErrors(error.response?.data?.errors || ["Something went wrong."]);
-            notification("error", error.response?.data?.message || "Something went wrong.");
+            notification({ type: "error", message: error.response?.data?.message || "Something went wrong." });
         } finally {
             setLoading(false);
         }

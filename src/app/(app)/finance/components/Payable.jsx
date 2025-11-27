@@ -299,7 +299,7 @@ const Payable = ({ notification }) => {
                                             <td className="">{item.account.acc_name}</td>
                                             <td className="whitespace-normal break-words max-w-xs">
                                                 <span className="font-bold text-xs text-slate-400 block">
-                                                    {formatDateTime(item.created_at)} | {item.invoice}
+                                                    {formatDateTime(item.date_issued)} | {item.invoice}
                                                 </span>
                                                 Note: {item.description}
                                             </td>
