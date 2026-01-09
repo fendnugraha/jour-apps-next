@@ -1,5 +1,5 @@
 "use client";
-import { ArrowBigDown, ArrowBigUp, DownloadIcon, MessageCircleWarningIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
+import { ArrowBigDown, ArrowBigUp, DownloadIcon, Filter, MessageCircleWarningIcon, PlusCircleIcon, XCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "@/libs/axios";
 import Modal from "@/components/Modal";
@@ -16,11 +16,15 @@ import Input from "@/components/Input";
 import FinanceYearlyTable from "./FinanceYearlyTable";
 import exportToExcel from "@/libs/exportToExcel";
 import { set } from "date-fns";
+import { DateTimeNow, formatDate } from "@/libs/format";
 const Payable = ({ notification }) => {
+    const { today } = DateTimeNow();
+    const [endDate, setEndDate] = useState(today);
     const [isModalCreateContactOpen, setIsModalCreateContactOpen] = useState(false);
     const [isModalCreatePayableOpen, setIsModalCreatePayableOpen] = useState(false);
     const [isModalCreateReceivableOpen, setIsModalCreateReceivableOpen] = useState(false);
     const [isModalDeleteFinanceOpen, setIsModalDeleteFinanceOpen] = useState(false);
+    const [isModalFilterOpen, setIsModalFilterOpen] = useState(false);
     const [isModalPaymentOpen, setIsModalPaymentOpen] = useState(false);
     const [finance, setFinance] = useState([]);
     const [financeType, setFinanceType] = useState("Payable");
@@ -33,7 +37,11 @@ const Payable = ({ notification }) => {
     const fetchFinance = async (url = `/api/finance-by-type/${selectedContactId}/${financeType}`) => {
         setLoading(true);
         try {
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                params: {
+                    end_date: endDate,
+                },
+            });
             setFinance(response.data.data);
         } catch (error) {
             notification("error", error.response?.data?.message || "Something went wrong.");
@@ -44,13 +52,14 @@ const Payable = ({ notification }) => {
 
     useEffect(() => {
         fetchFinance();
-    }, [selectedContactId, financeType]);
+    }, [selectedContactId, financeType, endDate]);
     const closeModal = () => {
         setIsModalCreateContactOpen(false);
         setIsModalCreatePayableOpen(false);
         setIsModalCreateReceivableOpen(false);
         setIsModalDeleteFinanceOpen(false);
         setIsModalPaymentOpen(false);
+        setIsModalFilterOpen(false);
     };
 
     const [paymentStatus, setPaymentStatus] = useState("Unpaid");
@@ -140,7 +149,10 @@ const Payable = ({ notification }) => {
             <div className="overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="bg-white shadow-sm sm:rounded-2xl sm:order-1 order-2">
                     <div className="p-4 flex justify-between flex-col sm:flex-row">
-                        <h1 className="text-2xl font-bold mb-4">{financeType === "Payable" ? "Hutang" : "Piutang"}</h1>
+                        <h1 className="text-2xl font-bold mb-4">
+                            {financeType === "Payable" ? "Hutang" : "Piutang"}
+                            <span className="text-xs block font-normal">{formatDate(endDate)}</span>
+                        </h1>
                         <div>
                             <button onClick={() => setIsModalCreatePayableOpen(true)} className="btn-primary text-xs mr-2">
                                 <PlusCircleIcon className="w-4 h-4 mr-2 inline" /> Hutang
@@ -199,6 +211,12 @@ const Payable = ({ notification }) => {
                             className="cursor-pointer bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         >
                             <DownloadIcon className="size-4" />
+                        </button>
+                        <button
+                            onClick={() => setIsModalFilterOpen(true)}
+                            className="cursor-pointer bg-white font-bold p-3 rounded-lg border border-gray-300 hover:border-gray-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
+                        >
+                            <Filter className="size-4" />
                         </button>
                     </div>
                     <div className="overflow-x-auto">
@@ -357,6 +375,9 @@ const Payable = ({ notification }) => {
                         fetchFinance={fetchFinance}
                         onClose={closeModal}
                     />
+                </Modal>
+                <Modal isOpen={isModalFilterOpen} onClose={closeModal} modalTitle="Filter" maxWidth="max-w-xs">
+                    <input type="datetime-local" className="form-control" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </Modal>
             </div>
         </>
