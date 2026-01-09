@@ -88,7 +88,10 @@ const BalanceSheet = () => {
                                         <Input
                                             type="date"
                                             value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
+                                            onChange={(e) => {
+                                                setStartDate(e.target.value);
+                                                setEndDate(e.target.value);
+                                            }}
                                             className="w-full rounded-md border p-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                         />
                                     </div>
