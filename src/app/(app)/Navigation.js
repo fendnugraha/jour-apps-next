@@ -87,7 +87,7 @@ const Navigation = ({ user }) => {
                                 Store
                             </span>
                         </NavLink> */}
-                        {userRole === "Administrator" && (
+                        {["Administrator", "Super Admin"].includes(userRole) && (
                             <>
                                 <NavLink href="/inventory" isOpen={isOpen} active={pathname === "/inventory"}>
                                     <div>
