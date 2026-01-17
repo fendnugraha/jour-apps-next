@@ -329,7 +329,10 @@ const JournalTable = ({
                                                     setSelectedJournalId(journal.id);
                                                     setIsModalDeleteJournalOpen(true);
                                                 }}
-                                                disabled={["Voucher & SP", "Accessories", null].includes(journal.trx_type) || userRole !== "Administrator"}
+                                                disabled={
+                                                    ["Voucher & SP", "Accessories", null].includes(journal.trx_type) ||
+                                                    !["Administrator", "Super Admin"].includes(userRole)
+                                                }
                                                 className="disabled:text-slate-300 disabled:cursor-not-allowed text-red-600 hover:scale-125 transition-all group-hover:text-white duration-200"
                                             >
                                                 <TrashIcon className="size-4" />
