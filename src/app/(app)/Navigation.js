@@ -157,7 +157,7 @@ const Navigation = ({ user }) => {
                             </>
                         )}
                     </div>
-                    {userRole === "Administrator" && (
+                    {["Administrator", "Super Admin"].includes(userRole) && (
                         <>
                             <hr className="my-4 border-slate-200" />
                             <ul className="mt-4 text-sm">
