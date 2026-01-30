@@ -1,5 +1,5 @@
 import Header from "@/app/(app)/Header";
-import { ArrowRight, BoxesIcon, ContactIcon, ListCheck, SquareGanttChartIcon, UserIcon, UsersIcon, WarehouseIcon } from "lucide-react";
+import { ArrowRight, BoxesIcon, ContactIcon, Info, ListCheck, SquareGanttChartIcon, UserIcon, UsersIcon, WarehouseIcon } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
@@ -70,6 +70,18 @@ export default function Setting() {
                                         className="sm:sm:absolute hover:underline group-hover:font-bold bottom-4 right-5 text-sm rounded-full transition-all duration-300"
                                     >
                                         Product Management
+                                        <ArrowRight className="w-4 h-4 inline ml-2 group-hover:scale-125 transition-transform duration-300" />
+                                    </Link>
+                                </div>
+                                <div className="group sm:relative bg-white p-3 sm:p-6 overflow-hidden shadow-md rounded-xl h-32 sm:h-60 flex sm:justify-center justify-evenly items-center flex-col gap-1">
+                                    <h1 className="text-5xl sm:text-8xl font-bold text-center">
+                                        <Info className="w-16 h-16 sm:w-24 sm:h-24 group-hover:scale-125 transition-transform duration-300" />
+                                    </h1>
+                                    <Link
+                                        href="/setting/about"
+                                        className="sm:sm:absolute hover:underline group-hover:font-bold bottom-4 right-5 text-sm rounded-full transition-all duration-300"
+                                    >
+                                        About
                                         <ArrowRight className="w-4 h-4 inline ml-2 group-hover:scale-125 transition-transform duration-300" />
                                     </Link>
                                 </div>
