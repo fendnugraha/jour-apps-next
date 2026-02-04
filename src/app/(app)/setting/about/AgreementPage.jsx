@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
 import axios from "@/libs/axios";
 
-export default function AgreementPage({ agreementText, onSuccess, notification, fetchLicense }) {
+export default function AgreementPage({ agreementText, onSuccess, notification, fetchLicense, isAgreementAccepted }) {
     const agreementRef = useRef(null);
     const [isChecked, setIsChecked] = useState(false);
     const [isScrolledBottom, setIsScrolledBottom] = useState(false);
@@ -43,40 +43,41 @@ export default function AgreementPage({ agreementText, onSuccess, notification, 
             {/* <h1 className="text-2xl font-bold mb-4 text-center">Perjanjian Lisensi Aplikasi</h1> */}
 
             {/* Agreement Box */}
-            <div
-                ref={agreementRef}
-                onScroll={handleScroll}
-                className="rounded-lg p-4 h-80 overflow-y-auto bg-slate-200 dark:bg-slate-900 text-xs leading-relaxed"
-            >
+            <div ref={agreementRef} onScroll={handleScroll} className="rounded-lg p-4 h-80 overflow-y-auto bg-slate-200 text-xs leading-relaxed">
                 <pre className="whitespace-pre-wrap font-sans">{agreementText}</pre>
             </div>
 
-            {!isScrolledBottom && <p className="text-xs text-red-500 mt-2">Harap scroll sampai bagian bawah untuk melanjutkan</p>}
+            {!isScrolledBottom && !isAgreementAccepted && <p className="text-xs text-red-500 mt-2">Harap scroll sampai bagian bawah untuk melanjutkan</p>}
 
-            {/* Checkbox */}
-            <div className="flex items-center gap-2 mt-4">
-                <input
-                    type="checkbox"
-                    id="agree"
-                    disabled={!isScrolledBottom}
-                    checked={isChecked}
-                    onChange={(e) => setIsChecked(e.target.checked)}
-                    className="w-4 h-4"
-                />
-                <label htmlFor="agree" className="text-sm">
-                    Saya telah membaca dan menyetujui seluruh isi perjanjian
-                </label>
-            </div>
+            {isAgreementAccepted ? (
+                <p className="text-sm text-green-600 font-semibold mt-4">Anda telah menyetujui perjanjian ini.</p>
+            ) : (
+                <>
+                    {/* Checkbox */}
+                    <div className="flex items-center gap-2 mt-4">
+                        <input
+                            type="checkbox"
+                            id="agree"
+                            disabled={!isScrolledBottom}
+                            checked={isChecked}
+                            onChange={(e) => setIsChecked(e.target.checked)}
+                            className="w-4 h-4"
+                        />
+                        <label htmlFor="agree" className="text-sm">
+                            Saya telah membaca dan menyetujui seluruh isi perjanjian
+                        </label>
+                    </div>
 
-            {/* Submit */}
-            <button
-                buttonType="info"
-                className="w-full mt-6 p-4 bg-slate-700 text-white text-sm hover:bg-slate-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
-                disabled={!isChecked || !isScrolledBottom || loading}
-                onClick={handleSubmit}
-            >
-                {loading ? "Menyimpan..." : "Setujui & Lanjutkan"}
-            </button>
+                    {/* Submit */}
+                    <button
+                        className="w-full mt-6 p-4 bg-slate-700 text-white text-sm hover:bg-slate-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                        disabled={!isChecked || !isScrolledBottom || loading}
+                        onClick={handleSubmit}
+                    >
+                        {loading ? "Menyimpan..." : "Setujui & Lanjutkan"}
+                    </button>
+                </>
+            )}
         </div>
     );
 }

@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import AgreementPage from "./AgreementPage";
 import axios from "@/libs/axios";
 import Notification from "@/components/notification";
-import { formatDate } from "@/libs/format";
+import { formatDate, formatDateTime } from "@/libs/format";
 
 const AboutPage = () => {
+    const appVersion = process.env.NEXT_PUBLIC_APP_VERSION || process.env.APP_VERSION;
     const agreementText = `PERJANJIAN LISENSI & PENGGUNAAN APLIKASI
 
 JOUR ACCOUNTING
@@ -144,7 +145,7 @@ Perjanjian ini berlaku sejak tanggal persetujuan dan mengikat Para Pihak sesuai 
     useEffect(() => {
         getLicense();
     }, []);
-
+    const isAgreementAccepted = license?.agreements && license.agreements.length > 0;
     return (
         <>
             {notification.message && (
@@ -152,20 +153,22 @@ Perjanjian ini berlaku sejak tanggal persetujuan dan mengikat Para Pihak sesuai 
             )}
             <div className="flex min-h-screen w-full items-center justify-center bg-gray-100">
                 <div>
-                    <h1 className="text-2xl font-bold">Jour Apps (Accounting) V.1.0.0</h1>
-                    <p className="text-sm block">By Eightnite Studio</p>
-                    <p className="text-sm block">Copyright © 2023. All rights reserved</p>
+                    <h1 className="text-2xl font-bold">Jour Apps (Accounting)</h1>
+                    <p className="text-sm block">Eightnite Studio Copyright © 2023. All rights reserved</p>
 
                     <p className="text-sm block mt-4">Version</p>
-                    <p className="text-sm block">1.0.0</p>
+                    <p className="text-sm block">{appVersion}</p>
 
-                    <p className="text-sm block mt-4">License to:</p>
+                    <p className="text-sm block mt-4">License to</p>
                     <p className="text-sm block">{license?.client_name}</p>
                     {license?.is_active ? (
                         <>
-                            <p className="text-sm block">Active until {formatDate(license?.preriod_end)}</p>
-                            <p className={`text-sm block ${license?.is_paid ? "text-green-500" : "text-red-500"}`}>
-                                Payment status: {license?.is_paid ? "Paid" : "Unpaid"}
+                            <p className="text-sm block">Active Until: {formatDate(license?.preriod_end)}</p>
+                            <p className={`text-sm block `}>
+                                Payment Status:{" "}
+                                <span className={`${license?.is_paid ? "text-green-500" : "text-red-500"} font-bold`}>
+                                    {license?.is_paid ? "Paid" : "Unpaid"}
+                                </span>
                             </p>
                         </>
                     ) : (
@@ -173,9 +176,25 @@ Perjanjian ini berlaku sejak tanggal persetujuan dan mengikat Para Pihak sesuai 
                             Activate License
                         </button>
                     )}
+                    {isAgreementAccepted && license.agreements.length > 0 && (
+                        <p className="text-sm block mt-4">
+                            Agreement
+                            <span className="block">Accepted at: {formatDateTime(license?.agreements?.[0]?.accepted_at)}</span>
+                            <span className="block">Version: {license?.agreements?.[0]?.agreement_version}</span>
+                            <button onClick={() => setIsModalAgreementOpen(true)} className="text-sm hover:underline hover:text-blue-500 block">
+                                View License Agreement
+                            </button>
+                        </p>
+                    )}
                 </div>
                 <Modal isOpen={isModalAgreementOpen} onClose={closeModal} modalTitle="License Agreement" maxWidth="max-w-lg">
-                    <AgreementPage agreementText={agreementText} onSuccess={closeModal} notification={setNotification} fetchLicense={getLicense} />
+                    <AgreementPage
+                        agreementText={agreementText}
+                        onSuccess={closeModal}
+                        notification={setNotification}
+                        fetchLicense={getLicense}
+                        isAgreementAccepted={isAgreementAccepted}
+                    />
                 </Modal>
             </div>
         </>
